@@ -184,6 +184,17 @@
             }
         };
 
+        // Helper to convert game names into clean file names (e.g., "Distinguishing images" -> "distinguishing-images")
+        function slugify(text) {
+            return text
+                .toString()
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, '-')           // Replace spaces with -
+                .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+                .replace(/\-\-+/g, '-');        // Replace multiple - with single -
+        }
+
         // --- HUB LOGIC ---
         function initSidebar() {
             const container = document.getElementById('sidebar-content');
@@ -211,9 +222,10 @@
                     list.className = 'game-list';
                     
                     dim.games.forEach((gameName, gIdx) => {
-                        // Folder structure: games/writing/readiness/game1.js
-                        const path = `games/${cat.folder}/${dim.folder}/game${gIdx + 1}.js`;
-                        const gameId = `g_${cat.folder}_${dim.folder}_${gIdx + 1}`;
+                        // Dynamically convert gameName into a friendly filename!
+                        const fileSlug = slugify(gameName);
+                        const path = `games/${cat.folder}/${dim.folder}/${fileSlug}.js`;
+                        const gameId = `g_${cat.folder}_${dim.folder}_${fileSlug}`;
                         
                         const btn = document.createElement('button');
                         btn.className = 'game-tab';
