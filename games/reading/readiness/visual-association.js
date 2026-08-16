@@ -1,7 +1,7 @@
 /**
- * Game 3: Linking Shapes and Colors
+ * Game 3: Visual & Logical Association
  * Filename: games/read_d1_g3.js
- * 15 Levels: 1-5 (Outline Match), 6-10 (Color Link), 11-15 (Logical Association)
+ * 15 Levels: 1-5 (Tools Match), 6-10 (Environment Context), 11-15 (Advanced Logic & Distractors)
  */
 
 (function() {
@@ -9,31 +9,31 @@
     let currentRound = 0;
     const totalRounds = 15;
 
-    // Stage 1: Shape to Outline
-    const shapePairs = [
-        { prompt: '🔴', match: '⭕', others: ['⬜', '⭐', '🔺'] },
-        { prompt: '🟦', match: '◻️', others: ['🟡', '🛑', '💠'] },
-        { prompt: '🔺', match: '△', others: ['🔸', '🔹', '⚫'] },
-        { prompt: '⭐', match: '☆', others: ['🌙', '☀️', '☁️'] },
-        { prompt: '🟩', match: '▢', others: ['🔘', '🔶', '💠'] }
+    // المرحلة الأولى: ارتباط الأدوات والأشياء (التكامل)
+    const toolPairs = [
+        { prompt: '🔒', match: '🗝️', others: ['🔨', '📱', '🚗'], label: "ابحث عن الأداة المناسبة لفتح هذا!" },
+        { prompt: '🖌️', match: '🎨', others: ['📓', '🛒', '🧵'], label: "ماذا نحتاج أيضاً لنرسم؟" },
+        { prompt: '✉️', match: '📮', others: ['🗑️', '📦', '🗄️'], label: "أين نضع هذه الرسالة؟" },
+        { prompt: '🔌', match: '💡', others: ['🕯️', '🥽', '🚰'], label: "ماذا يكمل هذا؟" },
+        { prompt: '🩺', match: '👂', others: ['👁️', '🦷', '🦶'], label: "بماذا نستخدم هذه الأداة؟" }
     ];
 
-    // Stage 2: Color Linking
-    const colorPairs = [
-        { prompt: '🧡', match: '🍊', others: ['🍏', '🍇', '🐳'], label: "Match the COLOR!" },
-        { prompt: '🟦', match: '🐳', others: ['🍓', '🍌', '🥦'], label: "Match the COLOR!" },
-        { prompt: '🟥', match: '🍎', others: ['🍍', '🐧', '🌳'], label: "Match the COLOR!" },
-        { prompt: '🟨', match: '🍌', others: ['🍇', '🍓', '🐳'], label: "Match the COLOR!" },
-        { prompt: '🟩', match: '🥦', others: ['🍎', '🍄', '🎈'], label: "Match the COLOR!" }
+    // المرحلة الثانية: السياق والبيئة
+    const contextPairs = [
+        { prompt: '🌧️', match: '☂️', others: ['☀️', '🕶️', '🧢'], label: "سحابة ماطرة! ماذا نحتاج؟" },
+        { prompt: '🐟', match: '🌊', others: ['🎪', '🕸️', '🌲'], label: "أين تعيش هذه السمكة؟" },
+        { prompt: '🐦', match: '🌲', others: ['🌊', '🕸️', '🚗'], label: "أين يسكن هذا الطائر؟" },
+        { prompt: '🐄', match: '🥛', others: ['🍯', '🥚', '🍞'], label: "ماذا يعطينا هذا الحيوان؟" },
+        { prompt: '🐝', match: '🍯', others: ['🥛', '🥩', '🍟'], label: "ماذا تصنع لنا هذه النحلة؟" }
     ];
 
-    // Stage 3: Logical Association
-    const logicPairs = [
-        { prompt: '☀️', match: '🟡', others: ['🔵', '🔴', '⬛'], label: "Which shape matches the sun's color?" },
-        { prompt: '💎', match: '💠', others: ['🌸', '🍂', '🍀'], label: "Find the similar shape!" },
-        { prompt: '🍌', match: '🌙', others: ['⭐', '🎈', '🚗'], label: "Which shape looks like a banana?" },
-        { prompt: '🍊', match: '🟠', others: ['🟦', '🟩', '🟪'], label: "Which color belongs to the orange?" },
-        { prompt: '🍓', match: '🔻', others: ['🔵', '🟡', '⬛'], label: "Which shape matches the strawberry's tip?" }
+    // المرحلة الثالثة: الارتباط المنطقي المتقدم مع المشتتات البصرية والدلالية
+    const advancedPairs = [
+        { prompt: '🏸', match: '🎾', others: ['⚽', '🏀', '⚾'], label: "اختر الكرة المناسبة لهذا المضرب!" },
+        { prompt: '🐇', match: '🥕', others: ['⚪', '🧀', '🦴'], label: "ماذا يأكل الأرنب؟" },
+        { prompt: '🐭', match: '🧀', others: ['🥨', '🥕', '🐟'], label: "ماذا يأكل الفأر؟" },
+        { prompt: '🐶', match: '🦴', others: ['🍡', '🥕', '🧀'], label: "ما هو طعام الكلب المفضل؟" },
+        { prompt: '🐒', match: '🍌', others: ['🌙', '🦴', '🥩'], label: "ماذا يأكل القرد؟" }
     ];
 
     window.initGame = function(containerId) {
@@ -49,13 +49,14 @@
             display: flex; flex-direction: column; align-items: center;
             width: 100%; max-width: 100%; animation: fadeIn 0.5s ease; user-select: none;
             padding: 10px; box-sizing: border-box; justify-content: flex-start;
+            direction: rtl; font-family: 'Tajawal', sans-serif, Arial;
         `;
 
         const instruction = document.createElement('h2');
         instruction.id = "game-instruction";
-        instruction.style.cssText = "margin-bottom: 10px; color: #2D3748; text-align: center; font-size: 1.4rem; width: 100%;";
+        instruction.style.cssText = "margin-bottom: 15px; color: #2D3748; text-align: center; font-size: 1.3rem; width: 100%; min-height: 40px;";
 
-        // Prompt Area (Circular highlight)
+        // منطقة الهدف (الدائرة)
         const promptContainer = document.createElement('div');
         promptContainer.id = "prompt-container";
         promptContainer.style.cssText = `
@@ -74,7 +75,7 @@
 
         const grid = document.createElement('div');
         grid.id = "game-grid";
-        grid.style.cssText = `display: grid; gap: 15px; margin-bottom: 20px; min-height: 220px; align-items: center; justify-content: center; width: 100%;`;
+        grid.style.cssText = `display: grid; gap: 15px; margin-bottom: 20px; min-height: 220px; align-items: center; justify-content: center; width: 100%; grid-template-columns: repeat(2, 120px);`;
 
         const stats = document.createElement('div');
         stats.id = "game-stats";
@@ -96,28 +97,30 @@
     function nextRound(grid, stats, instruction, promptIcon) {
         if (currentRound >= totalRounds) {
             if (window.GameHub?.showComplete) {
-                window.GameHub.showComplete("Visual Master!", `You mastered all 15 levels! Accuracy: ${score}/${totalRounds}`);
+                window.GameHub.showComplete("بطل الربط المنطقي!", `لقد أنهيت جميع المراحل بذكاء! النتيجة: ${score} / ${totalRounds}`);
             }
             return;
         }
 
         currentRound++;
         grid.innerHTML = '';
-        stats.innerText = `Level: ${currentRound} / ${totalRounds} | Accuracy: ${score}`;
+        stats.innerText = `المستوى: ${currentRound} / ${totalRounds} | النتيجة: ${score}`;
 
         let currentPair;
         if (currentRound <= 5) {
-            instruction.innerText = "Match the SHAPE to its outline!";
-            currentPair = shapePairs[currentRound - 1];
+            currentPair = toolPairs[currentRound - 1];
         } else if (currentRound <= 10) {
-            currentPair = colorPairs[currentRound - 6];
-            instruction.innerText = currentPair.label;
+            currentPair = contextPairs[currentRound - 6];
         } else {
-            currentPair = logicPairs[currentRound - 11];
-            instruction.innerText = currentPair.label;
+            currentPair = advancedPairs[currentRound - 11];
         }
 
+        instruction.innerText = currentPair.label;
         promptIcon.innerText = currentPair.prompt;
+        
+        // إعادة تفعيل الأنيمشن
+        promptIcon.style.animation = 'none';
+        promptIcon.offsetHeight; /* trigger reflow */
         promptIcon.style.animation = "bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)";
 
         const matchVal = currentPair.match;
@@ -126,8 +129,8 @@
             ...currentPair.others.slice(0, 3).map(o => ({ text: o, isCorrect: false }))
         ];
         
+        // خلط الخيارات
         options = options.sort(() => 0.5 - Math.random());
-        grid.style.gridTemplateColumns = "repeat(2, 120px)";
 
         options.forEach((opt) => {
             const card = createCard(opt.text);
@@ -163,6 +166,8 @@
         card.style.background = "#C6F6D5";
         card.style.borderColor = "#48BB78";
         card.style.transform = "scale(1.1)";
+        
+        // تعطيل الأزرار لمنع النقر المتعدد
         grid.querySelectorAll('button').forEach(b => b.style.pointerEvents = 'none');
         
         setTimeout(() => {
@@ -180,6 +185,7 @@
         card.style.animation = "shake 0.4s";
         card.style.background = "#FFF5F5";
         card.style.borderColor = "#F56565";
+        
         setTimeout(() => {
             card.style.animation = "";
             card.style.background = "white";
@@ -187,6 +193,7 @@
         }, 400);
     }
 
+    // إضافة التنسيقات الخاصة بالحركة إذا لم تكن موجودة
     if (!document.getElementById('game-vfx-styles')) {
         const style = document.createElement('style');
         style.id = 'game-vfx-styles';

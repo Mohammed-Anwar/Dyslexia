@@ -1,15 +1,15 @@
 /**
- * Game 2: Finding Similar Images
+ * Game 2: Finding Similar Images (Spatial & Shadow Logic)
  * Filename: games/read_d1_g2.js
- * 15 Levels: 1-5 (Theme Match), 6-10 (Shape Match), 11-15 (Shadow Logic Match)
+ * 10 Levels: 1-3 (Theme Match), 4-6 (Shape Match), 7-10 (Shadow & Direction Match)
  */
 
 (function() {
     let score = 0;
     let currentRound = 0;
-    const totalRounds = 15;
+    const totalRounds = 10; // تم التعديل إلى 10 مستويات
 
-    // Themed sets for Stage 1
+    // مجموعات الصور للمرحلة الأولى
     const itemSets = [
         ['🦁', '🐯', '🐱', '🐶', '🦊'],
         ['🚗', '🚕', '🚙', '🚌', '🏎️'],
@@ -18,7 +18,7 @@
         ['🌙', '🍌', '🧀', '🍋', '✨']
     ];
 
-    // Geometric sets for Stage 2
+    // مجموعات الأشكال للمرحلة الثانية
     const geometricPool = [
         { char: '🔴', color: 'red' }, { char: '🟦', color: 'blue' },
         { char: '🔺', color: 'red' }, { char: '🟡', color: 'yellow' },
@@ -26,8 +26,8 @@
         { char: '💎', color: 'blue' }, { char: '🧡', color: 'orange' }
     ];
 
-    // General item pool for Stage 3
-    const shadowPool = ['🍎', '🍌', '🍇', '🍓', '🍊', '🍍', '🥦', '🍉', '🐳', '🐧', '🍄', '☀️'];
+    // المرحلة الثالثة: عناصر لها اتجاهات واضحة (يمين/يسار) لاستخدامها في العكس المكاني
+    const shadowPool = ['📞', '🚗', '🐟', '🐕', '👟', '🐦', '🎺', '🔫', '🐎', '🦈'];
 
     window.initGame = function(containerId) {
         const stage = document.getElementById(containerId);
@@ -42,6 +42,7 @@
             display: flex; flex-direction: column; align-items: center;
             width: 100%; max-width: 100%; animation: fadeIn 0.5s ease; user-select: none;
             padding: 10px; box-sizing: border-box; justify-content: flex-start;
+            direction: rtl; font-family: 'Tajawal', sans-serif, Arial;
         `;
 
         const instruction = document.createElement('h2');
@@ -58,12 +59,12 @@
         `;
         
         const targetLabel = document.createElement('p');
-        targetLabel.innerText = "TARGET";
-        targetLabel.style.cssText = "font-size: 0.7rem; font-weight: bold; color: #A0AEC0; margin: 0 0 5px 0; letter-spacing: 1px;";
+        targetLabel.innerText = "الهدف";
+        targetLabel.style.cssText = "font-size: 0.9rem; font-weight: bold; color: #A0AEC0; margin: 0 0 5px 0; letter-spacing: 1px;";
         
         const targetIcon = document.createElement('div');
         targetIcon.id = "target-icon";
-        targetIcon.style.fontSize = "60px";
+        targetIcon.style.cssText = "font-size: 60px; display: inline-block;";
 
         targetContainer.appendChild(targetLabel);
         targetContainer.appendChild(targetIcon);
@@ -77,7 +78,7 @@
         stats.style.cssText = `
             font-weight: bold; color: #718096; font-size: 1rem; 
             background: #EDF2F7; padding: 10px 25px; border-radius: 50px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-top: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-top: 10px; direction: rtl;
         `;
 
         gameWrapper.appendChild(instruction);
@@ -92,20 +93,22 @@
     function nextRound(grid, stats, instruction, targetIcon) {
         if (currentRound >= totalRounds) {
             if (window.GameHub?.showComplete) {
-                window.GameHub.showComplete("Eagle-Eyed Scout!", `You found all 15 matches! Score: ${score}`);
+                window.GameHub.showComplete("بطل الملاحظة!", `لقد أكملت جميع التحديات بنجاح! النتيجة: ${score}`);
             }
             return;
         }
 
         currentRound++;
         grid.innerHTML = '';
-        stats.innerText = `Level: ${currentRound} / ${totalRounds} | Score: ${score}`;
+        stats.innerText = `المستوى: ${currentRound} / ${totalRounds} | النتيجة: ${score}`;
         
         targetIcon.style.filter = "none"; // Reset filter
+        targetIcon.style.transform = "scale(1)"; // Reset transform
 
-        if (currentRound <= 5) {
+        // توزيع المراحل الجديد
+        if (currentRound <= 3) {
             setupThemeMatch(grid, instruction, targetIcon);
-        } else if (currentRound <= 10) {
+        } else if (currentRound <= 6) {
             setupShapeMatch(grid, instruction, targetIcon);
         } else {
             setupShadowLogicMatch(grid, instruction, targetIcon);
@@ -113,7 +116,7 @@
     }
 
     function setupThemeMatch(grid, instruction, targetIcon) {
-        instruction.innerText = "Find the matching image!";
+        instruction.innerText = "ابحث عن الصورة المطابقة للهدف!";
         grid.style.gridTemplateColumns = "repeat(3, 100px)";
 
         const currentSet = itemSets[Math.floor(Math.random() * itemSets.length)];
@@ -121,11 +124,16 @@
         const distractors = currentSet.filter(i => i !== targetItem).sort(() => 0.5 - Math.random()).slice(0, 5);
         
         targetIcon.innerText = targetItem;
-        renderOptions(grid, targetItem, distractors);
+        
+        let options = [
+            { symbol: targetItem, transform: "scaleX(1)", isCorrect: true },
+            ...distractors.map(d => ({ symbol: d, transform: "scaleX(1)", isCorrect: false }))
+        ];
+        renderOptions(grid, options);
     }
 
     function setupShapeMatch(grid, instruction, targetIcon) {
-        instruction.innerText = "Match the SHAPE (ignore the color)!";
+        instruction.innerText = "طابق الشكل (وتجاهل اللون)!";
         grid.style.gridTemplateColumns = "repeat(3, 100px)";
 
         const colors = ['red', 'yellow', 'blue'];
@@ -137,47 +145,57 @@
         
         targetIcon.innerText = targetItem;
         
-        // In this mode, we fill the grid with the same colored shapes to make it hard
-        let options = [targetItem];
-        for(let i=0; i<5; i++) options.push(distractor);
+        let options = [{ symbol: targetItem, transform: "scaleX(1)", isCorrect: true }];
+        for(let i=0; i<5; i++) {
+            options.push({ symbol: distractor, transform: "scaleX(1)", isCorrect: false });
+        }
         
-        renderShuffledOptions(grid, targetItem, options);
+        renderOptions(grid, options);
     }
 
     function setupShadowLogicMatch(grid, instruction, targetIcon) {
-        instruction.innerText = "Match the shadow to the real object!";
+        instruction.innerText = "طابق الظل بالصورة الحقيقية (انتبه للاتجاه الصحيح)!";
         grid.style.gridTemplateColumns = "repeat(3, 100px)";
 
         const pool = [...shadowPool].sort(() => 0.5 - Math.random());
         const targetItem = pool[0];
-        const distractors = pool.slice(1, 6);
+        const randomItem1 = pool[1];
+        const randomItem2 = pool[2];
 
         targetIcon.innerText = targetItem;
-        targetIcon.style.filter = "brightness(0)"; // Make target a shadow
+        targetIcon.style.filter = "brightness(0)"; // تحويل الهدف إلى ظل أسود
         
-        renderOptions(grid, targetItem, distractors);
+        // تجهيز الخيارات: الهدف الصحيح، والهدف معكوساً كمشتت قوي، وعناصر أخرى لملء الشبكة
+        const options = [
+            { symbol: targetItem, transform: "scaleX(1)", isCorrect: true }, // الإجابة الصحيحة
+            { symbol: targetItem, transform: "scaleX(-1)", isCorrect: false }, // مشتت: نفس الشكل معكوس أفقياً
+            { symbol: targetItem, transform: "scaleY(-1)", isCorrect: false }, // مشتت: نفس الشكل مقلوب رأسياً
+            { symbol: randomItem1, transform: "scaleX(1)", isCorrect: false }, // عنصر مختلف
+            { symbol: randomItem1, transform: "scaleX(-1)", isCorrect: false }, // عنصر مختلف معكوس
+            { symbol: randomItem2, transform: "scaleX(1)", isCorrect: false }  // عنصر مختلف
+        ];
+
+        renderOptions(grid, options);
     }
 
-    function renderOptions(grid, target, distractors) {
-        let options = [target, ...distractors];
-        renderShuffledOptions(grid, target, options);
-    }
-
-    function renderShuffledOptions(grid, target, options) {
+    function renderOptions(grid, options) {
+        // خلط الخيارات العشوائي
         options.sort(() => 0.5 - Math.random());
-        options.forEach(symbol => {
-            const card = createCard(symbol);
+        
+        options.forEach(opt => {
+            const card = createCard(opt.symbol, opt.transform);
             card.onclick = (e) => {
-                if (symbol === target) onCorrect(e, card, grid);
+                if (opt.isCorrect) onCorrect(e, card, grid);
                 else onWrong(card);
             };
             grid.appendChild(card);
         });
     }
 
-    function createCard(symbol) {
+    function createCard(symbol, transformValue) {
         const card = document.createElement('button');
-        card.innerText = symbol;
+        // يتم وضع العنصر بداخل span لتطبيق التحويل (الانعكاس) عليه دون أن تتأثر حدود الزر 
+        card.innerHTML = `<span style="display:inline-block; pointer-events:none; transform:${transformValue};">${symbol}</span>`;
         card.style.cssText = `
             font-size: 40px; width: 90px; height: 90px;
             border: 3px solid #E2E8F0; border-radius: 20px;
@@ -227,7 +245,6 @@
         style.innerHTML = `
             @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
             @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-            @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         `;
         document.head.appendChild(style);
     }

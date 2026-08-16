@@ -12,21 +12,26 @@
 
     // Word list with target letters
     const gameData = [
-        { word: "APPLE", target: "P" },
-        { word: "BANANA", target: "N" },
-        { word: "CAT", target: "C" },
-        { word: "DOG", target: "G" },
-        { word: "FISH", target: "S" },
-        { word: "GRAPES", target: "R" },
-        { word: "HOUSE", target: "O" },
-        { word: "IGLOO", target: "L" },
-        { word: "JOKER", target: "K" },
-        { word: "KITE", target: "T" },
+        // المستويات 1-5: أحرف كبيرة، تباين بصري واضح، كلمات سهلة
+        { word: "BREAD", target: "R" },
+        { word: "PLANT", target: "A" },
+        { word: "CLOCK", target: "O" },
         { word: "LEMON", target: "M" },
-        { word: "MOUSE", target: "U" },
-        { word: "NIGHT", target: "H" },
-        { word: "ORANGE", target: "A" },
-        { word: "PIZZA", target: "Z" }
+        { word: "JUMP", target: "U" },
+        
+        // المستويات 6-10: أحرف صغيرة، بداية التداخل البصري
+        { word: "banana", target: "b" }, // البحث عن b وسط a, n
+        { word: "pepper", target: "r" }, // البحث عن r وسط p, e
+        { word: "queue", target: "q" },  // البحث عن q وسط u, e
+        { word: "assess", target: "a" }, // البحث عن a وسط s, e
+        { word: "scissors", target: "o" }, // البحث عن o وسط s, c, i, r
+        
+        // المستويات 11-15: الصعوبة القصوى (التفريق بين الأحرف المتشابهة جداً داخل كلمات حقيقية)
+        { word: "minimum", target: "n" },     // تحدي m & n: حرف n وحيد وسط ثلاثة m
+        { word: "bedbound", target: "d" },    // تحدي b & d: حرف d وحيد وسط حرفي b
+        { word: "pipsqueak", target: "q" },   // تحدي p & q: حرف q وحيد وسط حرفي p
+        { word: "assassins", target: "n" },   // تحدي التشتت: حرف n وحيد وسط أربعة s
+        { word: "illuminate", target: "u" }   // تحدي الخطوط المتوازية: i, l, m, n, u
     ];
 
     window.initGame = function(containerId) {

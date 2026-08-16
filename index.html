@@ -12,7 +12,7 @@
 
     <aside id="sidebar">
         <div class="sidebar-header">
-            <h2><span>🌟</span> Literacy Hub</h2>
+            <h2 id="hub-home-link" onclick="goHome()"><span>🌟</span> Literacy Hub</h2>
             <p>Learning Journey</p>
         </div>
         <div class="sidebar-scroll" id="sidebar-content"></div>
@@ -55,11 +55,7 @@
             </div>
             
             <div id="game-stage">
-                <div id="lobby-view" style="text-align: center; max-width: 400px;">
-                    <div style="font-size: 80px; margin-bottom: 20px;">🎮</div>
-                    <h2>Choose Your Adventure</h2>
-                    <p style="color: var(--text-muted)">Select a skill category from the sidebar to begin your learning mission!</p>
-                </div>
+                <!-- Lobby content is built dynamically by renderLobby() -->
             </div>
         </section>
     </main>
@@ -70,7 +66,7 @@
                 category: "Reading Skills",
                 folder: "reading",
                 dimensions: [
-                    { name: "Pre-reading Readiness", folder: "readiness", games: ["Distinguishing images", "Similar images", "Linking shapes", "Missing parts", "Relationships"] },
+                    { name: "Pre-reading Readiness", folder: "readiness", games: ["Distinguishing images", "Similar images", "visual association", "Missing parts", "Relationships"] },
                     { name: "Letters & Recognition", folder: "recognition", games: ["Letter shape", "Letter order", "Word shape", "Pronunciation", "Similar sounds"] },
                     { name: "Phonological Awareness", folder: "phonological", games: ["Vowels", "Syllables", "Silent letters", "Unwritten sounds", "Sound arrangement"] },
                     { name: "Basic Comprehension", folder: "basic_comp", games: ["Wh-questions", "Main idea", "Sub-ideas", "Sequencing", "Scrambled words"] },
@@ -89,6 +85,25 @@
                 ]
             }
         ];
+
+        // Icons shown on the lobby cards, keyed by dimension name
+        const dimIcons = {
+            "Pre-reading Readiness": "👁️",
+            "Letters & Recognition": "🔤",
+            "Phonological Awareness": "🔊",
+            "Basic Comprehension": "📖",
+            "Critical Comprehension": "🧠",
+            "Pre-writing Readiness": "✏️",
+            "Letter & Word Formation": "🖊️",
+            "Spelling & Mechanics": "🔡",
+            "Sentence Construction": "📝",
+            "Written Expression": "📄"
+        };
+        const catIcons = { reading: "📚", writing: "✍️" };
+
+        // Key used to remember where the user was standing, so an accidental
+        // refresh brings them back to the same activity instead of the lobby.
+        const LAST_GAME_KEY = "literacyHub_lastGameId";
 
         // Track flat list for "Next Game" logic
         let flatGameList = [];
@@ -195,6 +210,17 @@
                 .replace(/\-\-+/g, '-');        // Replace multiple - with single -
         }
 
+        // Safe localStorage helpers (private browsing / disabled storage won't throw)
+        function saveLastGame(id) {
+            try { localStorage.setItem(LAST_GAME_KEY, id); } catch (e) { /* ignore */ }
+        }
+        function clearLastGame() {
+            try { localStorage.removeItem(LAST_GAME_KEY); } catch (e) { /* ignore */ }
+        }
+        function loadLastGame() {
+            try { return localStorage.getItem(LAST_GAME_KEY); } catch (e) { return null; }
+        }
+
         // --- HUB LOGIC ---
         function initSidebar() {
             const container = document.getElementById('sidebar-content');
@@ -232,7 +258,15 @@
                         btn.id = gameId;
                         btn.innerHTML = `<span>${globalCounter++}.</span> ${gameName}`;
                         
-                        const gameInfo = { id: gameId, path, title: gameName, category: cat.category };
+                        const gameInfo = {
+                            id: gameId,
+                            path,
+                            title: gameName,
+                            category: cat.category,
+                            catFolder: cat.folder,
+                            dimFolder: dim.folder,
+                            dimName: dim.name
+                        };
                         flatGameList.push(gameInfo);
 
                         btn.onclick = (e) => {
@@ -251,11 +285,71 @@
             });
         }
 
+        // Builds the "choose an activity" home screen: a grid of clickable
+        // cards (one per dimension) that jump straight into that activity.
+        function renderLobby() {
+            const stage = document.getElementById('game-stage');
+            stage.innerHTML = `
+                <div id="lobby-view">
+                    <div class="lobby-intro">
+                        <div class="lobby-emoji">🎮</div>
+                        <h2>Choose Your Adventure</h2>
+                        <p>Tap any activity below to jump right in, or use the sidebar.</p>
+                    </div>
+                </div>`;
+            const lobby = document.getElementById('lobby-view');
+
+            gameData.forEach(cat => {
+                const section = document.createElement('div');
+                section.className = 'lobby-category';
+                section.innerHTML = `<h3 class="lobby-category-title">
+                    <span>${catIcons[cat.folder] || '🎯'}</span> ${cat.category}
+                </h3>`;
+
+                const grid = document.createElement('div');
+                grid.className = 'lobby-grid';
+
+                cat.dimensions.forEach(dim => {
+                    const card = document.createElement('button');
+                    card.type = 'button';
+                    card.className = 'lobby-card';
+                    card.innerHTML = `
+                        <div class="lobby-card-icon">${dimIcons[dim.name] || '🎯'}</div>
+                        <div class="lobby-card-name">${dim.name}</div>
+                        <div class="lobby-card-count">${dim.games.length} activities</div>
+                    `;
+                    card.onclick = () => {
+                        AudioEngine.play('click');
+                        const firstGame = flatGameList.find(g => g.catFolder === cat.folder && g.dimFolder === dim.folder);
+                        if (firstGame) selectGame(firstGame);
+                    };
+                    grid.appendChild(card);
+                });
+
+                section.appendChild(grid);
+                lobby.appendChild(section);
+            });
+        }
+
         function selectGame(gameInfo) {
             currentActiveId = gameInfo.id;
+            saveLastGame(gameInfo.id);
+
             document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(gameInfo.id).classList.add('active');
-            
+            const tabEl = document.getElementById(gameInfo.id);
+            if (tabEl) tabEl.classList.add('active');
+
+            // Make sure the matching sidebar section is expanded so the active
+            // tab is visible (useful right after a refresh restores a game).
+            document.querySelectorAll('.dimension-item').forEach(it => it.classList.remove('active'));
+            if (tabEl) {
+                const parentDim = tabEl.closest('.dimension-item');
+                if (parentDim) {
+                    parentDim.classList.add('active');
+                    parentDim.scrollIntoView({ block: 'center' });
+                }
+            }
+
             document.getElementById('active-category').innerText = gameInfo.category;
             document.getElementById('active-title').innerText = gameInfo.title;
             document.getElementById('game-result-overlay').style.display = 'none';
@@ -304,8 +398,22 @@
             }
         }
 
+        // Goes back to the real lobby (unlike a refresh, this intentionally
+        // forgets the saved position).
         function goHome() {
-            location.reload();
+            clearLastGame();
+            currentActiveId = null;
+
+            document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.dimension-item').forEach(it => it.classList.remove('active'));
+            document.getElementById('active-category').innerText = 'Main Lobby';
+            document.getElementById('active-title').innerText = 'Welcome, Explorer!';
+            document.getElementById('game-result-overlay').style.display = 'none';
+            document.getElementById('game-toolbar').innerHTML = '';
+            document.querySelectorAll('.game-script').forEach(s => s.remove());
+            window.initGame = null;
+
+            renderLobby();
         }
 
         function toggleSidebar() {
@@ -341,7 +449,20 @@
             }
         };
 
-        window.onload = () => { initSidebar(); VFX.init(); };
+        window.onload = () => {
+            initSidebar();
+            VFX.init();
+
+            // Restore whatever activity the user was standing on (e.g. after
+            // an accidental refresh). If nothing was saved, show the lobby.
+            const savedId = loadLastGame();
+            const savedGame = savedId ? flatGameList.find(g => g.id === savedId) : null;
+            if (savedGame) {
+                selectGame(savedGame);
+            } else {
+                renderLobby();
+            }
+        };
     </script>
 </body>
 </html>

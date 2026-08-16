@@ -13,21 +13,26 @@
 
     // Data: Letter, Phoneme instruction for TTS, and Object options
     const gameData = [
-        { letter: "S", phoneme: "Say the sound: sssss as in snake", options: [{icon: "🐍", correct: true}, {icon: "🍎", correct: false}] },
-        { letter: "A", phoneme: "Say the short vowel sound: ah as in apple", options: [{icon: "🍎", correct: true}, {icon: "🚗", correct: false}] },
-        { letter: "T", phoneme: "Say the sound: ttt as in tiger", options: [{icon: "🐯", correct: true}, {icon: "🍦", correct: false}] },
-        { letter: "P", phoneme: "Say the sound: ppp as in pizza", options: [{icon: "🍕", correct: true}, {icon: "🎈", correct: false}] },
-        { letter: "M", phoneme: "Say the sound: mmm as in monkey", options: [{icon: "🐒", correct: true}, {icon: "🌙", correct: false}] },
-        { letter: "D", phoneme: "Say the sound: ddd as in dog", options: [{icon: "🐕", correct: true}, {icon: "🍭", correct: false}] },
-        { letter: "G", phoneme: "Say the sound: ggg as in goat", options: [{icon: "🐐", correct: true}, {icon: "🍇", correct: false}] },
-        { letter: "O", phoneme: "Say the short vowel sound: o as in octopus", options: [{icon: "🐙", correct: true}, {icon: "🍊", correct: false}] },
-        { letter: "B", phoneme: "Say the sound: bbb as in ball", options: [{icon: "⚽", correct: true}, {icon: "🍌", correct: false}] },
-        { letter: "C", phoneme: "Say the hard sound: kkk as in cat", options: [{icon: "🐱", correct: true}, {icon: "🧁", correct: false}] },
-        { letter: "K", phoneme: "Say the sound: kkk as in kite", options: [{icon: "🪁", correct: true}, {icon: "🔑", correct: false}] },
-        { letter: "E", phoneme: "Say the short vowel sound: eh as in egg", options: [{icon: "🥚", correct: true}, {icon: "🐘", correct: false}] },
-        { letter: "U", phoneme: "Say the short vowel sound: uh as in umbrella", options: [{icon: "☂️", correct: true}, {icon: "🦄", correct: false}] },
-        { letter: "R", phoneme: "Say the sound: rrr as in rabbit", options: [{icon: "🐇", correct: true}, {icon: "🚀", correct: false}] },
-        { letter: "H", phoneme: "Say the sound: hhh as in hat", options: [{icon: "👒", correct: true}, {icon: "🏠", correct: false}] }
+        // Level 1-5: Sound with word example (أسلوب الكلمة التوضيحية)
+        { letter: "S", phoneme: "sssss as in snake", options: [{icon: "🐍", correct: true}, {icon: "🍎", correct: false}] },
+        { letter: "A", phoneme: "ah as in apple", options: [{icon: "🍎", correct: true}, {icon: "🚗", correct: false}] },
+        { letter: "T", phoneme: "ttt as in tiger", options: [{icon: "🐯", correct: true}, {icon: "🍦", correct: false}] },
+        { letter: "P", phoneme: "ppp as in pizza", options: [{icon: "🍕", correct: true}, {icon: "🎈", correct: false}] },
+        { letter: "M", phoneme: "mmm as in monkey", options: [{icon: "🐒", correct: true}, {icon: "🌙", correct: false}] },
+
+        // Level 6-10: Sound only without words (صوت الحرف فقط ممدود بدون كلمات)
+        { letter: "D", phoneme: "d. d. d. duh", options: [{icon: "🐕", correct: true}, {icon: "🍭", correct: false}] },
+        { letter: "G", phoneme: "goh goh goh goh", options: [{icon: "🐐", correct: true}, {icon: "🍇", correct: false}] },
+        { letter: "B", phoneme: "b. b. b. buh", options: [{icon: "⚽", correct: true}, {icon: "🍌", correct: false}] },
+        { letter: "R", phoneme: "rrrr", options: [{icon: "🐇", correct: true}, {icon: "🚀", correct: false}] },
+        { letter: "H", phoneme: "huh, huh", options: [{icon: "👒", correct: true}, {icon: "🚗", correct: false}] },
+
+        // Level 11-15: Letter Name pronunciation (Fixed distractors to avoid overlapping letters)
+        { letter: "O", phoneme: "Oh", options: [{icon: "🐙", correct: true}, {icon: "🐱", correct: false}] },
+        { letter: "C", phoneme: "ka", options: [{icon: "🐱", correct: true}, {icon: "🐕", correct: false}] },
+        { letter: "K", phoneme: "Kay", options: [{icon: "🪁", correct: true}, {icon: "🍎", correct: false}] },
+        { letter: "E", phoneme: "Ee", options: [{icon: "🥚", correct: true}, {icon: "🎈", correct: false}] },
+        { letter: "U", phoneme: "Ah", options: [{icon: "☂️", correct: true}, {icon: "🐟", correct: false}] }
     ];
 
     window.initGame = function(containerId) {
