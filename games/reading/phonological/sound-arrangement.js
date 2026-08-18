@@ -1,8 +1,8 @@
 /**
  * Game: The Sound Builder (Arranging Letters by Sound)
  * Filename: sound_builder.js
- * Logic: User drags letters into boxes in the exact phoneme-by-phoneme order heard.
- * Dyslexia Focus: Phoneme sequencing and working memory.
+ * Logic: User drags letters into boxes in the exact phoneme-by-phoneme order heard. Digraphs are grouped.
+ * Dyslexia Focus: Phoneme sequencing, working memory, and recognizing digraphs (two letters, one sound).
  */
 
 (function() {
@@ -10,16 +10,17 @@
     let placedCount = 0;
 
     const gameData = [
+        // Standard single-letter phonemes
         { word: "CAT", letters: ["C", "A", "T"], instruction: "Listen to CAT. Drag the sounds in order." },
         { word: "DOG", letters: ["D", "O", "G"], instruction: "Build the word DOG, sound by sound." },
-        { word: "SHIP", letters: ["S", "H", "I", "P"], instruction: "Listen: SH-I-P. Drag the letters!" },
         { word: "FROG", letters: ["F", "R", "O", "G"], instruction: "Four sounds! F-R-O-G." },
-        { word: "LAMP", letters: ["L", "A", "M", "P"], instruction: "Build the word LAMP." },
-        { word: "STAR", letters: ["S", "T", "A", "R"], instruction: "Listen for the sequence in STAR." },
-        { word: "FISH", letters: ["F", "I", "S", "H"], instruction: "F-I-SH. Drag them in order." },
-        { word: "BIRD", letters: ["B", "I", "R", "D"], instruction: "Can you build BIRD?" },
-        { word: "JUMP", letters: ["J", "U", "M", "P"], instruction: "Listen to the sounds in JUMP." },
-        { word: "TRUCK", letters: ["T", "R", "U", "C", "K"], instruction: "A big one! T-R-U-C-K." }
+        
+        // Advanced: Digraphs (Two letters representing one sound)
+        { word: "SHIP", letters: ["SH", "I", "P"], instruction: "Advanced: Listen to SH-I-P. Sometimes two letters make one sound!" },
+        { word: "FISH", letters: ["F", "I", "SH"], instruction: "Advanced: F-I-SH. Look for the letters that make the 'SH' sound together." },
+        { word: "CHOP", letters: ["CH", "O", "P"], instruction: "Advanced: CH-O-P. Find the two letters that make the 'CH' sound!" },
+        { word: "MATH", letters: ["M", "A", "TH"], instruction: "Advanced: M-A-TH. Find the 'TH' sound at the end!" },
+        { word: "DUCK", letters: ["D", "U", "CK"], instruction: "Advanced: D-U-CK. 'C' and 'K' team up to make one sound here." }
     ];
 
     const totalLevels = gameData.length;
@@ -64,6 +65,8 @@
                     text-align: center;
                     font-size: 1.2rem;
                     color: #9B2C2C;
+                    max-width: 500px;
+                    font-weight: bold;
                 }
                 .target-slots {
                     display: flex;
@@ -79,7 +82,7 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 3rem;
+                    font-size: 2.2rem; /* Adjusted slightly so digraphs fit well */
                     font-weight: bold;
                     color: #2D3748;
                     transition: all 0.3s;
@@ -99,6 +102,8 @@
                     border-radius: 20px;
                     min-height: 120px;
                     align-items: center;
+                    flex-wrap: wrap;
+                    justify-content: center;
                 }
                 .letter-tile {
                     width: 70px;
@@ -109,11 +114,12 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 2.5rem;
+                    font-size: 2rem; /* Adjusted for two letters */
                     font-weight: bold;
                     cursor: grab;
                     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
                     touch-action: none;
+                    user-select: none;
                 }
                 @keyframes popIn {
                     0% { transform: scale(0.8); opacity: 0; }
@@ -127,9 +133,11 @@
                     border: none;
                     border-radius: 50px;
                     font-size: 1.1rem;
+                    font-weight: bold;
                     cursor: pointer;
                     opacity: 0;
                     pointer-events: none;
+                    transition: opacity 0.3s;
                 }
                 .btn-next.show {
                     opacity: 1;
@@ -176,14 +184,14 @@
         const choicesContainer = document.getElementById('choices-container');
         const nextBtn = document.getElementById('next-btn');
 
-        // Create Slots
+        // Create Slots based on the phoneme groupings, not individual letters
         data.letters.forEach(() => {
             const slot = document.createElement('div');
             slot.className = 'slot';
             slotsContainer.appendChild(slot);
         });
 
-        // Create Letter Tiles
+        // Create Letter/Digraph Tiles
         shuffledLetters.forEach((char) => {
             const tile = document.createElement('div');
             tile.className = 'letter-tile';
@@ -193,9 +201,12 @@
             if (window.GameHub?.utils?.makeDraggable) {
                 window.GameHub.utils.makeDraggable(tile, (x, y, element) => {
                     const targetSlot = slotsContainer.children[placedCount];
+                    if (!targetSlot) return; // Prevent errors if all slots are filled
+                    
                     const rect = targetSlot.getBoundingClientRect();
                     const isInside = (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom);
 
+                    // Check if the placed tile matches the current expected sound block
                     if (isInside && element.innerText === data.letters[placedCount]) {
                         // Correct placement
                         targetSlot.innerText = element.innerText;
@@ -212,14 +223,14 @@
                             speak(data.word);
                             nextBtn.classList.add('show');
                         }
-                    } else {
+                    } else if (isInside) {
                         // Wrong placement or order
                         if (window.GameHub) window.GameHub.playSound('wrong');
                         if (element.resetPosition) element.resetPosition();
                     }
                 });
             } else {
-                // Fallback for click if no drag utility
+                // Fallback for click if no drag utility is provided
                 tile.onclick = () => {
                     if (tile.innerText === data.letters[placedCount]) {
                         const targetSlot = slotsContainer.children[placedCount];
@@ -227,6 +238,7 @@
                         targetSlot.classList.add('filled');
                         tile.style.visibility = 'hidden';
                         placedCount++;
+                        
                         if (placedCount === data.letters.length) {
                             speak(data.word);
                             nextBtn.classList.add('show');
@@ -245,11 +257,12 @@
                 loadLevel(stage);
             } else {
                 if (window.GameHub?.showComplete) {
-                    window.GameHub.showComplete("Master Builder!", "You can sequence sounds perfectly!");
+                    window.GameHub.showComplete("Master Builder!", "You can sequence sounds and digraphs perfectly!");
                 }
             }
         };
 
+        // Automatically read the word when the level loads
         setTimeout(() => speak(data.word), 500);
     }
 })();

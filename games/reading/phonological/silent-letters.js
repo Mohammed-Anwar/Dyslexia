@@ -8,6 +8,37 @@
 (function() {
     let currentLevel = 0;
     let ghostsFound = [];
+    
+    // إعداد واجهة الصوت (AudioContext) لتوليد صوت الشبح
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
+
+    // دالة لتوليد صوت يشبه الرياح أو الشبح (Woo-ooo)
+    function playSpookySound() {
+        if (!audioCtx) audioCtx = new AudioContext();
+        
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        // نوع الموجة (sine تعطي صوتاً ناعماً يشبه الريح/الشبح)
+        osc.type = 'sine';
+        
+        // التلاعب بالتردد (يبدأ منخفضاً، يرتفع، ثم ينخفض)
+        osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.4);
+        osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 1.2);
+
+        // التلاعب بمستوى الصوت (تلاشي تدريجي)
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.2);
+        gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.2);
+
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.2);
+    }
 
     const gameData = [
         { word: "KNIGHT", silentIndices: [0, 3, 4], display: "KNIGHT", instruction: "Find the 3 silent ghosts in KNIGHT!" },
@@ -45,7 +76,6 @@
         
         stage.innerHTML = `
             <style>
-                /* Page wrapper centers the game both vertically and horizontally */
                 .game-stage {
                     display: flex;
                     align-items: center;
@@ -79,7 +109,7 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    background: #F7FAFC; /* lighter, more readable */
+                    background: #F7FAFC;
                     padding: 30px 40px;
                     border-radius: 18px;
                     box-shadow: 0 6px 18px rgba(0,0,0,0.08);
@@ -170,8 +200,12 @@
                     ghostsFound.push(index);
                     span.classList.add('ghost-vanished');
                     
+                    // --- تشغيل صوت الشبح/الرياح هنا ---
+                    playSpookySound();
+                    
                     if (window.GameHub) {
-                        window.GameHub.playSound('correct');
+                        // إزالة الصوت التقليدي والإبقاء على المؤثرات البصرية فقط
+                        // window.GameHub.playSound('correct'); 
                         window.GameHub.triggerVFX(e.clientX, e.clientY);
                     }
 
