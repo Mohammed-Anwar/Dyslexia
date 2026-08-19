@@ -1,8 +1,8 @@
 /**
  * Game: Text Hunter (Answering Wh-questions)
  * Filename: text_hunter.js
- * Logic: Read two short sentences and tap the word that answers 'Who' or 'Where'.
- * Dyslexia Focus: Scanning for specific information without over-reading.
+ * Logic: Read short sentences and tap the word that answers the question.
+ * Dyslexia Focus: Scanning for specific information, focus, and reducing impulsivity.
  */
 
 (function() {
@@ -10,47 +10,144 @@
     let score = 0;
 
     const gameData = [
+        // ==========================================
+        // المستوى المبتدئ (1 - 5): جمل بسيطة، أسئلة متنوعة ومباشرة
+        // ==========================================
         {
-            sentences: "The cat sat on the mat. It was happy.",
+            sentences: "The cat sat on the mat.",
             question: "Where did the cat sit?",
             target: "mat",
-            instruction: "Find the word that tells us WHERE."
+            instruction: "Find the place (WHERE)."
         },
         {
-            sentences: "Ben went to the park. He saw a big dog.",
+            sentences: "Ben went to the big park.",
             question: "Who went to the park?",
             target: "Ben",
             instruction: "Find the person (WHO)."
         },
         {
-            sentences: "The bird is in the tree. It is singing a song.",
-            question: "Where is the bird?",
-            target: "tree",
-            instruction: "Scan for the place (WHERE)."
+            sentences: "Sarah ate a red apple.",
+            question: "What color is the apple?",
+            target: "red",
+            instruction: "Find the color word."
         },
         {
-            sentences: "Sarah ate a red apple. It tasted very sweet.",
-            question: "Who ate the apple?",
-            target: "Sarah",
-            instruction: "Find the name (WHO)."
-        },
-        {
-            sentences: "The frog jumped into the pond. The water was cold.",
+            sentences: "The frog jumped into the pond.",
             question: "Where did the frog jump?",
             target: "pond",
             instruction: "Find the location (WHERE)."
         },
         {
-            sentences: "Tom found a shiny coin. He put it in his pocket.",
-            question: "Who found a coin?",
-            target: "Tom",
-            instruction: "Tap the name of the person."
+            sentences: "The monkey is eating a banana.",
+            question: "What is the monkey eating?",
+            target: "banana",
+            instruction: "Find the food (WHAT)."
+        },
+
+        // ==========================================
+        // المستوى المتوسط (6 - 15): تكرار الجمل مع كسر النمط وتنوع الأسئلة
+        // ==========================================
+        
+        // المجموعة الأولى (الترتيب: لون -> حالة -> مكان)
+        {
+            sentences: "The brown bear sleeps in the cave. It feels very tired.",
+            question: "What color is the bear?",
+            target: "brown",
+            instruction: "Look for a color."
         },
         {
-            sentences: "The books are on the shelf. They are very heavy.",
-            question: "Where are the books?",
-            target: "shelf",
-            instruction: "Look for the location."
+            sentences: "The brown bear sleeps in the cave. It feels very tired.",
+            question: "How does the bear feel?",
+            target: "tired",
+            instruction: "Find the feeling word."
+        },
+        {
+            sentences: "The brown bear sleeps in the cave. It feels very tired.",
+            question: "Where does it sleep?",
+            target: "cave",
+            instruction: "Find the place (WHERE)."
+        },
+
+        // المجموعة الثانية (الترتيب: مكان -> وصف -> شخص) - نمط مختلف عن المجموعة السابقة
+        {
+            sentences: "Emma is reading a funny book in the library. She is laughing.",
+            question: "Where is Emma?",
+            target: "library",
+            instruction: "Find the place (WHERE)."
+        },
+        {
+            sentences: "Emma is reading a funny book in the library. She is laughing.",
+            question: "What kind of book is it?",
+            target: "funny",
+            instruction: "Find the describing word."
+        },
+        {
+            sentences: "Emma is reading a funny book in the library. She is laughing.",
+            question: "Who is reading?",
+            target: "Emma",
+            instruction: "Find the name (WHO)."
+        },
+
+        // المجموعة الثالثة (الترتيب: شيء -> مكان)
+        {
+            sentences: "Tom found a shiny coin. He put it in his pocket.",
+            question: "What did Tom find?",
+            target: "coin",
+            instruction: "Find the object (WHAT)."
+        },
+        {
+            sentences: "Tom found a shiny coin. He put it in his pocket.",
+            question: "Where did he put it?",
+            target: "pocket",
+            instruction: "Find the place (WHERE)."
+        },
+
+        // المجموعة الرابعة (الترتيب: حالة -> مكان)
+        {
+            sentences: "The fast car drives on the highway. The driver is careful.",
+            question: "How is the driver?",
+            target: "careful",
+            instruction: "Find how he acts."
+        },
+        {
+            sentences: "The fast car drives on the highway. The driver is careful.",
+            question: "Where does the car drive?",
+            target: "highway",
+            instruction: "Find the place (WHERE)."
+        },
+
+        // ==========================================
+        // المستوى المتقدم (16 - 20): التشتيت والتركيز العالي (تفاصيل مزدوجة)
+        // ==========================================
+        {
+            sentences: "The dog is in the yard. The cat is on the mat.",
+            question: "Where is the CAT?",
+            target: "mat",
+            instruction: "Read carefully! Find where the CAT is."
+        },
+        {
+            sentences: "The red bag is on the desk. The blue bag is on the bed.",
+            question: "Where is the BLUE bag?",
+            target: "bed",
+            instruction: "Find where the BLUE bag is."
+        },
+        {
+            sentences: "The red bag is on the desk. The blue bag is on the bed.",
+            question: "Which bag is on the DESK?",
+            target: "red",
+            instruction: "Focus! Find the color of the bag on the DESK."
+        },
+        {
+            sentences: "Ali plays football. Omar plays tennis.",
+            question: "Who plays tennis?",
+            target: "Omar",
+            instruction: "Focus! Find who plays TENNIS."
+        },
+        {
+            sentences: "Mom is eating pizza in the kitchen. Dad is eating cake in the garden.",
+            question: "What is Dad eating?",
+            target: "cake",
+            instruction: "Read carefully! Find what DAD is eating."
         }
     ];
 

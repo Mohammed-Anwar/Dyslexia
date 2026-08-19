@@ -1,16 +1,42 @@
 /**
  * Game: The Umbrella (Identifying the Main Idea)
  * Filename: the_umbrella.js
- * Logic: Select the 'main idea' image (the umbrella) that covers three supporting detail images.
- * Dyslexia Focus: Synthesizing information and identifying hierarchy.
+ * Logic: Select the 'main idea' image or word that covers the supporting details/clues.
+ * Dyslexia Focus: Synthesizing information, identifying hierarchy, and reducing reading load via TTS.
  */
 
 (function() {
     let currentLevel = 0;
     let score = 0;
 
+    // TTS Function for reading clues aloud
+    window.speakText = function(text) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85; 
+            utterance.pitch = 1;
+            window.speechSynthesis.speak(utterance);
+        } else {
+            console.warn("Text-to-Speech not supported in this browser.");
+        }
+    };
+
+    // Array Shuffler to randomize option positions
+    function shuffleArray(array) {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+    }
+
     const gameData = [
+        // --- BASIC LEVELS (Visual / Emojis) ---
         {
+            type: "visual",
             details: ["🍎", "🍌", "🍇"],
             options: [
                 { icon: "🍎", label: "Just an Apple", isMain: false },
@@ -20,6 +46,7 @@
             instruction: "Look at the Apple, Banana, and Grapes. Which 'Umbrella' covers them all?"
         },
         {
+            type: "visual",
             details: ["🐶", "🐱", "🐹"],
             options: [
                 { icon: "🐾", label: "Pets", isMain: true },
@@ -29,6 +56,7 @@
             instruction: "Which category fits these three animals?"
         },
         {
+            type: "visual",
             details: ["🚗", "🚲", "✈️"],
             options: [
                 { icon: "🛠️", label: "Tools", isMain: false },
@@ -37,32 +65,77 @@
             ],
             instruction: "Car, Bike, Plane... What is the big idea?"
         },
+
+        // --- ADVANCED LEVELS (Text Clues) ---
         {
-            details: ["👕", "👖", "👗"],
-            options: [
-                { icon: "🧵", label: "Sewing", isMain: false },
-                { icon: "👕", label: "Clothes", isMain: true },
-                { icon: "🎒", label: "Bags", isMain: false }
+            type: "text",
+            clues: [
+                "It has four legs.",
+                "It eats grass.",
+                "It gives us milk."
             ],
-            instruction: "What do we call all of these things together?"
+            options: [
+                { icon: "🐄", label: "A cow", isMain: true },
+                { icon: "🐦", label: "A bird", isMain: false },
+                { icon: "🐍", label: "A snake", isMain: false }
+            ],
+            instruction: "Read the clues or listen to them. What is the umbrella idea?"
         },
         {
-            details: ["🎷", "🎸", "🎹"],
-            options: [
-                { icon: "📻", label: "Radio", isMain: false },
-                { icon: "🎶", label: "Instruments", isMain: true },
-                { icon: "🎧", label: "Listening", isMain: false }
+            type: "text",
+            clues: [
+                "You see desks.",
+                "You read books.",
+                "You listen to a teacher."
             ],
-            instruction: "Look at the Sax, Guitar, and Piano. What is the umbrella idea?"
+            options: [
+                { icon: "🏫", label: "A school", isMain: true },
+                { icon: "🏞️", label: "A park", isMain: false },
+                { icon: "🛏️", label: "A bedroom", isMain: false }
+            ],
+            instruction: "Where are you?"
         },
         {
-            details: ["☀️", "🌧️", "❄️"],
-            options: [
-                { icon: "🌡️", label: "Weather", isMain: true },
-                { icon: "🧤", label: "Winter", isMain: false },
-                { icon: "⛱️", label: "Summer", isMain: false }
+            type: "text",
+            clues: [
+                "The sun is very hot.",
+                "You go to the beach.",
+                "You eat ice cream."
             ],
-            instruction: "Find the umbrella for Sun, Rain, and Snow."
+            options: [
+                { icon: "☀️", label: "Summer", isMain: true },
+                { icon: "⛄", label: "Winter", isMain: false },
+                { icon: "🌙", label: "Night", isMain: false }
+            ],
+            instruction: "What time of year is it?"
+        },
+        {
+            type: "text",
+            clues: [
+                "It has many pages.",
+                "It has pictures.",
+                "You read it before bed."
+            ],
+            options: [
+                { icon: "📖", label: "A book", isMain: true },
+                { icon: "📺", label: "A TV", isMain: false },
+                { icon: "🪑", label: "A chair", isMain: false }
+            ],
+            instruction: "What object is this?"
+        },
+        {
+            type: "text",
+            clues: [
+                "He wears a white coat.",
+                "He works in a hospital.",
+                "He helps sick people."
+            ],
+            options: [
+                { icon: "👨‍⚕️", label: "A doctor", isMain: true },
+                { icon: "🧑‍🌾", label: "A farmer", isMain: false },
+                { icon: "👨‍✈️", label: "A pilot", isMain: false }
+            ],
+            instruction: "Who is this person?"
         }
     ];
 
@@ -77,14 +150,35 @@
     function loadLevel(stage) {
         const data = gameData[currentLevel];
         
+        let detailsContent = '';
+        if (data.type === "visual") {
+            detailsContent = `
+                <div class="details-row">
+                    ${data.details.map(d => `<div class="detail-item">${d}</div>`).join('')}
+                </div>
+            `;
+        } else if (data.type === "text") {
+            detailsContent = `
+                <div class="clues-container">
+                    ${data.clues.map((clue, index) => `
+                        <div class="clue-box">
+                            <span class="clue-number">${index + 1}.</span>
+                            <span class="clue-text">${clue}</span>
+                            <button class="tts-button" onclick="window.speakText('${clue.replace(/'/g, "\\'")}')" aria-label="Listen to clue">🔊</button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
         stage.innerHTML = `
             <style>
                 .umbrella-container {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    gap: 30px;
-                    padding: 20px;
+                    gap: 35px; /* Increased overall gap */
+                    padding: 30px 20px;
                     font-family: 'Segoe UI', system-ui, sans-serif;
                 }
                 .header-stats {
@@ -94,24 +188,30 @@
                     max-width: 500px;
                     font-weight: bold;
                     color: #4A5568;
+                    margin-bottom: 10px;
                 }
                 .instruction-box {
                     background: #EBF4FF;
                     border-left: 5px solid #3182CE;
-                    padding: 15px 20px;
+                    padding: 20px;
                     border-radius: 8px;
                     text-align: center;
                     font-size: 1.1rem;
                     color: #2C5282;
                     max-width: 500px;
+                    width: 100%;
+                    margin-top: 10px;
                 }
+                
+                /* Visual Level Styles */
                 .details-row {
                     display: flex;
                     gap: 20px;
                     background: #F7FAFC;
-                    padding: 20px;
+                    padding: 25px;
                     border-radius: 20px;
                     border: 2px solid #EDF2F7;
+                    margin: 15px 0;
                 }
                 .detail-item {
                     font-size: 4rem;
@@ -124,17 +224,72 @@
                     border-radius: 15px;
                     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
                 }
+
+                /* Text Clues Level Styles */
+                .clues-container {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px; /* Increased gap between clues */
+                    width: 100%;
+                    max-width: 500px;
+                    margin: 15px 0;
+                }
+                .clue-box {
+                    display: flex;
+                    align-items: center;
+                    background: #F7FAFC;
+                    padding: 15px 20px;
+                    border-radius: 12px;
+                    border: 2px solid #E2E8F0;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+                }
+                .clue-number {
+                    font-weight: bold;
+                    color: #4A5568;
+                    margin-right: 15px;
+                    font-size: 1.2rem;
+                }
+                .clue-text {
+                    flex-grow: 1;
+                    font-size: 1.1rem;
+                    color: #2D3748;
+                    font-weight: 500;
+                }
+                .tts-button {
+                    background: #EDF2F7;
+                    border: none;
+                    border-radius: 50%;
+                    width: 45px; /* Slightly larger for easier clicking */
+                    height: 45px;
+                    font-size: 1.2rem;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.2s;
+                }
+                .tts-button:hover {
+                    background: #E2E8F0;
+                    transform: scale(1.05);
+                }
+                .tts-button:active {
+                    transform: scale(0.95);
+                }
+
+                /* Options Styles */
                 .options-container {
                     display: flex;
-                    gap: 15px;
-                    margin-top: 20px;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 20px; /* Increased gap between options */
+                    margin-top: 15px;
                 }
                 .option-card {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
                     gap: 10px;
-                    padding: 15px;
+                    padding: 20px 15px; /* Added more padding */
                     background: white;
                     border: 3px solid #E2E8F0;
                     border-radius: 20px;
@@ -156,7 +311,7 @@
                     border-color: #F56565;
                 }
                 .option-icon { font-size: 3rem; }
-                .option-label { font-weight: bold; color: #4A5568; font-size: 0.9rem; }
+                .option-label { font-weight: bold; color: #4A5568; font-size: 0.95rem; text-align: center; }
                 
                 .umbrella-svg {
                     width: 60px;
@@ -178,9 +333,7 @@
 
                 <div class="instruction-box">${data.instruction}</div>
 
-                <div class="details-row">
-                    ${data.details.map(d => `<div class="detail-item">${d}</div>`).join('')}
-                </div>
+                ${detailsContent}
 
                 <div class="options-container" id="options">
                     <!-- Options generated here -->
@@ -189,8 +342,11 @@
         `;
 
         const optionsDiv = document.getElementById('options');
+        
+        // Shuffle the options before rendering them
+        const randomizedOptions = shuffleArray(data.options);
 
-        data.options.forEach(opt => {
+        randomizedOptions.forEach(opt => {
             const card = document.createElement('div');
             card.className = 'option-card';
             card.innerHTML = `
@@ -199,6 +355,9 @@
             `;
 
             card.onclick = (e) => {
+                // Stop any reading audio when an answer is selected
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
                 if (opt.isMain) {
                     score++;
                     card.classList.add('correct');
