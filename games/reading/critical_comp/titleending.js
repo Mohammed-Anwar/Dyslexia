@@ -2,13 +2,15 @@
  * Game: The Director (Suggesting a Title or Alternative Ending)
  * Filename: the_director.js
  * Logic: Read a story setup and select the best 'Final Scene' (ending) from three options.
- * Dyslexia Focus: Predictive skills and creative empathy.
+ * Dyslexia Focus: Predictive skills and creative empathy, reducing pattern-guessing through randomization.
  */
 
 (function() {
     let currentLevel = 0;
     let score = 0;
+    let shuffledGameData = []; // لتخزين المراحل بعد ترتيبها عشوائياً
 
+    // البيانات الأساسية (تمت إضافة الأمثلة الجديدة)
     const gameData = [
         {
             story: "Leo the Lion found a tiny mouse trapped under a heavy branch. Leo used his big paw to lift the branch and let the mouse go free.",
@@ -23,8 +25,8 @@
         {
             story: "Maya spent all afternoon planting seeds in her garden. She watered them every day and made sure they had plenty of sunlight.",
             options: [
-                { icon: "⛸️", label: "Maya goes ice skating on a frozen lake.", isCorrect: false },
                 { icon: "🌻", label: "Beautiful flowers grow tall and bright.", isCorrect: true },
+                { icon: "⛸️", label: "Maya goes ice skating on a frozen lake.", isCorrect: false },
                 { icon: "🍫", label: "Maya finds a giant bar of chocolate in the dirt.", isCorrect: false }
             ],
             hint: "What happens to seeds when they get water and sun?",
@@ -33,9 +35,9 @@
         {
             story: "The clouds turned grey and a cold wind began to blow. Sam forgot to bring his umbrella when he walked to the park.",
             options: [
+                { icon: "🏠", label: "Sam runs home quickly before the rain starts.", isCorrect: true },
                 { icon: "🍦", label: "Sam eats a melting ice cream cone.", isCorrect: false },
-                { icon: "☀️", label: "Sam puts on sunglasses and a sun hat.", isCorrect: false },
-                { icon: "🏠", label: "Sam runs home quickly before the rain starts.", isCorrect: true }
+                { icon: "☀️", label: "Sam puts on sunglasses and a sun hat.", isCorrect: false }
             ],
             hint: "What would you do if you saw dark clouds and had no umbrella?",
             explanation: "That's a smart choice! Sam stayed dry by heading home."
@@ -53,25 +55,64 @@
         {
             story: "Lily found a dusty old map in her attic. It had a big red 'X' marked deep inside the dark forest behind her house.",
             options: [
-                { icon: "🦷", label: "Lily goes to the dentist for a check-up.", isCorrect: false },
                 { icon: "💎", label: "Lily finds a hidden treasure chest!", isCorrect: true },
+                { icon: "🦷", label: "Lily goes to the dentist for a check-up.", isCorrect: false },
                 { icon: "🧹", label: "Lily decides to sweep the kitchen floor.", isCorrect: false }
             ],
             hint: "What do people usually find when they follow a map to a red X?",
             explanation: "Bravo! The map led Lily straight to a magnificent treasure."
+        },
+        // --- الأمثلة الجديدة ---
+        {
+            story: "The boy planted a small seed. He watered it every day. The sun shined on it.",
+            options: [
+                { icon: "🌹", label: "A beautiful flower blooms.", isCorrect: true },
+                { icon: "🍕", label: "A hot pizza arrives on a plate.", isCorrect: false },
+                { icon: "🚗", label: "A red car drives quickly by.", isCorrect: false }
+            ],
+            hint: "What grows from a seed when it gets water and sunlight?",
+            explanation: "Great job! Seeds grow into beautiful plants and flowers."
+        },
+        {
+            story: "The girl’s balloon flew away into a tall tree. She was sad. Her tall dad came to help.",
+            options: [
+                { icon: "🎈", label: "Dad reaches the balloon and gives it back.", isCorrect: true },
+                { icon: "📖", label: "Dad sits down to read a big book.", isCorrect: false },
+                { icon: "🏊‍♀️", label: "The girl goes swimming in the pool.", isCorrect: false }
+            ],
+            hint: "How can the tall dad solve the problem with the tree?",
+            explanation: "Awesome! Her dad used his height to reach the balloon and made her happy again."
         }
     ];
+
+    // دالة لترتيب المصفوفات عشوائياً (Fisher-Yates Shuffle)
+    function shuffleArray(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
 
     window.initGame = function(containerId) {
         const stage = document.getElementById(containerId);
         if (!stage) return;
         currentLevel = 0;
         score = 0;
+        
+        // أخذ نسخة من المراحل وترتيبها عشوائياً في كل مرة تبدأ فيها اللعبة
+        shuffledGameData = shuffleArray([...gameData]); 
+        
         loadLevel(stage);
     };
 
     function loadLevel(stage) {
-        const data = gameData[currentLevel];
+        const data = shuffledGameData[currentLevel];
+        
+        // ترتيب الخيارات (الأزرار) عشوائياً لهذه المرحلة تحديداً
+        const shuffledOptions = shuffleArray([...data.options]);
         
         stage.innerHTML = `
             <style>
@@ -175,7 +216,7 @@
 
             <div class="director-container">
                 <div class="header-stats">
-                    <span>Scene: ${currentLevel + 1} / ${gameData.length}</span>
+                    <span>Scene: ${currentLevel + 1} / ${shuffledGameData.length}</span>
                     <span>Score: ${score}</span>
                 </div>
 
@@ -186,7 +227,7 @@
                 <div class="options-title">Select the Final Scene:</div>
 
                 <div class="options-grid" id="options">
-                    ${data.options.map((opt, idx) => `
+                    ${shuffledOptions.map((opt, idx) => `
                         <div class="scene-card" onclick="makeChoice(${idx}, ${opt.isCorrect})">
                             <div class="scene-icon">${opt.icon}</div>
                             <div class="scene-label">${opt.label}</div>
@@ -219,7 +260,7 @@
                 }
 
                 setTimeout(() => {
-                    if (currentLevel < gameData.length - 1) {
+                    if (currentLevel < shuffledGameData.length - 1) {
                         currentLevel++;
                         loadLevel(stage);
                     } else {

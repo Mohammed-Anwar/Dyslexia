@@ -9,48 +9,85 @@
     let currentLevel = 0;
     let score = 0;
 
+    // تم تحديث البيانات بناءً على المستويات التربوية المحددة
     const gameData = [
+        // --- الأساسي: الحيوانات ---
         {
-            statement: "The sun is a star.",
+            statement: "Cats have a long tail.",
             isFact: true,
-            hint: "Can we prove this with science?",
-            explanation: "That's a Fact! Scientists can see and measure the sun."
+            hint: "Can we look at a cat and see its tail?",
+            explanation: "That's a Fact! We can see and measure the tail."
         },
         {
-            statement: "Pizza is the most delicious food.",
+            statement: "Cats are the best pets.",
             isFact: false,
-            hint: "Does everyone in the world agree?",
-            explanation: "That's an Opinion! Some people might prefer tacos."
+            hint: "Does everyone agree? What about dog lovers?",
+            explanation: "That's an Opinion! Some people prefer dogs or birds."
         },
+        // --- الأساسي: الطعام ---
         {
-            statement: "Dogs have four legs.",
-            isFact: true,
-            hint: "Can you see and count them?",
-            explanation: "That's a Fact! You can see and count the legs."
-        },
-        {
-            statement: "Blue is the prettiest color.",
-            isFact: false,
-            hint: "Is this a feeling or a rule?",
-            explanation: "That's an Opinion! Someone else might love red."
-        },
-        {
-            statement: "Water freezes at 0 degrees Celsius.",
+            statement: "Ice cream is cold.",
             isFact: true,
             hint: "Can we test this with a thermometer?",
-            explanation: "That's a Fact! It's a scientific measurement."
+            explanation: "That's a Fact! A thermometer will show it is cold."
         },
         {
-            statement: "The movie was way too long.",
+            statement: "Ice cream is yummy.",
             isFact: false,
-            hint: "Would a clock say it's 'too' long, or just 'long'?",
-            explanation: "That's an Opinion! One person might find it exciting."
+            hint: "Does everyone like the same flavors?",
+            explanation: "That's an Opinion! Someone might not like sweet things."
+        },
+        // --- الأساسي: المدرسة ---
+        {
+            statement: "We read books at school.",
+            isFact: true,
+            hint: "Can we take a picture of students reading?",
+            explanation: "That's a Fact! We can prove it by looking at a classroom."
         },
         {
-            statement: "Elephants are the largest land animals.",
+            statement: "Reading is very hard.",
+            isFact: false,
+            hint: "Is it hard for everyone, or just a feeling?",
+            explanation: "That's an Opinion! Some people might find it easy."
+        },
+        // --- المتقدم: الترفيه ---
+        {
+            statement: "The movie is two hours long.",
             isFact: true,
-            hint: "Can we weigh them and compare?",
-            explanation: "That's a Fact! We can measure their size."
+            hint: "Can we measure this with a clock?",
+            explanation: "That's a Fact! We can time the movie exactly."
+        },
+        {
+            statement: "The movie is very funny.",
+            isFact: false,
+            hint: "Will everyone laugh at the same jokes?",
+            explanation: "That's an Opinion! Humor is a personal feeling."
+        },
+        // --- المتقدم: الطقس والفصول ---
+        {
+            statement: "The sun is yellow.",
+            isFact: true,
+            hint: "Can we look and see the color?",
+            explanation: "That's a Fact! We can observe its color with our eyes."
+        },
+        {
+            statement: "Summer is the best season.",
+            isFact: false,
+            hint: "Do some people like snow better?",
+            explanation: "That's an Opinion! People have different favorite seasons."
+        },
+        // --- المتقدم: الألعاب والرياضة ---
+        {
+            statement: "A basketball is round.",
+            isFact: true,
+            hint: "Can we see and touch its shape?",
+            explanation: "That's a Fact! We can prove its shape is round."
+        },
+        {
+            statement: "Basketball is a fun game.",
+            isFact: false,
+            hint: "Does everyone like playing sports?",
+            explanation: "That's an Opinion! Some people might prefer drawing or reading."
         }
     ];
 
@@ -219,7 +256,7 @@
                         window.GameHub.showComplete("Sharp Eye!", `You scored ${score} out of ${gameData.length}. You're a Proof Lens Expert!`);
                     }
                 }
-            }, 2000);
+            }, 2500); // زدنا وقت الانتظار قليلاً ليتمكن الطفل من قراءة الشرح براحة
         };
 
         factBtn.onclick = (e) => handleChoice(true, e);
