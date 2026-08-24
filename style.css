@@ -25,6 +25,21 @@ body {
     overflow: hidden;
 }
 
+.cd-wrap { 
+  display:flex; 
+  flex-direction:column; 
+  align-items:center; 
+  gap:14px; 
+  padding:20px; 
+  width:100%; 
+  height:100%; 
+  font-family: sans-serif;
+  
+  /* الإضافات الجديدة لمنع تحديد النص */
+  user-select: none; 
+  -webkit-user-select: none; /* لدعم متصفحات كروم وسفاري */
+}
+
 /* --- Sidebar Styles --- */
 #sidebar {
     width: var(--sidebar-width);
