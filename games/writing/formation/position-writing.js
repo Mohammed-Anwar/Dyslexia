@@ -1,162 +1,217 @@
-// Writing > Formation > Position writing
+// Writing > Formation > The Password (Position Writing)
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
-  // Each letter defined as an ordered set of strokes (polylines), traced in order start->end.
-  const LETTERS = [
-    {
-      char: "L",
-      strokes: [
-        [[120, 60], [120, 220]],
-        [[120, 220], [220, 220]]
-      ]
-    },
-    {
-      char: "T",
-      strokes: [
-        [[80, 70], [220, 70]],
-        [[150, 70], [150, 220]]
-      ]
-    },
-    {
-      char: "A",
-      strokes: [
-        [[90, 220], [150, 60], [210, 220]],
-        [[115, 150], [185, 150]]
-      ]
-    }
+  // Pool of 3-letter words for the game
+  const WORD_POOL = [
+    "CAT", "DOG", "SUN", "BAT", "PIG", "FOX", "RED", "PEN", "HAT", "CUP",
+    "MAP", "BED", "BUS", "CAR", "BOX", "MUG", "NET", "WEB", "LOG", "ANT",
+    "LIP", "LEG", "TEN", "SIX", "ZIP", "POT", "PAN", "JAM", "NUT", "TOY"
   ];
 
   let level = 0;
-  let strokeIdx = 0;
-  let progress = 0;
+  const MAX_LEVELS = 15;
+  let currentWord = "";
+  let missingIndex = 0;
+  let gameWords = [];
+  
+  // Dragging state
+  let draggedEl = null;
+  let startX = 0, startY = 0;
+  let initialX = 0, initialY = 0;
 
-  function totalLen(pts) {
-    let l = 0;
-    for (let i = 1; i < pts.length; i++) l += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
-    return l;
+  // 1. Shuffle and pick 15 words
+  function initWords() {
+    const shuffled = [...WORD_POOL].sort(() => 0.5 - Math.random());
+    gameWords = shuffled.slice(0, MAX_LEVELS);
   }
-  function pointAt(pts, dist) {
-    let remain = dist;
-    for (let i = 1; i < pts.length; i++) {
-      const segLen = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
-      if (remain <= segLen) {
-        const t = segLen === 0 ? 0 : remain / segLen;
-        return [pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * t, pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * t];
-      }
-      remain -= segLen;
+
+  // Text-to-Speech function
+  window.playWordAudio = function(word) {
+    if ('speechSynthesis' in window) {
+      const msg = new SpeechSynthesisUtterance(word);
+      msg.lang = 'en-US';
+      msg.rate = 0.9;
+      window.speechSynthesis.speak(msg);
     }
-    return pts[pts.length - 1];
-  }
+  };
 
   function build() {
-    strokeIdx = 0;
-    progress = 0;
+    if (level === 0) initWords();
+    currentWord = gameWords[level];
+
+    // Determine missing index based on the 15-round breakdown
+    if (level < 5) {
+      missingIndex = 0; // Rounds 1-5: First letter
+    } else if (level < 10) {
+      missingIndex = 2; // Rounds 6-10: Last letter
+    } else {
+      missingIndex = 1; // Rounds 11-15: Middle letter
+    }
+
+    const correctLetter = currentWord[missingIndex];
+    
+    // Generate options (1 correct, 2 random distractors)
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let options = [correctLetter];
+    while (options.length < 3) {
+      const randChar = alphabet[Math.floor(Math.random() * alphabet.length)];
+      if (!options.includes(randChar)) options.push(randChar);
+    }
+    options = options.sort(() => 0.5 - Math.random());
+
     stage.innerHTML = `
       <style>
-        .pw-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px;}
-        .pw-title{font-size:1.2rem;font-weight:700;color:var(--text-dark);}
-        svg{background:#F8FAFC;border:2px solid #E2E8F0;border-radius:16px;touch-action:none;}
-        .pw-pen{position:absolute;width:34px;height:34px;border-radius:50%;background:var(--primary-green);box-shadow:0 3px 0 #2f855a;display:flex;align-items:center;justify-content:center;pointer-events:none;transform:translate(-50%,-50%);}
+        /* الاعتماد على متغيرات الموقع الأساسية */
+        .pw-header { display: flex; justify-content: space-between; width: 100%; max-width: 400px; font-weight: bold; color: var(--text-dark); margin-bottom: 10px; }
+        .pw-title { font-size: 1.2rem; }
+        .pw-round { font-size: 1.1rem; background: #E2E8F0; padding: 4px 12px; border-radius: 12px; color: var(--text-muted); }
+        
+        .pw-lock-screen { display: flex; gap: 15px; margin: 30px 0; padding: 20px; background: #F7FAFC; border-radius: 16px; box-shadow: inset 0 4px 6px rgba(0,0,0,0.3); }
+        .pw-slot { width: 60px; height: 80px; background: rgba(255,255,255,0.1); border: 3px solid var(--text-muted); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: bold; color: var(--text-dark); transition: var(--transition); }
+        .pw-slot.empty { border: 3px dashed var(--text-muted); color: transparent; }
+        
+        .pw-options { display: flex; gap: 20px; margin-top: 20px; }
+        .pw-letter { width: 60px; height: 60px; background: white; border: 3px solid #E2E8F0; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; color: var(--text-dark); cursor: grab; box-shadow: 0 4px 0 #CBD5E0; touch-action: none; position: relative; z-index: 10; transition: border-color 0.2s; }
+        .pw-letter:hover { border-color: var(--primary-blue); }
+        .pw-letter.dragging { z-index: 100; cursor: grabbing; box-shadow: 0 10px 15px rgba(0,0,0,0.2); transition: none; }
+        
+        /* Success Animation using site's primary green */
+        .success-flash .pw-slot { background: var(--primary-green) !important; border-color: white !important; color: white !important; }
       </style>
-      <div class="pw-wrap">
-        <p class="pw-title">Trace the letter "${LETTERS[level].char}" — follow the numbers in order!</p>
-        <div style="position:relative;">
-          <svg id="pw-svg" viewBox="0 0 300 280" width="300" height="280"></svg>
-          <div class="pw-pen" id="pw-pen">✏️</div>
+
+      <!-- استخدام كلاس cd-wrap الخاص بموقعك -->
+      <div class="cd-wrap">
+        <div class="pw-header">
+          <div class="pw-title">The Password</div>
+          <div class="pw-round">Round ${level + 1}/${MAX_LEVELS}</div>
+        </div>
+
+        <!-- استخدام كلاس game-btn الخاص بموقعك -->
+        <button class="game-btn" onclick="window.playWordAudio('${currentWord}')">
+          🔊 Listen
+        </button>
+
+        <div class="pw-lock-screen" id="pw-lock">
+          ${[0, 1, 2].map(i => `
+            <div class="pw-slot ${i === missingIndex ? 'empty target-slot' : ''}" id="slot-${i}">
+              ${i === missingIndex ? '?' : currentWord[i]}
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="pw-options">
+          ${options.map(letter => `
+            <div class="pw-letter" data-char="${letter}">${letter}</div>
+          `).join('')}
         </div>
       </div>
     `;
-    renderStroke();
+
+    setTimeout(() => window.playWordAudio(currentWord), 500);
+    bindDragEvents();
   }
 
-  function renderStroke() {
-    const svg = document.getElementById("pw-svg");
-    const letter = LETTERS[level];
-    let ghost = "";
-    letter.strokes.forEach((s, i) => {
-      const d = s.map((p, j) => (j === 0 ? "M" : "L") + p[0] + "," + p[1]).join(" ");
-      ghost += `<path d="${d}" stroke="#E2E8F0" stroke-width="10" stroke-linecap="round" fill="none"/>`;
-    });
-    const activeStroke = letter.strokes[strokeIdx];
-    const d = activeStroke.map((p, j) => (j === 0 ? "M" : "L") + p[0] + "," + p[1]).join(" ");
-    const len = totalLen(activeStroke);
-    svg.innerHTML = ghost + `
-      <path id="pw-progress" d="${d}" stroke="#48BB78" stroke-width="10" stroke-linecap="round" fill="none"
-        stroke-dasharray="${len}" stroke-dashoffset="${len}"/>
-      <circle cx="${activeStroke[0][0]}" cy="${activeStroke[0][1]}" r="12" fill="#4A90E2"/>
-      <text x="${activeStroke[0][0]}" y="${activeStroke[0][1] + 5}" font-size="13" fill="white" text-anchor="middle" font-weight="bold">${strokeIdx + 1}</text>
-      <text x="${activeStroke[activeStroke.length - 1][0] + 18}" y="${activeStroke[activeStroke.length - 1][1]}" font-size="20">🏁</text>
-    `;
-    positionPen(activeStroke[0]);
-  }
-
-  function positionPen(pt) {
-    const svg = document.getElementById("pw-svg");
-    const rect = svg.getBoundingClientRect();
-    const pen = document.getElementById("pw-pen");
+  function bindDragEvents() {
+    const letters = stage.querySelectorAll('.pw-letter');
     
-    // إزالة الإزاحات (stageRect) والاعتماد فقط على الإحداثيات مضروبة في معامل القياس
-    pen.style.left = (pt[0] * rect.width / 300) + "px";
-    pen.style.top = (pt[1] * rect.height / 280) + "px";
+    const startDrag = (e) => {
+      e.preventDefault();
+      if (draggedEl) return;
+      
+      draggedEl = e.target;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      startX = clientX;
+      startY = clientY;
+
+      draggedEl.classList.add('dragging');
+      draggedEl.style.transform = `translate(0px, 0px)`;
+    };
+
+    letters.forEach(l => {
+      l.addEventListener('mousedown', startDrag);
+      l.addEventListener('touchstart', startDrag, { passive: false });
+    });
   }
 
-  let drawing = false;
-  function toSvg(clientX, clientY) {
-    const svg = document.getElementById("pw-svg");
-    const rect = svg.getBoundingClientRect();
-    return [(clientX - rect.left) / rect.width * 300, (clientY - rect.top) / rect.height * 280];
-  }
+  const handleMove = (e) => {
+    if (!draggedEl) return;
+    e.preventDefault();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-  function handleMove(clientX, clientY) {
-    if (!drawing) return;
-    const letter = LETTERS[level];
-    const activeStroke = letter.strokes[strokeIdx];
-    const [x, y] = toSvg(clientX, clientY);
-    const total = totalLen(activeStroke);
-    let best = progress, bestDist = Infinity;
-    for (let d = progress; d <= total; d += 3) {
-      const p = pointAt(activeStroke, d);
-      const dist = Math.hypot(p[0] - x, p[1] - y);
-      if (dist < bestDist) { bestDist = dist; best = d; }
-      if (d - progress > 50) break;
-    }
-    if (bestDist < 26) {
-      progress = best;
-      const pathEl = document.getElementById("pw-progress");
-      pathEl.setAttribute("stroke-dashoffset", total - progress);
-      positionPen(pointAt(activeStroke, progress));
-      if (progress >= total - 4) {
-        drawing = false;
-        window.GameHub.playSound("correct");
-        window.GameHub.triggerVFX(clientX, clientY);
-        strokeIdx++;
-        progress = 0;
-        if (strokeIdx >= letter.strokes.length) {
-          level++;
-          setTimeout(() => {
-            if (level >= LETTERS.length) {
-              window.GameHub.showComplete("Perfect Strokes!", "You traced every letter in the correct order and direction.");
-            } else {
-              build();
-            }
-          }, 500);
-        } else {
-          setTimeout(renderStroke, 400);
-        }
+    const dx = clientX - startX;
+    const dy = clientY - startY;
+
+    draggedEl.style.transform = `translate(${dx}px, ${dy}px)`;
+  };
+
+  const handleEnd = (e) => {
+    if (!draggedEl) return;
+    
+    const targetSlot = stage.querySelector('.target-slot');
+    const targetRect = targetSlot.getBoundingClientRect();
+    const letterRect = draggedEl.getBoundingClientRect();
+
+    const letterCenterX = letterRect.left + letterRect.width / 2;
+    const letterCenterY = letterRect.top + letterRect.height / 2;
+    const targetCenterX = targetRect.left + targetRect.width / 2;
+    const targetCenterY = targetRect.top + targetRect.height / 2;
+
+    const distance = Math.hypot(letterCenterX - targetCenterX, letterCenterY - targetCenterY);
+
+    if (distance < 50) { 
+      const char = draggedEl.getAttribute('data-char');
+      if (char === currentWord[missingIndex]) {
+        targetSlot.innerHTML = char;
+        targetSlot.classList.remove('empty');
+        draggedEl.style.display = 'none';
+        
+        handleSuccess(e);
+      } else {
+        draggedEl.style.transform = `translate(0px, 0px)`;
       }
+    } else {
+      draggedEl.style.transform = `translate(0px, 0px)`;
     }
+
+    draggedEl.classList.remove('dragging');
+    draggedEl = null;
+  };
+
+  function handleSuccess(e) {
+    const lockScreen = document.getElementById('pw-lock');
+    lockScreen.classList.add('success-flash');
+    
+    if(window.GameHub) {
+      window.GameHub.playSound("correct");
+      const clientX = e && e.changedTouches ? e.changedTouches[0].clientX : (e ? e.clientX : window.innerWidth / 2);
+      const clientY = e && e.changedTouches ? e.changedTouches[0].clientY : (e ? e.clientY : window.innerHeight / 2);
+      window.GameHub.triggerVFX(clientX, clientY);
+    }
+    
+    window.playWordAudio(currentWord);
+
+    setTimeout(() => {
+      level++;
+      if (level >= MAX_LEVELS) {
+        if(window.GameHub) {
+          window.GameHub.showComplete("Password Accepted!", "You successfully unlocked all words!");
+        } else {
+          alert("Password Accepted! You successfully unlocked all words!");
+        }
+      } else {
+        build();
+      }
+    }, 1500);
   }
 
-  function start(e) { drawing = true; const p = e.touches ? e.touches[0] : e; handleMove(p.clientX, p.clientY); }
-  function move(e) { if (!drawing) return; e.preventDefault(); const p = e.touches ? e.touches[0] : e; handleMove(p.clientX, p.clientY); }
-  function end() { drawing = false; }
+  window.addEventListener("mousemove", handleMove);
+  window.addEventListener("touchmove", handleMove, { passive: false });
+  window.addEventListener("mouseup", handleEnd);
+  window.addEventListener("touchend", handleEnd);
 
   build();
-  stage.addEventListener("mousedown", start);
-  stage.addEventListener("touchstart", start, { passive: false });
-  window.addEventListener("mousemove", move);
-  window.addEventListener("touchmove", move, { passive: false });
-  window.addEventListener("mouseup", end);
-  window.addEventListener("touchend", end);
 };

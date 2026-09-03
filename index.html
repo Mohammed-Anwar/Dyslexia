@@ -79,7 +79,7 @@
                 folder: "writing",
                 dimensions: [
                     { name: "Pre-writing Readiness", folder: "readiness", games: ["location-position", "Connecting dots", "Geo shapes", "Colors", "Distances"] },
-                    { name: "Letter & Word Formation", folder: "formation", games: ["Position writing", "Connect Detach", "Similar shapes", "Visual closeness", "Image to word"] },
+                    { name: "Letter & Word Formation", folder: "formation", games: ["Position writing", "big And Small Litters", "Similar shapes", "Visual closeness", "Image to word"] },
                     { name: "Spelling & Mechanics", folder: "spelling", games: ["Vowel spelling", "Patterns", "Diacritics", "Punctuation", "Homophones"] },
                     { name: "Sentence Construction", folder: "sentences", games: ["Word arrangement", "Descriptive words", "Image description", "Paragraphs", "Formulating questions"] },
                     { name: "Written Expression", folder: "expression", games: ["About self", "Daily routine", "Short story", "Invitation", "Daily phrases"] }
@@ -425,6 +425,16 @@
         window.GameHub = {
             playSound: (type) => AudioEngine.play(type),
             triggerVFX: (x, y) => VFX.confetti(x, y),
+            speak: (text, lang = 'en-US') => {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel(); // Stop any ongoing speech to prevent overlap
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = lang;
+                    utterance.rate = 0.9;  // Slightly slower for children
+                    utterance.pitch = 1.1; // Slightly friendlier/higher pitch
+                    window.speechSynthesis.speak(utterance);
+                }
+            },
             showComplete: (title, msg) => {
                 AudioEngine.play('popup');
                 VFX.confetti(window.innerWidth/2, window.innerHeight/2);
