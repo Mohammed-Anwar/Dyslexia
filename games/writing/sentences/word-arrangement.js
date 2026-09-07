@@ -1,36 +1,157 @@
-// Writing > Sentences > Word arrangement
+// Writing > Sentences > Word arrangement (Drag & Drop Version)
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
+  // 15 Levels with Scaffolding (3 phases)
   const ROUNDS = [
-    { words: ["The", "cat", "is", "sleeping"] },
-    { words: ["I", "like", "to", "read", "books"] },
-    { words: ["We", "played", "in", "the", "park"] },
-    { words: ["She", "is", "my", "best", "friend"] }
+    // Phase 1: 3-word sentences (Levels 1-5) - Building confidence
+    { words: ["I", "like", "apples."] },
+    { words: ["He", "is", "tall."] },
+    { words: ["Ali", "plays", "tennis."] },
+    { words: ["She", "reads", "books."] },
+    { words: ["We", "are", "happy."] },
+    
+    // Phase 2: 4-word sentences with adjectives (Levels 6-10)
+    { words: ["The", "cat", "is", "sleeping."] },
+    { words: ["I", "have", "big", "eyes."] },
+    { words: ["This", "is", "my", "bag."] },
+    { words: ["He", "is", "my", "brother."] },
+    { words: ["I", "eat", "healthy", "food."] },
+    
+    // Phase 3: 5-word sentences or questions (Levels 11-15) - Higher challenge
+    { words: ["She", "is", "my", "best", "friend."] },
+    { words: ["What", "is", "your", "favorite", "color?"] },
+    { words: ["I", "live", "in", "a", "house."] },
+    { words: ["Farmers", "grow", "rice", "in", "Egypt."] },
+    { words: ["Do", "you", "like", "ice", "cream?"] }
   ];
 
   let idx = 0;
 
+  // Drag and Drop State Variables
+  let draggedEl = null;
+  let originParent = null;
+  let shiftX = 0;
+  let shiftY = 0;
+
   function build() {
     const r = ROUNDS[idx];
+    // Shuffle words for the pool
     const shuffled = [...r.words].sort(() => Math.random() - 0.5);
+    
     stage.innerHTML = `
       <style>
-        .wa-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;padding:20px;width:100%;}
-        .wa-line{width:min(500px,92%);min-height:70px;border-bottom:4px solid var(--primary-blue);display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;padding:6px;}
-        .wa-slot{width:90px;height:44px;border:2px dashed #CBD5E0;border-radius:8px;}
-        .wa-slot.filled{border:none;}
-        .wa-pool{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:500px;}
-        .wa-card{padding:10px 18px;border-radius:10px;background:white;border:2px solid var(--primary-green);color:var(--primary-green);font-weight:700;cursor:pointer;}
-        .wa-card:hover{background:#F0FFF4;}
-        .wa-card.used{visibility:hidden;}
+        .wa-wrap {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 30px;
+          padding: 30px;
+          width: 100%;
+          height: 100%;
+          user-select: none;
+          -webkit-user-select: none;
+        }
+        .wa-instructions {
+          color: var(--text-muted);
+          font-weight: 700;
+          font-size: 1.1rem;
+          text-align: center;
+        }
+        .wa-line {
+          width: min(600px, 95%);
+          min-height: 80px;
+          border: 3px dashed var(--primary-blue);
+          border-radius: 16px;
+          background-color: rgba(74, 144, 226, 0.05);
+          display: flex;
+          gap: 12px;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: wrap;
+          padding: 12px;
+        }
+        .wa-slot {
+          width: 110px;
+          height: 55px;
+          border: 2px dashed #CBD5E0;
+          border-radius: 12px;
+          background: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease;
+        }
+        .wa-slot:empty {
+          background: repeating-linear-gradient(
+            45deg,
+            #f8fafc,
+            #f8fafc 10px,
+            #ffffff 10px,
+            #ffffff 20px
+          );
+        }
+        .wa-pool {
+          display: flex;
+          gap: 15px;
+          flex-wrap: wrap;
+          justify-content: center;
+          max-width: 600px;
+          min-height: 70px;
+          padding: 15px;
+          background: var(--card-bg);
+          border-radius: 16px;
+        }
+        .wa-card {
+          padding: 12px 24px;
+          border-radius: 14px;
+          background: white;
+          border: 3px solid var(--primary-green);
+          color: var(--primary-green);
+          font-weight: 800;
+          font-size: 1.25rem;
+          cursor: grab;
+          touch-action: none; /* Prevents scrolling while dragging on mobile */
+          box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+          transition: transform 0.1s, box-shadow 0.1s;
+          text-align: center;
+        }
+        .wa-card:active {
+          cursor: grabbing;
+          transform: scale(1.05);
+          box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        .wa-card.locked {
+          border-color: var(--primary-blue);
+          color: white;
+          background: var(--primary-blue);
+          cursor: default;
+          box-shadow: none;
+          animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn {
+          0% { transform: scale(0.8); }
+          100% { transform: scale(1); }
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-8px); }
+          75% { transform: translateX(8px); }
+        }
+        .wa-card.shake {
+          animation: shake 0.4s ease-in-out;
+          border-color: #E53E3E;
+          color: #E53E3E;
+        }
       </style>
       <div class="wa-wrap">
-        <p style="color:var(--text-muted);font-weight:600;">Round ${idx + 1} / ${ROUNDS.length} — Tap words in the right order</p>
+        <p class="wa-instructions">Level ${idx + 1} / ${ROUNDS.length} — Drag words into the boxes in the right order</p>
         <div class="wa-line" id="wa-line"></div>
         <div class="wa-pool" id="wa-pool"></div>
       </div>
     `;
+
+    // Create slots
     const line = document.getElementById("wa-line");
     r.words.forEach(() => {
       const slot = document.createElement("div");
@@ -38,39 +159,132 @@ window.initGame = function (stageId) {
       line.appendChild(slot);
     });
 
-    let built = [];
+    // Create draggable cards
     const pool = document.getElementById("wa-pool");
     shuffled.forEach(word => {
       const card = document.createElement("div");
       card.className = "wa-card";
       card.innerText = word;
-      card.onclick = (e) => {
-        const expected = r.words[built.length];
-        if (word === expected && !card.classList.contains("used")) {
-          window.GameHub.playSound("correct");
-          window.GameHub.triggerVFX(e.clientX, e.clientY);
-          card.classList.add("used");
-          const slots = document.querySelectorAll("#wa-line .wa-slot");
-          slots[built.length].innerHTML = `<div style="padding:8px 14px;background:var(--primary-blue);color:white;border-radius:8px;font-weight:700;text-align:center;">${word}</div>`;
-          slots[built.length].classList.add("filled");
-          built.push(word);
-          if (built.length === r.words.length) {
-            idx++;
-            setTimeout(() => {
-              if (idx >= ROUNDS.length) {
-                window.GameHub.showComplete("Sentence Builder!", "You arranged every sentence in the right order.");
-              } else {
-                build();
-              }
-            }, 700);
-          }
-        } else {
-          window.GameHub.playSound("wrong");
-        }
-      };
+      
+      // Pointer events for unified Mouse & Touch drag support
+      card.addEventListener('pointerdown', onPointerDown);
+      
       pool.appendChild(card);
     });
   }
 
+  // --- Drag & Drop Logic ---
+  function onPointerDown(e) {
+    // Only allow dragging if it's a card and not already locked
+    if (!e.target.classList.contains('wa-card') || e.target.classList.contains('locked')) return;
+    
+    e.preventDefault(); // Prevent text selection and page scroll
+    draggedEl = e.target;
+    originParent = draggedEl.parentElement;
+
+    const rect = draggedEl.getBoundingClientRect();
+    shiftX = e.clientX - rect.left;
+    shiftY = e.clientY - rect.top;
+
+    // Move element to body to allow free dragging across the screen
+    draggedEl.style.position = 'fixed';
+    draggedEl.style.left = rect.left + 'px';
+    draggedEl.style.top = rect.top + 'px';
+    draggedEl.style.zIndex = 1000;
+    draggedEl.style.width = rect.width + 'px'; // Maintain size
+    
+    document.body.appendChild(draggedEl);
+
+    document.addEventListener('pointermove', onPointerMove);
+    document.addEventListener('pointerup', onPointerUp);
+  }
+
+  function onPointerMove(e) {
+    if (!draggedEl) return;
+    e.preventDefault();
+    draggedEl.style.left = (e.clientX - shiftX) + 'px';
+    draggedEl.style.top = (e.clientY - shiftY) + 'px';
+  }
+
+  function onPointerUp(e) {
+    if (!draggedEl) return;
+    document.removeEventListener('pointermove', onPointerMove);
+    document.removeEventListener('pointerup', onPointerUp);
+
+    // Temporarily hide dragged element to find what's underneath it
+    draggedEl.style.display = 'none';
+    const elemBelow = document.elementFromPoint(e.clientX, e.clientY);
+    draggedEl.style.display = '';
+
+    const slot = elemBelow ? elemBelow.closest('.wa-slot') : null;
+
+    // Check if dropped inside an EMPTY slot
+    if (slot && !slot.hasChildNodes()) {
+      const slotIndex = Array.from(slot.parentElement.children).indexOf(slot);
+      const word = draggedEl.innerText;
+      const expected = ROUNDS[idx].words[slotIndex];
+
+      if (word === expected) {
+        // Correct placement
+        if (window.GameHub && window.GameHub.playSound) window.GameHub.playSound("correct");
+        if (window.GameHub && window.GameHub.triggerVFX) window.GameHub.triggerVFX(e.clientX, e.clientY);
+        
+        // Snap to slot
+        draggedEl.style.position = 'static';
+        draggedEl.style.zIndex = '';
+        draggedEl.style.width = '';
+        draggedEl.style.left = '';
+        draggedEl.style.top = '';
+        draggedEl.classList.add('locked');
+        slot.appendChild(draggedEl);
+        
+        checkWinCondition();
+      } else {
+        // Wrong placement
+        if (window.GameHub && window.GameHub.playSound) window.GameHub.playSound("wrong");
+        animateShake();
+        resetDrag();
+      }
+    } else {
+      // Dropped outside valid slot
+      resetDrag();
+    }
+    
+    draggedEl = null;
+  }
+
+  function resetDrag() {
+    draggedEl.style.position = 'static';
+    draggedEl.style.zIndex = '';
+    draggedEl.style.width = '';
+    draggedEl.style.left = '';
+    draggedEl.style.top = '';
+    originParent.appendChild(draggedEl);
+  }
+
+  function animateShake() {
+    draggedEl.classList.add('shake');
+    setTimeout(() => {
+      draggedEl.classList.remove('shake');
+    }, 400);
+  }
+
+  function checkWinCondition() {
+    const lockedCards = document.querySelectorAll('.wa-card.locked');
+    if (lockedCards.length === ROUNDS[idx].words.length) {
+      idx++;
+      setTimeout(() => {
+        if (idx >= ROUNDS.length) {
+          if (window.GameHub && window.GameHub.showComplete) {
+            window.GameHub.showComplete("Sentence Builder!", "You arranged every sentence in the right order. Amazing job!");
+          }
+        } else {
+          build();
+        }
+      }, 800);
+    }
+  }
+
+  // Start the game
   build();
 };
