@@ -105,10 +105,10 @@
         // أخذ نسخة من المراحل وترتيبها عشوائياً في كل مرة تبدأ فيها اللعبة
         shuffledGameData = shuffleArray([...gameData]); 
         
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = shuffledGameData[levelIndex];
         
         // ترتيب الخيارات (الأزرار) عشوائياً لهذه المرحلة تحديداً
@@ -262,7 +262,7 @@
                 setTimeout(() => {
                     if (levelIndex < shuffledGameData.length - 1) {
                         levelIndex++;
-                        loadLevel(stage);
+                        renderLevel(stage);
                     } else {
                         if (window.GameHub?.showComplete) {
                             window.GameHub.showComplete("Master Director!", `Score: ${score}. You have a great eye for story endings!`);

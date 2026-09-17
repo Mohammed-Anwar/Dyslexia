@@ -235,10 +235,10 @@
         if (!stage) return;
         levelIndex = 0;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex];
         itemsPlaced = 0;
         
@@ -430,7 +430,7 @@
             setTimeout(() => {
                 if (levelIndex < gameData.length - 1) {
                     levelIndex++;
-                    loadLevel(document.querySelector('.tree-game-container').parentElement);
+                    renderLevel(document.querySelector('.tree-game-container').parentElement);
                 } else {
                     if (window.GameHub?.showComplete) {
                         window.GameHub.showComplete("Master Organizer!", `You've correctly categorized all details. Final Score: ${score}`);

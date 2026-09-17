@@ -104,7 +104,7 @@ window.initGame = function (stageId) {
     return [...array].sort(() => Math.random() - 0.5);
   }
 
-  function build() {
+  function renderLevel() {
     const r = gameData[levelIndex];
     const shuffledSentences = shuffle(r.sentences.map((text, i) => ({ text, originalIndex: i })));
     
@@ -258,7 +258,7 @@ window.initGame = function (stageId) {
               if (levelIndex >= gameData.length) {
                 window.GameHub.showComplete("Paragraph Master!", "You perfectly sequenced all the paragraphs!");
               } else {
-                build();
+                renderLevel();
               }
             }, 1000);
           }
@@ -276,5 +276,5 @@ window.initGame = function (stageId) {
     });
   }
 
-  build();
+  renderLevel();
 };

@@ -54,10 +54,10 @@
         
         levelIndex = 1;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex - 1];
         let buttonMistakes = { 0: 0, 1: 0, 2: 0 };
 
@@ -292,7 +292,7 @@
                     setTimeout(() => {
                         if (levelIndex < totalLevels) {
                             levelIndex++;
-                            loadLevel(stage);
+                            renderLevel(stage);
                         } else {
                             if (window.GameHub?.showComplete) {
                                 window.GameHub.showComplete("قائد القطار الماهر!", `لقد استمعت للأصوات جيداً! النتيجة: ${score}/${totalLevels}`);

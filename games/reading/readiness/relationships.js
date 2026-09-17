@@ -55,10 +55,10 @@
         
         levelIndex = 1;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         // Cycle through gameData based on level
         const setIndex = Math.floor((levelIndex - 1) / 5) % gameData.length;
         const currentData = gameData[setIndex];
@@ -207,7 +207,7 @@
         setTimeout(() => {
             if (levelIndex < totalLevels) {
                 levelIndex++;
-                loadLevel(stage);
+                renderLevel(stage);
             } else {
                 if (window.GameHub?.showComplete) {
                     window.GameHub.showComplete("Categorization Expert!", "You sorted all items perfectly!");

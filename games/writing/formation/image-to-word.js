@@ -68,10 +68,10 @@ window.initGame = function (stageId) {
   function startSession() {
     levelIndexs = shuffle([...WORD_BANK]).slice(0, 15);
     levelIndex = 0;
-    build();
+    renderLevel();
   }
 
-  function build() {
+  function renderLevel() {
     const r = levelIndexs[levelIndex];
     built = "";
     const letters = r.word.split("");
@@ -169,7 +169,7 @@ window.initGame = function (stageId) {
             // في الوضع الحر، نعيد توليد 15 كلمة جديدة بسلاسة دون إظهار شاشة النهاية
             startSession();
           } else {
-            build();
+            renderLevel();
           }
         }, 800);
       }

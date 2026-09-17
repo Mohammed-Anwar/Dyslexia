@@ -28,7 +28,7 @@ window.initGame = function (stageId) {
 
   let levelIndex = 0;
 
-  function build() {
+  function renderLevel() {
     const round = gameData[levelIndex];
     stage.innerHTML = "";
 
@@ -209,10 +209,10 @@ window.initGame = function (stageId) {
     if (levelIndex >= gameData.length) {
       window.GameHub.showComplete("Homophone Hero!", "You mastered matching, context, and correcting sound-alike words.");
     } else {
-      build();
+      renderLevel();
     }
   }
 
   // بدء اللعبة
-  build();
+  renderLevel();
 };

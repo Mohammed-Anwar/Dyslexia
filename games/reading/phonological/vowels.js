@@ -84,7 +84,7 @@
         const stage = document.getElementById(containerId);
         if (!stage) return;
         levelIndex = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
     function speak(text, rate = 0.8) {
@@ -163,7 +163,7 @@
         `;
     }
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const level = gameData[levelIndex];
         if (level.type === 'sort') {
             loadSortLevel(stage, level);
@@ -175,7 +175,7 @@
     function goNextLevel(stage) {
         if (levelIndex < gameData.length - 1) {
             levelIndex++;
-            loadLevel(stage);
+            renderLevel(stage);
         } else {
             if (window.GameHub?.showComplete) {
                 window.GameHub.showComplete(

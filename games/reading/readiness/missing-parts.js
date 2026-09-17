@@ -38,10 +38,10 @@
         
         levelIndex = 1;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const currentShape = gameData[Math.floor(Math.random() * gameData.length)];
         const randomRotation = Math.floor(Math.random() * (maxRotation - minRotation + 1)) + minRotation;
 
@@ -250,7 +250,7 @@
         setTimeout(() => {
             if (levelIndex < totalLevels) {
                 levelIndex++;
-                loadLevel(stage);
+                renderLevel(stage);
             } else {
                 if (window.GameHub?.showComplete) {
                     window.GameHub.showComplete("Shape Detective!", `You identified all 15 hidden gameData!`);

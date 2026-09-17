@@ -148,7 +148,7 @@ window.initGame = function (stageId) {
     });
   }
 
-  function build() {
+  function renderLevel() {
     const r = gameData[levelIndex];
     const phaseName = r.phase === 1 ? "Phase 1: Choose the Response" : r.phase === 2 ? "Phase 2: Unscramble the Words" : "Phase 3: Complete the Sentence";
     
@@ -447,7 +447,7 @@ window.initGame = function (stageId) {
           alert("Polite & Kind! You picked the perfect phrase for every situation!");
         }
       } else {
-        build();
+        renderLevel();
       }
     }, 800);
   }
@@ -460,5 +460,5 @@ window.initGame = function (stageId) {
   }
 
   // بدء اللعبة
-  build();
+  renderLevel();
 };

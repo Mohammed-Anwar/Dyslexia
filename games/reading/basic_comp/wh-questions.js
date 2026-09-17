@@ -156,10 +156,10 @@
         if (!stage) return;
         levelIndex = 0;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex];
         // Split sentences into words for individual tapping
         const words = data.sentences.split(' ');
@@ -280,7 +280,7 @@
                         setTimeout(() => {
                             if (levelIndex < gameData.length - 1) {
                                 levelIndex++;
-                                loadLevel(stage);
+                                renderLevel(stage);
                             } else {
                                 if (window.GameHub?.showComplete) {
                                     window.GameHub.showComplete("Elite Hunter!", `You answered every question correctly! Final Score: ${score}`);

@@ -119,7 +119,7 @@ window.initGame = function (stageId) {
     return [...array].sort(() => Math.random() - 0.5);
   }
 
-  function build() {
+  function renderLevel() {
     const r = gameData[levelIndex];
     const shuffledBlocks = shuffle(r.blocks);
     let builtCount = 0;
@@ -265,7 +265,7 @@ window.initGame = function (stageId) {
               if (levelIndex >= gameData.length) {
                 window.GameHub.showComplete("Question Master!", "You perfectly formulated every question!");
               } else {
-                build();
+                renderLevel();
               }
             }, 1000);
           }
@@ -285,5 +285,5 @@ window.initGame = function (stageId) {
     });
   }
 
-  build();
+  renderLevel();
 };

@@ -28,7 +28,7 @@ window.initGame = function (stageId) {
 
   let levelIndex = 0;
 
-  function build() {
+  function renderLevel() {
     const round = gameData[levelIndex];
     stage.innerHTML = "";
 
@@ -80,7 +80,7 @@ window.initGame = function (stageId) {
               if (levelIndex >= gameData.length) {
                 window.GameHub.showComplete("Sharp Eyes!", "You spotted every look-alike letter.");
               } else {
-                build();
+                renderLevel();
               }
             }, 600);
           } else {
@@ -135,7 +135,7 @@ window.initGame = function (stageId) {
                 if (levelIndex >= gameData.length) {
                   window.GameHub.showComplete("Perfect Match!", "You connected every letter to its shadow.");
                 } else {
-                  build();
+                  renderLevel();
                 }
               }, 700);
             } else {
@@ -185,7 +185,7 @@ window.initGame = function (stageId) {
               if (levelIndex >= gameData.length) {
                 window.GameHub.showComplete("Mirror Master!", "You conquered all the tricky reflections.");
               } else {
-                build();
+                renderLevel();
               }
             }, 600);
           } else {
@@ -207,5 +207,5 @@ window.initGame = function (stageId) {
   }
 
   // بدء اللعبة
-  build();
+  renderLevel();
 };

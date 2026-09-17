@@ -152,10 +152,10 @@
         if (!stage) return;
         levelIndex = 0;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex];
         correctlyPlaced = 0;
         
@@ -403,7 +403,7 @@
             setTimeout(() => {
                 if (levelIndex < gameData.length - 1) {
                     levelIndex++;
-                    loadLevel(document.querySelector('.sentence-container').parentElement);
+                    renderLevel(document.querySelector('.sentence-container').parentElement);
                 } else {
                     if (window.GameHub?.showComplete) {
                         window.GameHub.showComplete("Sentence Architect!", `You built all sentences perfectly! Final Score: ${score}`);

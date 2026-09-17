@@ -7,7 +7,7 @@ window.initGame = function (stageId) {
     { 
       phase: 1, type: 'unscramble',
       storyTitle: "The Growing Plant",
-      panels: ["", "🌤️💧", ""],
+      panels: ["🌱", "🌤️💧", "🌸"],
       sentences: [
         { text: "Finally, it becomes a beautiful flower.", order: 3 },
         { text: "First, I plant a small seed.", order: 1 },
@@ -17,7 +17,7 @@ window.initGame = function (stageId) {
     { 
       phase: 1, type: 'unscramble',
       storyTitle: "The Butterfly",
-      panels: ["", "🛏️", "🦋"],
+      panels: ["🐛", "🛏️", "🦋"],
       sentences: [
         { text: "Then, it sleeps in a small bed.", order: 2 },
         { text: "Finally, it becomes a butterfly.", order: 3 },
@@ -47,7 +47,7 @@ window.initGame = function (stageId) {
     { 
       phase: 1, type: 'unscramble',
       storyTitle: "The Hungry Bird",
-      panels: ["", "🪱", ""],
+      panels: ["🐤", "🪱", "😊"],
       sentences: [
         { text: "Finally, it is full and happy.", order: 3 },
         { text: "First, the bird is very hungry.", order: 1 },
@@ -81,10 +81,10 @@ window.initGame = function (stageId) {
     { 
       phase: 2, type: 'typing',
       storyTitle: "Building a Sandcastle",
-      panels: ["️⛱", "👧", "🏰"],
+      panels: ["⛱️", "👧", "🏰"],
       textParts: ["First, the girl goes to the ", ". Then, she builds a sand", " with her hands. Finally, she has a beautiful ", "."],
       blanks: [
-        { answer: "beach", hint: "️" },
+        { answer: "beach", hint: "⛱️" },
         { answer: "castle", hint: "🏰" },
         { answer: "castle", hint: "🏰" }
       ]
@@ -128,7 +128,7 @@ window.initGame = function (stageId) {
     { 
       phase: 3, type: 'writing',
       storyTitle: "Sick and Better",
-      panels: ["👧️", "👨⚕️💊", "🎈"],
+      panels: ["👧", "👨‍⚕️💊", "🎈"],
       wordBank: ["First", "Then", "Finally", "sick", "bed", "doctor", "medicine", "better", "plays", "happy"],
       requiredKeywords: ["sick", "doctor", "better"]
     },
@@ -211,19 +211,19 @@ window.initGame = function (stageId) {
     // Sort by position
     const sortedSentences = [...currentOrder].sort((a, b) => a.position - b.position);
     
-    sortedSentences.forEach((item, levelIndex) => {
+    sortedSentences.forEach((item, index) => {
       const page = document.createElement('div');
       page.className = 'story-page';
       page.innerHTML = `
-        <div class="page-number">Page ${levelIndex + 1}</div>
+        <div class="page-number">Page ${index + 1}</div>
         <div class="page-text">${item.text}</div>
-        <button class="remove-btn" onclick="removeSentence(${levelIndex})">×</button>
+        <button class="remove-btn" onclick="removeSentence(${index})">×</button>
       `;
       container.appendChild(page);
     });
   }
 
-  function build() {
+  function renderLevel() {
     const r = gameData[levelIndex];
     const phaseName = r.phase === 1 ? "Phase 1: Build the Story" : r.phase === 2 ? "Phase 2: Complete the Story" : "Phase 3: Write Your Story";
     
@@ -241,7 +241,7 @@ window.initGame = function (stageId) {
         </div>
         <div class="sentence-bank" id="sentence-bank">
           ${shuffledSentences.map((s, i) => `
-            <div class="sentence-chip" draggable="true" data-levelIndex="${i}" data-text="${s.text}">
+            <div class="sentence-chip" draggable="true" data-index="${i}" data-text="${s.text}">
               ${s.text}
             </div>
           `).join('')}
@@ -250,17 +250,17 @@ window.initGame = function (stageId) {
       `;
     } else if (r.phase === 2) {
       let html = '<div class="typing-story">';
-      let blevelIndex = 0;
-      r.textParts.forEach((part, i) => {
+      let blankIndex = 0;
+      r.textParts.forEach((part) => {
         html += `<span class="story-text">${part}</span>`;
-        if (blevelIndex < r.blanks.length) {
+        if (blankIndex < r.blanks.length) {
           html += `
             <div class="blank-wrapper">
-              <input type="text" class="story-blank" data-levelIndex="${blevelIndex}" placeholder="?" autocomplete="off">
-              <span class="blank-hint" onclick="speakText('${r.blanks[blevelIndex].answer}')" title="Listen">${r.blanks[blevelIndex].hint}</span>
+              <input type="text" class="story-blank" data-index="${blankIndex}" placeholder="?" autocomplete="off">
+              <span class="blank-hint" onclick="speakText('${r.blanks[blankIndex].answer}')" title="Listen">${r.blanks[blankIndex].hint}</span>
             </div>
           `;
-          blevelIndex++;
+          blankIndex++;
         }
       });
       html += '</div><button class="game-btn success check-btn" style="margin-top:20px;">Check Story</button>';
@@ -437,19 +437,19 @@ window.initGame = function (stageId) {
       </div>
 
       <div class="celebration-overlay" id="celebration">
-        <div class="trophy"></div>
+        <div class="trophy">🏆</div>
         <div class="celebration-text">Congratulations!<br>You're a Master Storyteller!</div>
-        <div class="celebration-sub">You completed all 50 skills!</div>
+        <div class="celebration-sub">You completed all ${gameData.length} stories!</div>
       </div>
     `;
 
-    const levelIndex = gameData[levelIndex];
+    const currentLevel = gameData[levelIndex];
 
     // Voice button
     const voiceBtn = stage.querySelector('.voice-btn');
-    if (voiceBtn) voiceBtn.addEventListener('click', () => speakText(levelIndex.storyTitle));
+    if (voiceBtn) voiceBtn.addEventListener('click', () => speakText(currentLevel.storyTitle));
 
-    if (levelIndex.phase === 1) {
+    if (currentLevel.phase === 1) {
       const pages = document.getElementById('story-pages');
       const bank = document.getElementById('sentence-bank');
       
@@ -459,8 +459,8 @@ window.initGame = function (stageId) {
         e.preventDefault();
         pages.style.background = '';
         const text = e.dataTransfer.getData('text');
-        const levelIndex = e.dataTransfer.getData('levelIndex');
-        if (text) addSentenceToStory(text, levelIndex);
+        const index = e.dataTransfer.getData('index');
+        if (text) addSentenceToStory(text, index);
       });
 
       const chips = bank.querySelectorAll('.sentence-chip');
@@ -468,28 +468,28 @@ window.initGame = function (stageId) {
         chip.addEventListener('dragstart', (e) => {
           isDragging = true;
           e.dataTransfer.setData('text', chip.getAttribute('data-text'));
-          e.dataTransfer.setData('levelIndex', chip.getAttribute('data-levelIndex'));
+          e.dataTransfer.setData('index', chip.getAttribute('data-index'));
         });
         chip.addEventListener('dragend', () => { setTimeout(() => { isDragging = false; }, 50); });
         chip.addEventListener('click', (e) => {
           e.stopPropagation();
           if (isDragging) { isDragging = false; return; }
           const text = chip.getAttribute('data-text');
-          const levelIndex = chip.getAttribute('data-levelIndex');
-          addSentenceToStory(text, levelIndex);
+          const index = chip.getAttribute('data-index');
+          addSentenceToStory(text, index);
         });
       });
 
       stage.querySelector('.check-btn').addEventListener('click', () => checkStoryOrder());
     } 
-    else if (levelIndex.phase === 2) {
+    else if (currentLevel.phase === 2) {
       stage.querySelector('.check-btn').addEventListener('click', () => checkTypedStory());
       setTimeout(() => {
         const firstBlank = stage.querySelector('.story-blank');
         if (firstBlank) firstBlank.focus();
       }, 100);
     } 
-    else if (levelIndex.phase === 3) {
+    else if (currentLevel.phase === 3) {
       stage.querySelector('.check-btn').addEventListener('click', () => checkWrittenStory());
       setTimeout(() => {
         const textarea = stage.querySelector('.story-textarea');
@@ -504,13 +504,13 @@ window.initGame = function (stageId) {
   }
 
   // --- Phase 1 Functions ---
-  function addSentenceToStory(text, originallevelIndex) {
-    const chip = document.querySelector(`.sentence-chip[data-levelIndex="${originallevelIndex}"]`);
+  function addSentenceToStory(text, originalIndex) {
+    const chip = document.querySelector(`.sentence-chip[data-index="${originalIndex}"]`);
     if (!chip || chip.classList.contains('used')) return;
     
     currentOrder.push({
       text: text,
-      originallevelIndex: originallevelIndex,
+      originalIndex: originalIndex,
       position: currentOrder.length
     });
     
@@ -524,7 +524,7 @@ window.initGame = function (stageId) {
     
     currentOrder = currentOrder.filter((_, i) => i !== position);
     
-    const chip = document.querySelector(`.sentence-chip[data-levelIndex="${item.originallevelIndex}"]`);
+    const chip = document.querySelector(`.sentence-chip[data-index="${item.originalIndex}"]`);
     if (chip) chip.classList.remove('used');
     
     renderStoryPages();
@@ -534,13 +534,11 @@ window.initGame = function (stageId) {
     const r = gameData[levelIndex];
     const pages = document.querySelectorAll('.story-page');
     
-    // Check if all sentences are placed
     if (currentOrder.length !== r.sentences.length) {
       alert("Please place all sentences in the story!");
       return;
     }
     
-    // Check order
     let allCorrect = true;
     const sortedCorrect = [...r.sentences].sort((a, b) => a.order - b.order);
     
@@ -606,7 +604,6 @@ window.initGame = function (stageId) {
     const textarea = stage.querySelector('.story-textarea');
     const text = textarea.value.toLowerCase();
     
-    // Check for required keywords and minimum length
     const hasKeywords = r.requiredKeywords.every(kw => text.includes(kw.toLowerCase()));
     const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
     const hasThreeSentences = text.split(/[.!?]/).filter(s => s.trim().length > 10).length >= 3;
@@ -637,22 +634,21 @@ window.initGame = function (stageId) {
     setTimeout(() => {
       levelIndex++;
       if (levelIndex >= gameData.length) {
-        // Final Celebration!
         launchConfetti();
         const celebration = document.getElementById('celebration');
         celebration.style.display = 'flex';
         
         if (window.GameHub) {
           setTimeout(() => {
-            window.GameHub.showComplete(" Master Storyteller! ", "You completed all 15 story gameData! You are an amazing writer!");
+            window.GameHub.showComplete(" Master Storyteller! ", `You completed all ${gameData.length} story levels! You are an amazing writer!`);
           }, 2000);
         }
       } else {
-        build();
+        renderLevel();
       }
     }, 800);
   }
 
   // Start the game
-  build();
+  renderLevel();
 };

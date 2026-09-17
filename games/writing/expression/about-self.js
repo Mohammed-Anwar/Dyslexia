@@ -147,7 +147,7 @@ window.initGame = function (stageId) {
     return text.trim().toLowerCase().replace(/\s+/g, ' ').replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
   }
 
-  function build() {
+  function renderLevel() {
     const r = gameData[levelIndex];
     
     if (levelIndex === 0 && !hasPlayedIntro) {
@@ -527,10 +527,10 @@ window.initGame = function (stageId) {
       if (levelIndex >= gameData.length) {
         window.GameHub.showComplete("Explorer Master!", "You successfully created all the ID cards with perfect grammar!");
       } else {
-        build();
+        renderLevel();
       }
     }, 800);
   }
 
-  build();
+  renderLevel();
 };

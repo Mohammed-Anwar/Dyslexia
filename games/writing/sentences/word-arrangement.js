@@ -34,7 +34,7 @@ window.initGame = function (stageId) {
   let shiftX = 0;
   let shiftY = 0;
 
-  function build() {
+  function renderLevel() {
     const r = gameData[levelIndex];
     // Shuffle words for the pool
     const shuffled = [...r.words].sort(() => Math.random() - 0.5);
@@ -279,12 +279,12 @@ window.initGame = function (stageId) {
             window.GameHub.showComplete("Sentence Builder!", "You arranged every sentence in the right order. Amazing job!");
           }
         } else {
-          build();
+          renderLevel();
         }
       }, 800);
     }
   }
 
   // Start the game
-  build();
+  renderLevel();
 };

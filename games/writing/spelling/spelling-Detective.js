@@ -28,7 +28,7 @@ window.initGame = function (stageId) {
 
   let levelIndex = 0;
 
-  function build() {
+  function renderLevel() {
     const round = gameData[levelIndex];
     stage.innerHTML = "";
 
@@ -220,10 +220,10 @@ window.initGame = function (stageId) {
     if (levelIndex >= gameData.length) {
       window.GameHub.showComplete("Spelling Detective!", "You mastered Magic E, double consonants, and visual word recognition.");
     } else {
-      build();
+      renderLevel();
     }
   }
 
   // بدء اللعبة
-  build();
+  renderLevel();
 };

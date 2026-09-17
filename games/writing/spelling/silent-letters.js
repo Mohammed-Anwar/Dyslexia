@@ -29,7 +29,7 @@ window.initGame = function (stageId) {
   let levelIndex = 0;
   let placedCount = 0;
 
-  function build() {
+  function renderLevel() {
     const round = gameData[levelIndex];
     stage.innerHTML = "";
     placedCount = 0;
@@ -232,10 +232,10 @@ window.initGame = function (stageId) {
     if (levelIndex >= gameData.length) {
       window.GameHub.showComplete("Silent Letter Master!", "You discovered, identified, and built words with silent letters perfectly.");
     } else {
-      build();
+      renderLevel();
     }
   }
 
   // بدء اللعبة
-  build();
+  renderLevel();
 };

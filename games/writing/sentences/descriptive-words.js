@@ -168,7 +168,7 @@ window.initGame = function (stageId) {
     "dangerous-snake-attacking": "🐍"
   };
 
-  function build() {
+  function renderLevel() {
     const r = gameData[levelIndex];
     placedWords = {};
     wrongWordRemoved = false;
@@ -511,17 +511,24 @@ window.initGame = function (stageId) {
     }
   }
 
-  function onPointerUp(e) {
+    function onPointerUp(e) {
     if (!draggedEl) return;
+    
     document.removeEventListener('pointermove', onPointerMove);
     document.removeEventListener('pointerup', onPointerUp);
 
-    // Check if dropped on a blank
+    // 1. Temporarily hide the dragged element so we can see what's underneath it
+    draggedEl.style.visibility = 'hidden';
+    
+    // 2. Get the element currently under the pointer
     const elemBelow = document.elementFromPoint(e.clientX, e.clientY);
     const blank = elemBelow ? elemBelow.closest('.dw-blank') : null;
     
+    // 3. Make it visible again immediately
+    draggedEl.style.visibility = 'visible';
+
     if (blank && !blank.classList.contains('filled') && !blank.dataset.filled) {
-      const word = draggedEl.textContent;
+      const word = draggedEl.textContent.trim(); // .trim() prevents whitespace matching issues
       const correct = blank.dataset.correct;
       
       if (word === correct) {
@@ -532,9 +539,10 @@ window.initGame = function (stageId) {
         blank.textContent = word;
         blank.dataset.filled = "true";
         
-        draggedEl.style.display = 'none';
-        placedWords[blank.dataset.blankIndex] = word;
+        // Cleanly remove the card from the DOM instead of just hiding it
+        draggedEl.remove(); 
         
+        placedWords[blank.dataset.blankIndex] = word;
         checkWinCondition();
         draggedEl = null;
         return;
@@ -555,14 +563,22 @@ window.initGame = function (stageId) {
     draggedEl.style.width = '';
     draggedEl.style.left = '';
     draggedEl.style.top = '';
+    draggedEl.style.visibility = 'visible'; // Ensure it's always visible when reset
     originParent.appendChild(draggedEl);
   }
 
-  function animateShake() {
+    function animateShake() {
     if (!draggedEl) return;
-    draggedEl.classList.add('shake');
+    
+    // Capture the reference in a local variable
+    const elementToShake = draggedEl; 
+    
+    elementToShake.classList.add('shake');
     setTimeout(() => {
-      draggedEl.classList.remove('shake');
+      // Safely remove the class from the captured element
+      if (elementToShake) {
+        elementToShake.classList.remove('shake');
+      }
     }, 400);
   }
 
@@ -578,7 +594,7 @@ window.initGame = function (stageId) {
             window.GameHub.showComplete("Descriptive Master!", "You've mastered the art of describing with adjectives!");
           }
         } else {
-          build();
+          renderLevel();
         }
       }, 800);
     }
@@ -609,5 +625,5 @@ window.initGame = function (stageId) {
     }
   }
 
-  build();
+  renderLevel();
 };

@@ -96,10 +96,10 @@
         if (!stage) return;
         levelIndex = 0;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex];
         
         stage.innerHTML = `
@@ -250,7 +250,7 @@
             setTimeout(() => {
                 if (levelIndex < gameData.length - 1) {
                     levelIndex++;
-                    loadLevel(stage);
+                    renderLevel(stage);
                 } else {
                     if (window.GameHub?.showComplete) {
                         window.GameHub.showComplete("Sharp Eye!", `You scored ${score} out of ${gameData.length}. You're a Proof Lens Expert!`);

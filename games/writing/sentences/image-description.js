@@ -112,7 +112,7 @@ window.initGame = function (stageId) {
     return text.trim().toLowerCase().replace(/\s+/g, ' ');
   }
 
-  function build() {
+  function renderLevel() {
     const r = gameData[levelIndex];
     const stageName = r.stage === 1 ? "Stage 1: Build the Sentence" : 
                       r.stage === 2 ? "Stage 2: Fill in the Blank" : 
@@ -308,7 +308,7 @@ window.initGame = function (stageId) {
         if (levelIndex >= gameData.length) {
           window.GameHub.showComplete("Amazing Writer!", "You successfully built and wrote all the sentences!");
         } else {
-          build();
+          renderLevel();
         }
       }, 800);
     } else {
@@ -326,5 +326,5 @@ window.initGame = function (stageId) {
   }
 
   // بدء اللعبة
-  build();
+  renderLevel();
 };

@@ -139,11 +139,11 @@ window.initGame = function (stageId) {
   }
 
   // إعادة رسم منطقة سحب محددة
-  function renderLineZone(linelevelIndex) {
-    const zone = document.getElementById(`zone-${linelevelIndex}`);
+  function renderLineZone(lineIndex) {
+    const zone = document.getElementById(`zone-${lineIndex}`);
     if (!zone) return;
     
-    const words = lineStates[linelevelIndex];
+    const words = lineStates[lineIndex];
     zone.innerHTML = '';
     
     if (Object.keys(words).length === 0) {
@@ -160,13 +160,13 @@ window.initGame = function (stageId) {
       chip.innerText = data.value;
       chip.onclick = (e) => { 
         e.stopPropagation(); 
-        returnWordToBank(linelevelIndex, originalId); 
+        returnWordToBank(lineIndex, originalId); 
       };
       zone.appendChild(chip);
     });
   }
 
-  function build() {
+  function renderLevel() {
     const r = gameData[levelIndex];
     const phaseName = r.phase === 1 ? "Phase 1: Build the Sentences" : r.phase === 2 ? "Phase 2: Fill in the Blanks" : "Phase 3: Write the Invitation";
     
@@ -178,16 +178,16 @@ window.initGame = function (stageId) {
     if (r.phase === 1) {
       // إنشاء 3 أسطر معاً
       contentHTML = '<div class="lines-container">';
-      r.lines.forEach((line, linelevelIndex) => {
+      r.lines.forEach((line, lineIndex) => {
         const shuffledWords = [...line.words].sort(() => Math.random() - 0.5);
         contentHTML += `
-          <div class="single-line" data-line="${linelevelIndex}">
-            <div class="line-label">Line ${linelevelIndex + 1}</div>
-            <div class="drop-zone" id="zone-${linelevelIndex}">
+          <div class="single-line" data-line="${lineIndex}">
+            <div class="line-label">Line ${lineIndex + 1}</div>
+            <div class="drop-zone" id="zone-${lineIndex}">
               <span class="placeholder-text">Tap or drag words here...</span>
             </div>
-            <div class="options-bank" id="bank-${linelevelIndex}">
-              ${shuffledWords.map((word, i) => `<div class="word-chip" draggable="true" data-value="${word}" data-line="${linelevelIndex}" data-levelIndex="${i}" id="w-${linelevelIndex}-${i}">${word}</div>`).join('')}
+            <div class="options-bank" id="bank-${lineIndex}">
+              ${shuffledWords.map((word, i) => `<div class="word-chip" draggable="true" data-value="${word}" data-line="${lineIndex}" data-index="${i}" id="w-${lineIndex}-${i}">${word}</div>`).join('')}
             </div>
           </div>
         `;
@@ -195,15 +195,15 @@ window.initGame = function (stageId) {
       contentHTML += '</div><button class="game-btn success check-btn" style="margin-top:20px;">Check All Lines</button>';
     } else if (r.phase === 2) {
       let html = '<div class="typing-invitation">';
-      let blevelIndex = 0;
+      let blankIndex = 0;
       for (let i = 0; i < r.textParts.length; i++) {
         html += `<span class="text-part">${r.textParts[i]}</span>`;
-        if (blevelIndex < r.blanks.length && i < r.textParts.length - 1) {
+        if (blankIndex < r.blanks.length && i < r.textParts.length - 1) {
           html += `<div class="blank-wrapper">
-                     <input type="text" class="blank-input" data-levelIndex="${blevelIndex}" placeholder="${r.blanks[blevelIndex].placeholder}" autocomplete="off">
-                     <span class="hint-badge" onclick="speakText('${r.blanks[blevelIndex].hint}')" title="Listen to hint">💡 ${r.blanks[blevelIndex].hint}</span>
+                     <input type="text" class="blank-input" data-index="${blankIndex}" placeholder="${r.blanks[blankIndex].placeholder}" autocomplete="off">
+                     <span class="hint-badge" onclick="speakText('${r.blanks[blankIndex].hint}')" title="Listen to hint">💡 ${r.blanks[blankIndex].hint}</span>
                    </div>`;
-          blevelIndex++;
+          blankIndex++;
         }
       }
       html += '</div><button class="game-btn success check-btn" style="margin-top:20px;">Send Invitation</button>';
@@ -211,7 +211,7 @@ window.initGame = function (stageId) {
     } else if (r.phase === 3) {
       contentHTML = `
         <div class="sticky-note">
-          <div class="sticky-pin"></div>
+          <div class="sticky-pin">📍</div>
           <h4>Party Details:</h4>
           <pre>${r.stickyNote}</pre>
         </div>
@@ -313,18 +313,15 @@ window.initGame = function (stageId) {
       </div>
     `;
 
-    // --- ربط الأحداث بأمان ---
-    const levelIndex = gameData[levelIndex];
-
     // Voice button
     const voiceBtn = stage.querySelector('.voice-btn');
-    if (voiceBtn) voiceBtn.addEventListener('click', () => speakText(levelIndex.event + " Invitation"));
+    if (voiceBtn) voiceBtn.addEventListener('click', () => speakText(r.event + " Invitation"));
 
-    if (levelIndex.phase === 1) {
+    if (r.phase === 1) {
       // إعداد كل سطر
-      levelIndex.lines.forEach((line, linelevelIndex) => {
-        const zone = document.getElementById(`zone-${linelevelIndex}`);
-        const bank = document.getElementById(`bank-${linelevelIndex}`);
+      r.lines.forEach((line, lineIndex) => {
+        const zone = document.getElementById(`zone-${lineIndex}`);
+        const bank = document.getElementById(`bank-${lineIndex}`);
         
         // Drop zone events
         zone.addEventListener('dragover', (e) => { 
@@ -335,10 +332,10 @@ window.initGame = function (stageId) {
         zone.addEventListener('drop', (e) => {
           e.preventDefault(); 
           zone.classList.remove('drag-over');
-          const lineData = e.dataTransfer.getData('line-levelIndex');
-          const wordlevelIndex = e.dataTransfer.getData('word-levelIndex');
-          if (lineData !== undefined && wordlevelIndex !== undefined) {
-            moveWordToZone(parseInt(lineData), parseInt(wordlevelIndex), linelevelIndex);
+          const lineData = e.dataTransfer.getData('line-index');
+          const wordIndex = e.dataTransfer.getData('word-index');
+          if (lineData !== undefined && wordIndex !== undefined && lineData !== "" && wordIndex !== "") {
+            moveWordToZone(parseInt(lineData), parseInt(wordIndex), lineIndex);
           }
         });
 
@@ -348,8 +345,8 @@ window.initGame = function (stageId) {
           chip.addEventListener('dragstart', (e) => {
             isDragging = true;
             e.dataTransfer.setData('text/plain', chip.getAttribute('data-value'));
-            e.dataTransfer.setData('line-levelIndex', chip.getAttribute('data-line'));
-            e.dataTransfer.setData('word-levelIndex', chip.getAttribute('data-levelIndex'));
+            e.dataTransfer.setData('line-index', chip.getAttribute('data-line'));
+            e.dataTransfer.setData('word-index', chip.getAttribute('data-index'));
           });
           chip.addEventListener('dragend', () => { 
             setTimeout(() => { isDragging = false; }, 50); 
@@ -361,22 +358,22 @@ window.initGame = function (stageId) {
               return; 
             }
             const wLine = parseInt(chip.getAttribute('data-line'));
-            const wlevelIndex = parseInt(chip.getAttribute('data-levelIndex'));
-            moveWordToZone(wLine, wlevelIndex, linelevelIndex);
+            const wIndex = parseInt(chip.getAttribute('data-index'));
+            moveWordToZone(wLine, wIndex, lineIndex);
           });
         });
       });
 
       stage.querySelector('.check-btn').addEventListener('click', () => checkAllLines());
     } 
-    else if (levelIndex.phase === 2) {
+    else if (r.phase === 2) {
       stage.querySelector('.check-btn').addEventListener('click', () => checkPhase2());
       setTimeout(() => {
         const firstBlank = stage.querySelector('.blank-input');
         if (firstBlank) firstBlank.focus();
       }, 100);
     } 
-    else if (levelIndex.phase === 3) {
+    else if (r.phase === 3) {
       stage.querySelector('.check-btn').addEventListener('click', () => checkPhase3());
       setTimeout(() => {
         const textarea = stage.querySelector('.invite-textarea');
@@ -391,10 +388,10 @@ window.initGame = function (stageId) {
   }
 
   // --- منطق المرحلة الأولى: Unscramble (3 أسطر معاً) ---
-  function moveWordToZone(fromLine, wordlevelIndex, toLine) {
+  function moveWordToZone(fromLine, wordIndex, toLine) {
     if (fromLine !== toLine) return; // لا يمكن نقل الكلمات بين أسطر مختلفة
     
-    const chipId = `w-${fromLine}-${wordlevelIndex}`;
+    const chipId = `w-${fromLine}-${wordIndex}`;
     const bankChip = document.getElementById(chipId);
     
     if (!bankChip || bankChip.classList.contains('used')) return;
@@ -408,35 +405,35 @@ window.initGame = function (stageId) {
     renderLineZone(toLine);
   }
 
-  function returnWordToBank(linelevelIndex, originalId) {
-    const data = lineStates[linelevelIndex][originalId];
+  function returnWordToBank(lineIndex, originalId) {
+    const data = lineStates[lineIndex][originalId];
     if (!data) return;
     
-    delete lineStates[linelevelIndex][originalId];
+    delete lineStates[lineIndex][originalId];
     
     const bankChip = document.getElementById(originalId);
     if (bankChip) bankChip.classList.remove('used');
     
     // إعادة ترتيب المواقع
-    const remainingWords = Object.entries(lineStates[linelevelIndex]);
+    const remainingWords = Object.entries(lineStates[lineIndex]);
     remainingWords.sort((a, b) => a[1].position - b[1].position);
     remainingWords.forEach(([id, wordData], newPos) => {
       wordData.position = newPos;
     });
     
-    renderLineZone(linelevelIndex);
+    renderLineZone(lineIndex);
   }
 
   function checkAllLines() {
     const r = gameData[levelIndex];
     let allCorrect = true;
     
-    r.lines.forEach((line, linelevelIndex) => {
-      const zone = document.getElementById(`zone-${linelevelIndex}`);
+    r.lines.forEach((line, lineIndex) => {
+      const zone = document.getElementById(`zone-${lineIndex}`);
       const lineContainer = zone.closest('.single-line');
       
       // تجميع الكلمات بالترتيب
-      const words = lineStates[linelevelIndex];
+      const words = lineStates[lineIndex];
       const sortedWords = Object.entries(words).sort((a, b) => a[1].position - b[1].position);
       const userAnswer = sortedWords.map(([_, data]) => data.value).join(' ');
       
@@ -539,11 +536,11 @@ window.initGame = function (stageId) {
         }
       } else {
         envelope.style.display = 'none';
-        build();
+        renderLevel();
       }
     }, 1200);
   }
 
   // بدء اللعبة
-  build();
+  renderLevel();
 };

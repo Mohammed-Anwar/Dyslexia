@@ -36,7 +36,7 @@ window.initGame = function (stageId) {
     }
   };
 
-  function build() {
+  function renderLevel() {
     if (levelIndex === 0) initWords();
     currentWord = gameWords[levelIndex];
 
@@ -203,7 +203,7 @@ window.initGame = function (stageId) {
           alert("Password Accepted! You successfully unlocked all words!");
         }
       } else {
-        build();
+        renderLevel();
       }
     }, 1500);
   }
@@ -213,5 +213,5 @@ window.initGame = function (stageId) {
   window.addEventListener("mouseup", handleEnd);
   window.addEventListener("touchend", handleEnd);
 
-  build();
+  renderLevel();
 };

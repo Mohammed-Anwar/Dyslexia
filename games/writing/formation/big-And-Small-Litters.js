@@ -28,7 +28,7 @@ window.initGame = function (stageId) {
   let levelIndex = 0;
   let phase2SortedCount = 0;
 
-  function build() {
+  function renderLevel() {
     const round = gameData[levelIndex];
     stage.innerHTML = '';
     
@@ -87,7 +87,7 @@ window.initGame = function (stageId) {
                 if (levelIndex >= gameData.length) {
                   window.GameHub.showComplete("Amazing!", "You mastered Uppercase and Lowercase letters!");
                 } else {
-                  build();
+                  renderLevel();
                 }
               }, 800);
             } else {
@@ -172,7 +172,7 @@ window.initGame = function (stageId) {
             if (levelIndex >= gameData.length) {
               window.GameHub.showComplete("Fantastic!", "You sorted all the letter families!");
             } else {
-              build();
+              renderLevel();
             }
           }, 800);
         }
@@ -221,7 +221,7 @@ window.initGame = function (stageId) {
                 if (levelIndex >= gameData.length) {
                   window.GameHub.showComplete("You're a Master!", "You conquered all the tricky letter twins!");
                 } else {
-                  build();
+                  renderLevel();
                 }
               }, 800);
             } else {
@@ -238,5 +238,5 @@ window.initGame = function (stageId) {
   }
 
   // بدء اللعبة
-  build();
+  renderLevel();
 };

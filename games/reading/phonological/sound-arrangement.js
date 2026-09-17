@@ -29,7 +29,7 @@
         const stage = document.getElementById(containerId);
         if (!stage) return;
         levelIndex = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
     function speak(text) {
@@ -40,7 +40,7 @@
         window.speechSynthesis.speak(utter);
     }
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex];
         placedCount = 0;
         
@@ -254,7 +254,7 @@
         nextBtn.onclick = () => {
             if (levelIndex < totalLevels - 1) {
                 levelIndex++;
-                loadLevel(stage);
+                renderLevel(stage);
             } else {
                 if (window.GameHub?.showComplete) {
                     window.GameHub.showComplete("Master Builder!", "You can sequence sounds and digraphs perfectly!");

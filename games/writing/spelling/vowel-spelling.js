@@ -100,7 +100,7 @@ window.initGame = function (stageId) {
 
   let levelIndex = 0;
 
-  function build() {
+  function renderLevel() {
     const r = gameData[levelIndex];
     
     // بناء عرض الكلمة بناءً على النوع
@@ -198,7 +198,7 @@ window.initGame = function (stageId) {
             if (levelIndex >= gameData.length) {
               window.GameHub.showComplete("Vowel Master!", "You mastered short sounds, long sounds, and the Magic E!");
             } else {
-              build();
+              renderLevel();
             }
           }, 1200); // وقت أطول قليلاً ليستوعب الطفل التغيير البصري والصوتي
         } else {
@@ -220,5 +220,5 @@ window.initGame = function (stageId) {
     });
   }
 
-  build();
+  renderLevel();
 };

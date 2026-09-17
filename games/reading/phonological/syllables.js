@@ -304,7 +304,7 @@
             // Init speech context
             let utter = new SpeechSynthesisUtterance("");
             synth.speak(utter);
-            loadLevel();
+            renderLevel();
         });
 
         document.getElementById('rg-listen-btn').addEventListener('click', playCurrentWord);
@@ -318,7 +318,7 @@
         });
     };
 
-    function loadLevel() {
+    function renderLevel() {
         const data = gameData[levelIndex];
         document.getElementById('rg-level-text').innerText = `Level ${levelIndex + 1} / ${totalLevels}`;
         
@@ -428,7 +428,7 @@
             setTimeout(() => {
                 if (levelIndex < totalLevels - 1) {
                     levelIndex++;
-                    loadLevel();
+                    renderLevel();
                 } else {
                     if (window.GameHub && window.GameHub.showComplete) {
                         window.GameHub.showComplete("Robot Master! 🤖", "You are amazing at counting syllables!");

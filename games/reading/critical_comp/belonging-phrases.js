@@ -72,10 +72,10 @@
         if (!stage) return;
         levelIndex = 0;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex];
         
         // Shuffle sentences for each play
@@ -206,7 +206,7 @@
                 setTimeout(() => {
                     if (levelIndex < gameData.length - 1) {
                         levelIndex++;
-                        loadLevel(stage);
+                        renderLevel(stage);
                     } else {
                         if (window.GameHub?.showComplete) {
                             window.GameHub.showComplete("Topical Expert!", `Score: ${score}. You're great at finding the intruder!`);

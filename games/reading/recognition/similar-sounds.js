@@ -73,7 +73,7 @@
         if (!stage) return;
         levelIndex = 1;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
     function playSound(text) {
@@ -113,7 +113,7 @@
         return a;
     }
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex - 1];
         const isWordMode = data.mode === "word";
         const bucketOptions = shuffle([
@@ -267,7 +267,7 @@
                     setTimeout(() => {
                         if (levelIndex < totalLevels) {
                             levelIndex++;
-                            loadLevel(stage);
+                            renderLevel(stage);
                         } else {
                             if (window.GameHub?.showComplete) {
                                 window.GameHub.showComplete("Sound Expert!", `You sorted all the sounds correctly! Score: ${score}/${totalLevels}`);

@@ -66,10 +66,10 @@
         if (!stage) return;
         levelIndex = 0;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex];
         
         stage.innerHTML = `
@@ -233,7 +233,7 @@
                 setTimeout(() => {
                     if (levelIndex < gameData.length - 1) {
                         levelIndex++;
-                        loadLevel(stage);
+                        renderLevel(stage);
                     } else {
                         if (window.GameHub?.showComplete) {
                             window.GameHub.showComplete("Portal Master!", `Final Score: ${score}. You know the difference between what's real and what's magic!`);

@@ -195,7 +195,7 @@
         if (!stage) return;
         levelIndex = 0;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
     // دالة لإبراز الكلمات الانتقالية فقط إذا كانت موجودة في النص
@@ -209,7 +209,7 @@
         return text;
     }
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex];
         correctlyPlaced = 0;
         
@@ -442,7 +442,7 @@
             setTimeout(() => {
                 if (levelIndex < gameData.length - 1) {
                     levelIndex++;
-                    loadLevel(document.querySelector('.story-container').parentElement);
+                    renderLevel(document.querySelector('.story-container').parentElement);
                 } else {
                     if (window.GameHub?.showComplete) {
                         window.GameHub.showComplete("Master Storyteller!", `You've sequenced all 15 stories perfectly! Final Score: ${score}`);

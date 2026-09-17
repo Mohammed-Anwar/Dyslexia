@@ -41,7 +41,7 @@
         
         levelIndex = 1;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
     function playPhoneme(text) {
@@ -83,7 +83,7 @@
         window.speechSynthesis.speak(utter);
     }
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex - 1];
         soundPlayed = false;
         const shuffledOptions = [...data.options].sort(() => Math.random() - 0.5);
@@ -224,7 +224,7 @@
                     setTimeout(() => {
                         if (levelIndex < totalLevels) {
                             levelIndex++;
-                            loadLevel(stage);
+                            renderLevel(stage);
                         } else {
                             if (window.GameHub?.showComplete) {
                                 window.GameHub.showComplete("Phonics Pro!", `Great job! You identified all sounds! Score: ${score}/15`);

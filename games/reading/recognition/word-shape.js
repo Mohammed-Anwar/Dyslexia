@@ -45,7 +45,7 @@
         
         levelIndex = 1;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
     function renderSilhouette(word, isRevealed) {
@@ -82,7 +82,7 @@
         `;
     }
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex - 1];
         const choices = [data.word, data.distractor].sort(() => Math.random() - 0.5);
         const isBoxMode = data.type === 'boxes';
@@ -296,7 +296,7 @@
                     setTimeout(() => {
                         if (levelIndex < totalLevels) {
                             levelIndex++;
-                            loadLevel(stage);
+                            renderLevel(stage);
                         } else {
                             if (window.GameHub?.showComplete) {
                                 window.GameHub.showComplete("Shape Master!", `You mastered silhouettes and letter boxes! Score: ${score}/${totalLevels}`);

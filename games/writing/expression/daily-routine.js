@@ -47,7 +47,7 @@ window.initGame = function (stageId) {
     return [...array].sort(() => Math.random() - 0.5);
   }
 
-  function build() {
+  function renderLevel() {
     const r = gameData[levelIndex];
     built = [];
     let specificHTML = "";
@@ -60,7 +60,7 @@ window.initGame = function (stageId) {
       specificHTML = `
         <p class="dr-instruction">Drag the sentences to the correct order to build your paragraph.</p>
         <div class="dr-paragraph" id="dr-paragraph">
-          ${[0,1,2,3].map(i => `<div class="dr-slot" data-levelIndex="${i}">${i+1}</div>`).join('')}
+          ${[0,1,2,3].map(i => `<div class="dr-slot" data-index="${i}">${i+1}</div>`).join('')}
         </div>
         <div class="dr-pool" id="dr-pool">
           ${shuffledSentences.map((s, i) => `<div class="dr-card" data-text="${s}" data-id="c${i}">${s}</div>`).join('')}
@@ -69,9 +69,9 @@ window.initGame = function (stageId) {
     } 
     else if (r.stage === 2) {
       let paraHTML = "";
-      for(let i=0; i<r.blanks.length; i++) {
+      for(let i = 0; i < r.blanks.length; i++) {
         paraHTML += r.parts[i];
-        paraHTML += `<span class="dr-blank-wrap"><span class="dr-hint">${r.blanks[i].h}</span><input type="text" class="dr-blank" data-levelIndex="${i}" maxlength="10" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></span>`;
+        paraHTML += `<span class="dr-blank-wrap"><span class="dr-hint">${r.blanks[i].h}</span><input type="text" class="dr-blank" data-index="${i}" maxlength="10" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></span>`;
       }
       paraHTML += r.parts[r.parts.length - 1];
       specificHTML = `
@@ -154,13 +154,13 @@ window.initGame = function (stageId) {
     else if (r.stage === 3) setupStage3();
   }
 
-  // --- محرك السحب والإفلات المتقدم (يعمل على اللمس والماوس) ---
+  // --- محرك السحب والإفلات المتقدم ---
   function setupStage1DragAndDrop() {
     const r = gameData[levelIndex];
     const pool = document.getElementById("dr-pool");
     const cards = pool.querySelectorAll(".dr-card");
     
-        cards.forEach(card => {
+    cards.forEach(card => {
       card.addEventListener("pointerdown", (e) => {
         if (card.classList.contains("used")) return;
         e.preventDefault(); 
@@ -169,7 +169,6 @@ window.initGame = function (stageId) {
         const rect = card.getBoundingClientRect();
         const offsetX = e.clientX - rect.left;
         const offsetY = e.clientY - rect.top;
-        let hasMoved = false;
         
         const clone = card.cloneNode(true);
         clone.style.position = "fixed";
@@ -179,18 +178,13 @@ window.initGame = function (stageId) {
         clone.style.zIndex = 1000;
         clone.style.pointerEvents = "none";
         clone.style.opacity = "0.9";
-        
-        // ⭐ الحل الأول: إلغاء الأنيميشن تماماً من النسخة المسحوبة
         clone.style.transition = "none"; 
         
         document.body.appendChild(clone);
         card.style.opacity = "0.3";
 
         const onMove = (moveEvent) => {
-          hasMoved = true;
           moveEvent.preventDefault();
-          
-          // ⭐ الحل الثاني: استخدام transform بدلاً من top/left لأداء فائق السلاسة (GPU Accelerated)
           const x = moveEvent.clientX - offsetX;
           const y = moveEvent.clientY - offsetY;
           clone.style.transform = `translate(${x - rect.left}px, ${y - rect.top}px)`;
@@ -208,7 +202,8 @@ window.initGame = function (stageId) {
           
           const slot = elemBelow ? elemBelow.closest(".dr-slot") : null;
           
-          if (slot && parseInt(slot.dataset.levelIndex) === built.length && draggedItem.dataset.text === expectedText) {
+          // Fixed slot dataset check (index vs levelIndex)
+          if (slot && parseInt(slot.dataset.index) === built.length && draggedItem.dataset.text === expectedText) {
             handleCorrectDrop(draggedItem, upEvent.clientX, upEvent.clientY);
           } else {
             handleWrongDrop(draggedItem);
@@ -224,12 +219,13 @@ window.initGame = function (stageId) {
     });
 
     function handleCorrectDrop(item, x, y) {
-      window.GameHub.playSound("correct");
-      window.GameHub.triggerVFX(x, y);
+      if (window.GameHub) {
+        window.GameHub.playSound("correct");
+        window.GameHub.triggerVFX(x, y);
+      }
       
-      const slot = document.querySelector(`.dr-slot[data-levelIndex="${built.length}"]`);
+      const slot = document.querySelector(`.dr-slot[data-index="${built.length}"]`);
       slot.classList.add("filled");
-      // التلقين التلقائي للروابط وإضافة النقطة
       slot.innerHTML = `<span class="dr-trans">${transitions[built.length]}</span> ${item.dataset.text}<span class="dr-period">.</span>`;
       
       item.classList.add("used");
@@ -241,7 +237,7 @@ window.initGame = function (stageId) {
     }
 
     function handleWrongDrop(item) {
-      window.GameHub.playSound("wrong");
+      if (window.GameHub) window.GameHub.playSound("wrong");
       item.classList.add("bounce-anim");
       setTimeout(() => item.classList.remove("bounce-anim"), 400);
     }
@@ -253,14 +249,15 @@ window.initGame = function (stageId) {
     let completedCount = 0;
 
     inputs.forEach(input => {
-      const i = parseInt(input.dataset.levelIndex);
+      // Fixed dataset index access
+      const i = parseInt(input.dataset.index);
       
       const checkBlank = () => {
         const correctAns = r.blanks[i].a.toLowerCase();
         const userAns = input.value.trim().toLowerCase();
         
         if (userAns === correctAns) {
-          window.GameHub.playSound("correct");
+          if (window.GameHub) window.GameHub.playSound("correct");
           const span = document.createElement('span');
           span.className = 'dr-filled';
           span.innerText = input.value.trim();
@@ -271,7 +268,7 @@ window.initGame = function (stageId) {
             speakParagraph(r.fullText, advanceRound);
           }
         } else {
-          window.GameHub.playSound("wrong");
+          if (window.GameHub) window.GameHub.playSound("wrong");
           input.classList.add("bounce-anim");
           setTimeout(() => {
             input.classList.remove("bounce-anim");
@@ -297,10 +294,10 @@ window.initGame = function (stageId) {
       const hasVerbs = r.verbs.every(v => text.includes(v));
       
       if (hasTransitions && hasVerbs && text.length > 15) {
-        window.GameHub.playSound("correct");
+        if (window.GameHub) window.GameHub.playSound("correct");
         speakParagraph(r.fullText, advanceRound);
       } else {
-        window.GameHub.playSound("wrong");
+        if (window.GameHub) window.GameHub.playSound("wrong");
         textarea.classList.add("bounce-anim");
         setTimeout(() => textarea.classList.remove("bounce-anim"), 400);
       }
@@ -313,11 +310,15 @@ window.initGame = function (stageId) {
   function advanceRound() {
     levelIndex++;
     if (levelIndex >= gameData.length) {
-      window.GameHub.showComplete("Hero's Quest Complete!", "You mastered your daily routine and wrote perfect paragraphs!");
+      if (window.GameHub) {
+        window.GameHub.showComplete("Hero's Quest Complete!", "You mastered your daily routine and wrote perfect paragraphs!");
+      } else {
+        alert("Hero's Quest Complete! You mastered your daily routine and wrote perfect paragraphs!");
+      }
     } else {
-      build();
+      renderLevel();
     }
   }
 
-  build();
+  renderLevel();
 };

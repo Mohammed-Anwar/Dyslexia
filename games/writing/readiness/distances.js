@@ -144,7 +144,7 @@ window.initGame = function (stageId) {
   let levelIndex = 0;
   let selectedGaps = new Set();
 
-  function build() {
+  function renderLevel() {
     const r = gameData[levelIndex];
     selectedGaps.clear();
 
@@ -377,7 +377,7 @@ function setupDragAndDropPhase1(r) {
         if (levelIndex >= gameData.length) {
           window.GameHub.showComplete("System Calibrated!", "You matched and calibrated all 15 spacing modules correctly.");
         } else {
-          build();
+          renderLevel();
         }
       }, 1000);
     } else {
@@ -385,5 +385,5 @@ function setupDragAndDropPhase1(r) {
     }
   }
 
-  build();
+  renderLevel();
 };

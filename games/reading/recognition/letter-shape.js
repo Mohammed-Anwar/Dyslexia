@@ -40,10 +40,10 @@
         
         levelIndex = 1;
         score = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex - 1];
         const wordArr = data.word.split('');
 
@@ -171,7 +171,7 @@
                         setTimeout(() => {
                             if (levelIndex < totalLevels) {
                                 levelIndex++;
-                                loadLevel(stage);
+                                renderLevel(stage);
                             } else {
                                 if (window.GameHub?.showComplete) {
                                     window.GameHub.showComplete("Letter Detective!", `You found all the letters! Score: ${score}/15`);

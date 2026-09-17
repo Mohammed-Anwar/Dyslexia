@@ -44,7 +44,7 @@ window.initGame = function (stageId) {
     return slot;
   }
 
-  function build() {
+  function renderLevel() {
     const round = gameData[levelIndex];
     stage.innerHTML = "";
     filledCount = 0;
@@ -200,9 +200,9 @@ window.initGame = function (stageId) {
     if (levelIndex >= gameData.length) {
       window.GameHub.showComplete("Punctuation Master!", "You mastered end marks, capitalization, commas, and full sentence editing.");
     } else {
-      build();
+      renderLevel();
     }
   }
 
-  build();
+  renderLevel();
 };

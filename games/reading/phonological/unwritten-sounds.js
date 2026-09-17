@@ -57,7 +57,7 @@
         const stage = document.getElementById(containerId);
         if (!stage) return;
         levelIndex = 0;
-        loadLevel(stage);
+        renderLevel(stage);
     };
 
     // Text-to-Speech function for reading words aloud
@@ -69,7 +69,7 @@
         window.speechSynthesis.speak(utter);
     }
 
-    function loadLevel(stage) {
+    function renderLevel(stage) {
         const data = gameData[levelIndex];
         
         stage.innerHTML = `
@@ -239,7 +239,7 @@
                     setTimeout(() => {
                         if (levelIndex < totalLevels - 1) {
                             levelIndex++;
-                            loadLevel(stage);
+                            renderLevel(stage);
                         } else {
                             if (window.GameHub?.showComplete) {
                                 window.GameHub.showComplete("Well Done!", "You are a sound matching expert!");

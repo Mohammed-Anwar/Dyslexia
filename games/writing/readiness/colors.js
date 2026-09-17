@@ -51,7 +51,7 @@ window.initGame = function (stageId) {
 
   let activeItem = null; // Used for touch/click fallback
 
-  function build() {
+  function renderLevel() {
     const levelData = gameData[levelIndexIndex];
     let itemsToRender = [];
 
@@ -255,12 +255,12 @@ window.initGame = function (stageId) {
         if (levelIndexIndex >= gameData.length) {
           window.GameHub.showComplete("Writing Champion!", "You mastered all the writing zones.");
         } else {
-          build(); // Proceed to next level
+          renderLevel(); // Proceed to next level
         }
       }, 700);
     }
   }
 
   // Start Game
-  build();
+  renderLevel();
 };
