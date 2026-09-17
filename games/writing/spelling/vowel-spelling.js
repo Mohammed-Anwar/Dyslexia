@@ -2,8 +2,8 @@
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
-  const ROUNDS = [
-    // Phase 1: Magic E Transformations (Contrast Pairs) - Rounds 1 to 5
+  const gameData = [
+    // Phase 1: Magic E Transformations (Contrast Pairs) - gameData 1 to 5
     { 
       type: "magic_e", 
       short: "cap", 
@@ -50,7 +50,7 @@ window.initGame = function (stageId) {
       options: ["e", "s", "n"] 
     },
 
-    // Phase 2: Long Vowel Teams - Rounds 6 to 10
+    // Phase 2: Long Vowel Teams - gameData 6 to 10
     { 
       type: "team", 
       display: "b__t", 
@@ -101,7 +101,7 @@ window.initGame = function (stageId) {
   let levelIndex = 0;
 
   function build() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     
     // بناء عرض الكلمة بناءً على النوع
     let wordHTML = "";
@@ -135,7 +135,7 @@ window.initGame = function (stageId) {
         .vs-opt:active{transform:translateY(2px);box-shadow: 0 1px 0 #2b6cb0;}
       </style>
       <div class="vs-wrap">
-        <p style="color:var(--text-muted);font-weight:600;">Round ${levelIndex + 1} / ${ROUNDS.length}</p>
+        <p style="color:var(--text-muted);font-weight:600;">Round ${levelIndex + 1} / ${gameData.length}</p>
         
         <div class="vs-emoji">${r.emoji}</div>
         
@@ -195,7 +195,7 @@ window.initGame = function (stageId) {
 
           levelIndex++;
           setTimeout(() => {
-            if (levelIndex >= ROUNDS.length) {
+            if (levelIndex >= gameData.length) {
               window.GameHub.showComplete("Vowel Master!", "You mastered short sounds, long sounds, and the Magic E!");
             } else {
               build();

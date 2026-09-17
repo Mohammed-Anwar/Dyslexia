@@ -2,22 +2,22 @@
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
-  const ROUNDS = [
-    // Phase 1: Sound-to-Shape Match (Rounds 1-5)
+  const gameData = [
+    // Phase 1: Sound-to-Shape Match (gameData 1-5)
     { phase: 1, speakText: "Find the letter M", target: "m", options: ["m", "n"] },
     { phase: 1, speakText: "Find the letter N", target: "n", options: ["n", "h"] },
     { phase: 1, speakText: "Find the letter W", target: "w", options: ["w", "m"] },
     { phase: 1, speakText: "Find the letter T", target: "t", options: ["t", "l"] },
     { phase: 1, speakText: "Find the letter H", target: "h", options: ["h", "k"] },
 
-    // Phase 2: Find the Intruder (Rounds 6-10)
+    // Phase 2: Find the Intruder (gameData 6-10)
     { phase: 2, prompt: "Find the different letter!", items: ["n", "n", "m", "n"], answer: "m" },
     { phase: 2, prompt: "Find the different letter!", items: ["h", "h", "t", "h"], answer: "t" },
     { phase: 2, prompt: "Find the different letter!", items: ["w", "w", "v", "w"], answer: "v" },
     { phase: 2, prompt: "Find the different letter!", items: ["l", "l", "l", "t"], answer: "t" },
     { phase: 2, prompt: "Find the different letter!", items: ["p", "p", "q", "p"], answer: "q" },
 
-    // Phase 3: Complete the Word with Image (Rounds 11-15)
+    // Phase 3: Complete the Word with Image (gameData 11-15)
     { phase: 3, prompt: "Complete the word!", image: "🎩", wordParts: ["_", "a", "t"], target: "h", options: ["h", "m", "t"] },
     { phase: 3, prompt: "Complete the word!", image: "🐷", wordParts: ["_", "i", "g"], target: "p", options: ["p", "q", "b"] },
     { phase: 3, prompt: "Complete the word!", image: "🕸️", wordParts: ["n", "e", "_"], target: "t", options: ["t", "l", "h"] },
@@ -28,7 +28,7 @@ window.initGame = function (stageId) {
   let levelIndex = 0;
 
   function build() {
-    const round = ROUNDS[levelIndex];
+    const round = gameData[levelIndex];
     stage.innerHTML = "";
 
     const wrap = document.createElement("div");
@@ -219,7 +219,7 @@ window.initGame = function (stageId) {
 
   function nextRound() {
     levelIndex++;
-    if (levelIndex >= ROUNDS.length) {
+    if (levelIndex >= gameData.length) {
       window.GameHub.showComplete("Visual Master!", "You can tell apart even the trickiest letters.");
     } else {
       build();

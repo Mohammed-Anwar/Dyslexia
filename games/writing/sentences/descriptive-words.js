@@ -3,7 +3,7 @@ window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
   // 15 Levels with 3 Phases
-  const ROUNDS = [
+  const gameData = [
     // Phase 1: Single Adjective (Levels 1-5)
     {
       phase: 1,
@@ -169,7 +169,7 @@ window.initGame = function (stageId) {
   };
 
   function build() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     placedWords = {};
     wrongWordRemoved = false;
 
@@ -322,7 +322,7 @@ window.initGame = function (stageId) {
         }
       </style>
       <div class="dw-wrap">
-        <p style="color:var(--text-muted);font-weight:700;">Level ${levelIndex + 1} / ${ROUNDS.length} — Phase ${r.phase}</p>
+        <p style="color:var(--text-muted);font-weight:700;">Level ${levelIndex + 1} / ${gameData.length} — Phase ${r.phase}</p>
         <div class="dw-image-container">${IMAGES[r.image] || "️"}</div>
         <div class="dw-sentence-container" id="dw-sentence"></div>
         ${r.phase === 3 ? '<div class="dw-trash-zone" id="dw-trash">🗑️<br><small>Trash</small></div>' : ''}
@@ -567,13 +567,13 @@ window.initGame = function (stageId) {
   }
 
   function checkWinCondition() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     const filledBlanks = document.querySelectorAll('.dw-blank.filled');
     
     if (filledBlanks.length === r.blanks.length) {
       levelIndex++;
       setTimeout(() => {
-        if (levelIndex >= ROUNDS.length) {
+        if (levelIndex >= gameData.length) {
           if (window.GameHub && window.GameHub.showComplete) {
             window.GameHub.showComplete("Descriptive Master!", "You've mastered the art of describing with adjectives!");
           }
@@ -587,7 +587,7 @@ window.initGame = function (stageId) {
   function checkPhase3Win() {
     if (wrongWordRemoved) {
       // Now show the blank for the correct word
-      const r = ROUNDS[levelIndex];
+      const r = gameData[levelIndex];
       const container = document.getElementById("dw-sentence");
       const wrongEl = container.querySelector('.dw-wrong-word');
       

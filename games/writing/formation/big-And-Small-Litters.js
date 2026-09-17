@@ -2,22 +2,22 @@ window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
   // تعريف الـ 15 جولة مقسمة على 3 مراحل
-  const ROUNDS = [
-    // Phase 1: Match uppercase with lowercase (Rounds 1-5)
+  const gameData = [
+    // Phase 1: Match uppercase with lowercase (gameData 1-5)
     { phase: 1, target: 'A', options: ['a', 'e', 'd'], correct: 'a' },
     { phase: 1, target: 'B', options: ['b', 'd', 'p'], correct: 'b' },
     { phase: 1, target: 'M', options: ['m', 'n', 'w'], correct: 'm' },
     { phase: 1, target: 'T', options: ['t', 'f', 'l'], correct: 't' },
     { phase: 1, target: 'H', options: ['h', 'n', 'k'], correct: 'h' },
     
-    // Phase 2: Sort the family (Rounds 6-10)
+    // Phase 2: Sort the family (gameData 6-10)
     { phase: 2, letters: ['A', 'a', 'T', 't'] },
     { phase: 2, letters: ['M', 'm', 'R', 'r'] },
     { phase: 2, letters: ['B', 'b', 'D', 'd'] },
     { phase: 2, letters: ['P', 'p', 'Q', 'q'] },
     { phase: 2, letters: ['H', 'h', 'K', 'k'] },
 
-    // Phase 3: Tricky letters challenge (Rounds 11-15)
+    // Phase 3: Tricky letters challenge (gameData 11-15)
     { phase: 3, target: 'c', prompt: 'Find the UPPERCASE twin for "c"', options: ['C', 'O', 'Q'], correct: 'C' },
     { phase: 3, target: 's', prompt: 'Find the UPPERCASE twin for "s"', options: ['S', 'C', 'U'], correct: 'S' },
     { phase: 3, target: 'V', prompt: 'Find the lowercase twin for "V"', options: ['v', 'u', 'w'], correct: 'v' },
@@ -29,7 +29,7 @@ window.initGame = function (stageId) {
   let phase2SortedCount = 0;
 
   function build() {
-    const round = ROUNDS[levelIndex];
+    const round = gameData[levelIndex];
     stage.innerHTML = '';
     
     const wrap = document.createElement('div');
@@ -84,7 +84,7 @@ window.initGame = function (stageId) {
               el.style.visibility = "hidden";
               setTimeout(() => {
                 levelIndex++;
-                if (levelIndex >= ROUNDS.length) {
+                if (levelIndex >= gameData.length) {
                   window.GameHub.showComplete("Amazing!", "You mastered Uppercase and Lowercase letters!");
                 } else {
                   build();
@@ -169,7 +169,7 @@ window.initGame = function (stageId) {
         if (phase2SortedCount >= round.letters.length) {
           setTimeout(() => {
             levelIndex++;
-            if (levelIndex >= ROUNDS.length) {
+            if (levelIndex >= gameData.length) {
               window.GameHub.showComplete("Fantastic!", "You sorted all the letter families!");
             } else {
               build();
@@ -218,7 +218,7 @@ window.initGame = function (stageId) {
               el.style.visibility = "hidden";
               setTimeout(() => {
                 levelIndex++;
-                if (levelIndex >= ROUNDS.length) {
+                if (levelIndex >= gameData.length) {
                   window.GameHub.showComplete("You're a Master!", "You conquered all the tricky letter twins!");
                 } else {
                   build();

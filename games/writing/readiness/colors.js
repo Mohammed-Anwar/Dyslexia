@@ -18,8 +18,8 @@ window.initGame = function (stageId) {
     g:'dirt', j:'dirt', p:'dirt', q:'dirt', y:'dirt'
   };
 
-  // 20 Unique, Hand-crafted Levels for Perfect Pedagogical Progression
-  const LEVELS = [
+  // 20 Unique, Hand-crafted gameData for Perfect Pedagogical Progression
+  const gameData = [
     // STAGE 1: Abstract Colors to Boxes (Increasing Quantity)
     { stage: 1, text: "Stage 1: Sort colors into boxes", layout: "boxes", type: "color", items: ["sky"] },
     { stage: 1, text: "Stage 1: Sort colors into boxes", layout: "boxes", type: "color", items: ["sky", "grass"] },
@@ -52,7 +52,7 @@ window.initGame = function (stageId) {
   let activeItem = null; // Used for touch/click fallback
 
   function build() {
-    const levelData = LEVELS[levelIndexIndex];
+    const levelData = gameData[levelIndexIndex];
     let itemsToRender = [];
 
     // Parse the items for this specific level
@@ -136,7 +136,7 @@ window.initGame = function (stageId) {
       </style>
       
       <div class="co-wrap">
-        <div class="co-level">Round ${levelIndexIndex + 1} / ${LEVELS.length}</div>
+        <div class="co-level">Round ${levelIndexIndex + 1} / ${gameData.length}</div>
         <p class="co-title">${levelData.text}</p>
         ${layoutHTML}
         <div class="co-items" id="co-items"></div>
@@ -252,7 +252,7 @@ window.initGame = function (stageId) {
     if (itemsContainer.children.length === 0) {
       levelIndexIndex++;
       setTimeout(() => {
-        if (levelIndexIndex >= LEVELS.length) {
+        if (levelIndexIndex >= gameData.length) {
           window.GameHub.showComplete("Writing Champion!", "You mastered all the writing zones.");
         } else {
           build(); // Proceed to next level

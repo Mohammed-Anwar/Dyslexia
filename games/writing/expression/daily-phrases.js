@@ -2,8 +2,8 @@
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
-  const ROUNDS = [
-    // --- Phase 1: Drag & Drop / Choice (Rounds 1-5) ---
+  const gameData = [
+    // --- Phase 1: Drag & Drop / Choice (gameData 1-5) ---
     { 
       phase: 1, type: 'choice', 
       situation: "Good morning!", emoji: "☀️", 
@@ -35,7 +35,7 @@ window.initGame = function (stageId) {
       answer: "You are welcome." 
     },
     
-    // --- Phase 2: Unscramble (Rounds 6-10) ---
+    // --- Phase 2: Unscramble (gameData 6-10) ---
     { 
       phase: 2, type: 'unscramble', 
       situation: "I need to go to the bathroom.", emoji: "🚻", 
@@ -67,7 +67,7 @@ window.initGame = function (stageId) {
       answer: "See you tomorrow ." 
     },
 
-    // --- Phase 3: Guided Typing (Rounds 11-15) ---
+    // --- Phase 3: Guided Typing (gameData 11-15) ---
     { 
       phase: 3, type: 'typing', 
       situation: "Asking about the price of a toy.", emoji: "🧸", 
@@ -149,7 +149,7 @@ window.initGame = function (stageId) {
   }
 
   function build() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     const phaseName = r.phase === 1 ? "Phase 1: Choose the Response" : r.phase === 2 ? "Phase 2: Unscramble the Words" : "Phase 3: Complete the Sentence";
     
     let interactionHTML = '';
@@ -257,7 +257,7 @@ window.initGame = function (stageId) {
 
       <div class="cd-wrap">
         <div class="phase-indicator">${phaseName}</div>
-        <div class="round-indicator">Round ${levelIndex + 1} / ${ROUNDS.length}</div>
+        <div class="round-indicator">Round ${levelIndex + 1} / ${gameData.length}</div>
 
         <div class="comic-scene">
           <div class="character-box">
@@ -363,7 +363,7 @@ window.initGame = function (stageId) {
   function selectChoice(element) {
     if (!element) return;
     const value = element.getAttribute('data-value');
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     const zone = document.getElementById('answer-zone');
     if (!zone) return;
     
@@ -403,7 +403,7 @@ window.initGame = function (stageId) {
   }
 
   function checkUnscramble() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     // تجميع الكلمات من المصفوفة مع تطبيع المسافات حول علامات الترقيم
     const userAnswer = currentUnscrambleWords.map(w => w.value).join(' ');
     const zone = document.getElementById('answer-zone');
@@ -419,7 +419,7 @@ window.initGame = function (stageId) {
   }
 
   function checkTyping() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     const input = document.getElementById('typing-input');
     if (!input) return;
     const userAnswer = input.value.trim().toLowerCase();
@@ -440,7 +440,7 @@ window.initGame = function (stageId) {
     
     setTimeout(() => {
       levelIndex++;
-      if (levelIndex >= ROUNDS.length) {
+      if (levelIndex >= gameData.length) {
         if (window.GameHub) {
           window.GameHub.showComplete("Polite & Kind!", "You picked the perfect phrase for every situation!");
         } else {

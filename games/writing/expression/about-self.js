@@ -1,7 +1,7 @@
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
-  const ROUNDS = [
+  const gameData = [
     // --- المرحلة الأولى: بطاقتي الشخصية (I / My) ---
     {
       stage: 1, icon: "🪪", title: "My Explorer ID",
@@ -148,7 +148,7 @@ window.initGame = function (stageId) {
   }
 
   function build() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     
     if (levelIndex === 0 && !hasPlayedIntro) {
       setTimeout(() => {
@@ -328,7 +328,7 @@ window.initGame = function (stageId) {
             <span class="as-icon">${r.icon}</span>
             <span class="as-title">${r.title}</span>
           </div>
-          <span class="as-round">Round ${levelIndex + 1} / ${ROUNDS.length}</span>
+          <span class="as-round">Round ${levelIndex + 1} / ${gameData.length}</span>
         </div>
 
         <div class="as-card">
@@ -457,7 +457,7 @@ window.initGame = function (stageId) {
   // --- دوال التحقق (مع إضافة الحارس المنطقي) ---
 
   function validateStage1End(value, element) {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     
     // الحارس المنطقي الجديد: التأكد من أن الطفل قد بنى بداية الجملة أولاً
     if (builtWords.length < r.targetPrefix.length) {
@@ -478,7 +478,7 @@ window.initGame = function (stageId) {
   }
 
   function validateStage2(userSentence, element) {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     if (normalizeText(userSentence) === normalizeText(r.targetSentence)) {
       window.GameHub.playSound("correct");
       const rect = element.getBoundingClientRect();
@@ -499,7 +499,7 @@ window.initGame = function (stageId) {
   }
 
   function validateStage3(userSentence, element) {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     if (normalizeText(userSentence) === normalizeText(r.targetSentence)) {
       window.GameHub.playSound("correct");
       const rect = element.getBoundingClientRect();
@@ -524,7 +524,7 @@ window.initGame = function (stageId) {
   function advanceRound() {
     levelIndex++;
     setTimeout(() => {
-      if (levelIndex >= ROUNDS.length) {
+      if (levelIndex >= gameData.length) {
         window.GameHub.showComplete("Explorer Master!", "You successfully created all the ID cards with perfect grammar!");
       } else {
         build();

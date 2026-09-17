@@ -2,8 +2,8 @@
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
-  const ROUNDS = [
-    // --- Phase 1: Story Structure (Rounds 1-5) ---
+  const gameData = [
+    // --- Phase 1: Story Structure (gameData 1-5) ---
     { 
       phase: 1, type: 'unscramble',
       storyTitle: "The Growing Plant",
@@ -55,7 +55,7 @@ window.initGame = function (stageId) {
       ]
     },
 
-    // --- Phase 2: Guided Story Completion (Rounds 6-10) ---
+    // --- Phase 2: Guided Story Completion (gameData 6-10) ---
     { 
       phase: 2, type: 'typing',
       storyTitle: "Winning the Trophy",
@@ -110,7 +110,7 @@ window.initGame = function (stageId) {
       ]
     },
 
-    // --- Phase 3: Independent Story Writing (Rounds 11-15) ---
+    // --- Phase 3: Independent Story Writing (gameData 11-15) ---
     { 
       phase: 3, type: 'writing',
       storyTitle: "The Lost Dog",
@@ -224,7 +224,7 @@ window.initGame = function (stageId) {
   }
 
   function build() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     const phaseName = r.phase === 1 ? "Phase 1: Build the Story" : r.phase === 2 ? "Phase 2: Complete the Story" : "Phase 3: Write Your Story";
     
     currentOrder = [];
@@ -422,7 +422,7 @@ window.initGame = function (stageId) {
 
       <div class="sb-wrap">
         <div class="phase-badge">${phaseName}</div>
-        <div class="round-badge">Round ${levelIndex + 1} / ${ROUNDS.length}</div>
+        <div class="round-badge">Round ${levelIndex + 1} / ${gameData.length}</div>
 
         <div class="story-header">
           <div class="story-title">📖 ${r.storyTitle}</div>
@@ -443,7 +443,7 @@ window.initGame = function (stageId) {
       </div>
     `;
 
-    const levelIndex = ROUNDS[levelIndex];
+    const levelIndex = gameData[levelIndex];
 
     // Voice button
     const voiceBtn = stage.querySelector('.voice-btn');
@@ -531,7 +531,7 @@ window.initGame = function (stageId) {
   };
 
   function checkStoryOrder() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     const pages = document.querySelectorAll('.story-page');
     
     // Check if all sentences are placed
@@ -569,7 +569,7 @@ window.initGame = function (stageId) {
 
   // --- Phase 2 Functions ---
   function checkTypedStory() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     const blanks = stage.querySelectorAll('.story-blank');
     let allCorrect = true;
     let firstWrong = null;
@@ -602,7 +602,7 @@ window.initGame = function (stageId) {
 
   // --- Phase 3 Functions ---
   function checkWrittenStory() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     const textarea = stage.querySelector('.story-textarea');
     const text = textarea.value.toLowerCase();
     
@@ -636,7 +636,7 @@ window.initGame = function (stageId) {
 
     setTimeout(() => {
       levelIndex++;
-      if (levelIndex >= ROUNDS.length) {
+      if (levelIndex >= gameData.length) {
         // Final Celebration!
         launchConfetti();
         const celebration = document.getElementById('celebration');
@@ -644,7 +644,7 @@ window.initGame = function (stageId) {
         
         if (window.GameHub) {
           setTimeout(() => {
-            window.GameHub.showComplete(" Master Storyteller! ", "You completed all 15 story rounds! You are an amazing writer!");
+            window.GameHub.showComplete(" Master Storyteller! ", "You completed all 15 story gameData! You are an amazing writer!");
           }, 2000);
         }
       } else {

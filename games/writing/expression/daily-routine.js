@@ -1,7 +1,7 @@
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
-  const ROUNDS = [
+  const gameData = [
     // --- المرحلة الأولى: بناء الهيكل وتلقين الروابط (سحب وإفلات) ---
     { stage: 1, sentences: ["I wake up", "I wash my face", "I eat breakfast", "I go to school"], fullText: "First, I wake up. Then, I wash my face. After that, I eat breakfast. Finally, I go to school." },
     { stage: 1, sentences: ["I go home", "I eat lunch", "I do my homework", "I play outside"], fullText: "First, I go home. Then, I eat lunch. After that, I do my homework. Finally, I play outside." },
@@ -48,7 +48,7 @@ window.initGame = function (stageId) {
   }
 
   function build() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     built = [];
     let specificHTML = "";
     const stageName = r.stage === 1 ? "Stage 1: Drag & Build" : 
@@ -140,7 +140,7 @@ window.initGame = function (stageId) {
             <span class="dr-icon">🦸</span>
             <span class="dr-title">The Hero's Daily Quests</span>
           </div>
-          <span class="dr-round">${stageName} | ${levelIndex + 1} / ${ROUNDS.length}</span>
+          <span class="dr-round">${stageName} | ${levelIndex + 1} / ${gameData.length}</span>
         </div>
 
         <div style="width:100%; max-width:600px; display:flex; flex-direction:column; align-items:center; gap:15px;">
@@ -156,7 +156,7 @@ window.initGame = function (stageId) {
 
   // --- محرك السحب والإفلات المتقدم (يعمل على اللمس والماوس) ---
   function setupStage1DragAndDrop() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     const pool = document.getElementById("dr-pool");
     const cards = pool.querySelectorAll(".dr-card");
     
@@ -248,7 +248,7 @@ window.initGame = function (stageId) {
   }
 
   function setupStage2() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     const inputs = document.querySelectorAll(".dr-blank");
     let completedCount = 0;
 
@@ -287,7 +287,7 @@ window.initGame = function (stageId) {
   }
 
   function setupStage3() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     const textarea = document.getElementById("dr-textarea");
     const checkBtn = document.getElementById("dr-check-btn");
 
@@ -312,7 +312,7 @@ window.initGame = function (stageId) {
 
   function advanceRound() {
     levelIndex++;
-    if (levelIndex >= ROUNDS.length) {
+    if (levelIndex >= gameData.length) {
       window.GameHub.showComplete("Hero's Quest Complete!", "You mastered your daily routine and wrote perfect paragraphs!");
     } else {
       build();

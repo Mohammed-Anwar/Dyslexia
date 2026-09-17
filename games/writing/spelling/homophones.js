@@ -3,7 +3,7 @@ window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
   // 15 جولة مقسمة على 3 مراحل تعليمية وتفاعلية مختلفة
-  const ROUNDS = [
+  const gameData = [
     // Phase 1: Visual Matching (Levels 1-5) - Click the correct word for the image
     { phase: 1, emoji: "2️⃣", correct: "two", options: ["two", "to"] },
     { phase: 1, emoji: "☀️", correct: "sun", options: ["sun", "son"] },
@@ -29,7 +29,7 @@ window.initGame = function (stageId) {
   let levelIndex = 0;
 
   function build() {
-    const round = ROUNDS[levelIndex];
+    const round = gameData[levelIndex];
     stage.innerHTML = "";
 
     const wrap = document.createElement("div");
@@ -206,7 +206,7 @@ window.initGame = function (stageId) {
 
   function nextRound() {
     levelIndex++;
-    if (levelIndex >= ROUNDS.length) {
+    if (levelIndex >= gameData.length) {
       window.GameHub.showComplete("Homophone Hero!", "You mastered matching, context, and correcting sound-alike words.");
     } else {
       build();

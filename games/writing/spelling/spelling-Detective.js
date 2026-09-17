@@ -3,22 +3,22 @@ window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
   // 15 جولة مقسمة بدقة على 3 مراحل تعليمية للإملاء
-  const ROUNDS = [
-    // Phase 1: Magic E (Rounds 1-5) - Drag 'e' to complete the word
+  const gameData = [
+    // Phase 1: Magic E (gameData 1-5) - Drag 'e' to complete the word
     { phase: 1, emoji: "🪁", prefix: "kit", correct: "e", wrong: "a", fullWord: "kite", prompt: "Add the Magic E to complete the word!" },
     { phase: 1, emoji: "🎂", prefix: "cak", correct: "e", wrong: "o", fullWord: "cake", prompt: "Add the Magic E to complete the word!" },
     { phase: 1, emoji: "🦴", prefix: "bon", correct: "e", wrong: "i", fullWord: "bone", prompt: "Add the Magic E to complete the word!" },
     { phase: 1, emoji: "🤫", prefix: "hop", correct: "e", wrong: "u", fullWord: "hope", prompt: "Add the Magic E to complete the word!" },
     { phase: 1, emoji: "🧊", prefix: "cub", correct: "e", wrong: "a", fullWord: "cube", prompt: "Add the Magic E to complete the word!" },
 
-    // Phase 2: Consonant Doubling (Rounds 6-10) - Drag the double letter
+    // Phase 2: Consonant Doubling (gameData 6-10) - Drag the double letter
     { phase: 2, emoji: "🏃", prefix: "ru", suffix: "ing", correct: "nn", wrong: "n", fullWord: "running", prompt: "Choose the correct middle part to complete the word!" },
     { phase: 2, emoji: "🏊", prefix: "swi", suffix: "ing", correct: "mm", wrong: "m", fullWord: "swimming", prompt: "Choose the correct middle part to complete the word!" },
     { phase: 2, emoji: "🐰", prefix: "ho", suffix: "ing", correct: "pp", wrong: "p", fullWord: "hopping", prompt: "Choose the correct middle part to complete the word!" },
     { phase: 2, emoji: "🛑", prefix: "sto", suffix: "ing", correct: "pp", wrong: "p", fullWord: "stopping", prompt: "Choose the correct middle part to complete the word!" },
     { phase: 2, emoji: "📅", prefix: "pla", suffix: "ing", correct: "nn", wrong: "n", fullWord: "planning", prompt: "Choose the correct middle part to complete the word!" },
 
-    // Phase 3: Visual Word Discrimination (Rounds 11-15) - Click the correctly spelled word
+    // Phase 3: Visual Word Discrimination (gameData 11-15) - Click the correctly spelled word
     { phase: 3, emoji: "🏃", correctWord: "running", wrongWord: "runing", prompt: "Tap the correctly spelled word!" },
     { phase: 3, emoji: "🏊", correctWord: "swimming", wrongWord: "swiming", prompt: "Tap the correctly spelled word!" },
     { phase: 3, emoji: "🐱", correctWord: "kitten", wrongWord: "kiten", prompt: "Tap the correctly spelled word!" },
@@ -29,7 +29,7 @@ window.initGame = function (stageId) {
   let levelIndex = 0;
 
   function build() {
-    const round = ROUNDS[levelIndex];
+    const round = gameData[levelIndex];
     stage.innerHTML = "";
 
     const wrap = document.createElement("div");
@@ -217,7 +217,7 @@ window.initGame = function (stageId) {
 
   function nextRound() {
     levelIndex++;
-    if (levelIndex >= ROUNDS.length) {
+    if (levelIndex >= gameData.length) {
       window.GameHub.showComplete("Spelling Detective!", "You mastered Magic E, double consonants, and visual word recognition.");
     } else {
       build();

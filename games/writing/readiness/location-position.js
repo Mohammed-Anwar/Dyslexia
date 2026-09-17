@@ -1,9 +1,9 @@
-// Writing > Readiness > Location / Position (15 Therapeutic Rounds)
+// Writing > Readiness > Location / Position (15 Therapeutic gameData)
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
   // قاعدة البيانات للـ 15 جولة حسب المراحل العلاجية
-  const ROUNDS = [
+  const gameData = [
     // المرحلة الأولى: الاتجاهات الأساسية
     { desc: "Drag the apple to be ON the table.", hl: "ON", drag: "🍎", anchor: "🪑", mode: "on" },
     { desc: "Drag the ball to be UNDER the chair.", hl: "UNDER", drag: "⚽", anchor: "🪑", mode: "under" },
@@ -58,7 +58,7 @@ window.initGame = function (stageId) {
     </style>
     <div class="lp-wrap">
       <div class="lp-header">
-        <p class="lp-progress">Round <span id="lp-round">1</span> / ${ROUNDS.length}</p>
+        <p class="lp-progress">Round <span id="lp-round">1</span> / ${gameData.length}</p>
         <button id="lp-speak-btn" class="lp-speak-btn" title="Listen Again">🔊</button>
       </div>
       <p class="lp-instruction" id="lp-instruction-text"></p>
@@ -71,7 +71,7 @@ window.initGame = function (stageId) {
 
   // نظام التعليق الصوتي باستخدام SpeechSynthesis API
   function playVoiceOver() {
-    const round = ROUNDS[levelIndex];
+    const round = gameData[levelIndex];
     if (!round || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     const msg = new SpeechSynthesisUtterance(round.desc);
@@ -136,8 +136,8 @@ window.initGame = function (stageId) {
   }
 
   function setRound() {
-    if (levelIndex >= ROUNDS.length) return;
-    const round = ROUNDS[levelIndex];
+    if (levelIndex >= gameData.length) return;
+    const round = gameData[levelIndex];
 
     document.getElementById('lp-round').innerText = levelIndex + 1;
     document.getElementById('lp-instruction-text').innerHTML = round.desc.replace(round.hl, `<b>${round.hl}</b>`);
@@ -173,7 +173,7 @@ window.initGame = function (stageId) {
         window.GameHub.playSound("correct");
         window.GameHub.triggerVFX(x, y);
         levelIndex++;
-        if (levelIndex >= ROUNDS.length) {
+        if (levelIndex >= gameData.length) {
           setTimeout(() => window.GameHub.showComplete("Excellent!", "You're ready for writing!"), 400);
         } else {
           setTimeout(setRound, 500);

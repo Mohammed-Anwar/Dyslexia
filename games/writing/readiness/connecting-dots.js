@@ -1,9 +1,9 @@
-// Writing > Readiness > Connecting dots & Letters (Therapeutic 15 Rounds)
+// Writing > Readiness > Connecting dots & Letters (Therapeutic 15 gameData)
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
-  // 15 Rounds divided into 3 Stages
-  const ROUNDS = [
+  // 15 gameData divided into 3 Stages
+  const gameData = [
     // Stage 1: Motor Warm-up (Lines)
     { d: "M 80,140 L 400,140", name: "Straight" },
     { d: "M 80,220 L 160,60 L 240,220 L 320,60 L 400,220", name: "Zigzag" },
@@ -52,7 +52,7 @@ window.initGame = function (stageId) {
     </style>
     <div class="cd-wrap">
       <div class="cd-header">
-        <p class="cd-progress">Round <span id="cd-round">1</span> / ${ROUNDS.length}</p>
+        <p class="cd-progress">Round <span id="cd-round">1</span> / ${gameData.length}</p>
       </div>
       <p class="cd-title" id="cd-title">Trace the line!</p>
       <div class="cd-canvas-wrap">
@@ -75,7 +75,7 @@ window.initGame = function (stageId) {
 
   function renderLevel() {
     progress = 0;
-    const currentPath = ROUNDS[levelIndex];
+    const currentPath = gameData[levelIndex];
     titleEl.innerText = `Trace: ${currentPath.name}`;
     roundEl.innerText = levelIndex + 1;
     
@@ -172,7 +172,7 @@ window.initGame = function (stageId) {
         
         levelIndex++;
         setTimeout(() => {
-          if (levelIndex >= ROUNDS.length) {
+          if (levelIndex >= gameData.length) {
             window.GameHub.showComplete("Master Tracer!", "You've successfully completed all writing prep levels.");
           } else {
             renderLevel();

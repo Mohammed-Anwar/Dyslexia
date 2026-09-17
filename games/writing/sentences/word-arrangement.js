@@ -3,7 +3,7 @@ window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
   // 15 Levels with Scaffolding (3 phases)
-  const ROUNDS = [
+  const gameData = [
     // Phase 1: 3-word sentences (Levels 1-5) - Building confidence
     { words: ["I", "like", "apples."] },
     { words: ["He", "is", "tall."] },
@@ -35,7 +35,7 @@ window.initGame = function (stageId) {
   let shiftY = 0;
 
   function build() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     // Shuffle words for the pool
     const shuffled = [...r.words].sort(() => Math.random() - 0.5);
     
@@ -145,7 +145,7 @@ window.initGame = function (stageId) {
         }
       </style>
       <div class="wa-wrap">
-        <p class="wa-instructions">Level ${levelIndex + 1} / ${ROUNDS.length} — Drag words into the boxes in the right order</p>
+        <p class="wa-instructions">Level ${levelIndex + 1} / ${gameData.length} — Drag words into the boxes in the right order</p>
         <div class="wa-line" id="wa-line"></div>
         <div class="wa-pool" id="wa-pool"></div>
       </div>
@@ -222,7 +222,7 @@ window.initGame = function (stageId) {
     if (slot && !slot.hasChildNodes()) {
       const slotIndex = Array.from(slot.parentElement.children).indexOf(slot);
       const word = draggedEl.innerText;
-      const expected = ROUNDS[levelIndex].words[slotIndex];
+      const expected = gameData[levelIndex].words[slotIndex];
 
       if (word === expected) {
         // Correct placement
@@ -271,10 +271,10 @@ window.initGame = function (stageId) {
 
   function checkWinCondition() {
     const lockedCards = document.querySelectorAll('.wa-card.locked');
-    if (lockedCards.length === ROUNDS[levelIndex].words.length) {
+    if (lockedCards.length === gameData[levelIndex].words.length) {
       levelIndex++;
       setTimeout(() => {
-        if (levelIndex >= ROUNDS.length) {
+        if (levelIndex >= gameData.length) {
           if (window.GameHub && window.GameHub.showComplete) {
             window.GameHub.showComplete("Sentence Builder!", "You arranged every sentence in the right order. Amazing job!");
           }

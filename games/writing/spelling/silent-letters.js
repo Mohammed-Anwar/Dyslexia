@@ -3,22 +3,22 @@ window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
   // 15 جولة مقسمة بدقة على 3 مراحل تعليمية
-  const ROUNDS = [
-    // Phase 1: Discovery (Rounds 1-5) - Click the silent letter
+  const gameData = [
+    // Phase 1: Discovery (gameData 1-5) - Click the silent letter
     { phase: 1, emoji: "🔪", word: "knife", silent: "k", prompt: "Click on the silent letter you write but don't pronounce!" },
     { phase: 1, emoji: "✍️", word: "write", silent: "w", prompt: "Click on the silent letter you write but don't pronounce!" },
     { phase: 1, emoji: "🧮", word: "comb", silent: "b", prompt: "Click on the silent letter you write but don't pronounce!" },
     { phase: 1, emoji: "👍", word: "thumb", silent: "b", prompt: "Click on the silent letter you write but don't pronounce!" },
     { phase: 1, emoji: "🏰", word: "castle", silent: "t", prompt: "Click on the silent letter you write but don't pronounce!" },
 
-    // Phase 2: Discrimination (Rounds 6-10) - Choose the correct word with the silent letter
+    // Phase 2: Discrimination (gameData 6-10) - Choose the correct word with the silent letter
     { phase: 2, emoji: "🧠", prompt: "Choose the correct word matching the picture.", correct: "know", options: ["know", "no"] },
     { phase: 2, emoji: "🦵", prompt: "Choose the correct word matching the picture.", correct: "knee", options: ["knee", "need"] },
     { phase: 2, emoji: "🎁", prompt: "Choose the correct word matching the picture.", correct: "wrap", options: ["rap", "wrap"] },
     { phase: 2, emoji: "🛑", prompt: "Choose the correct word matching the picture.", correct: "sign", options: ["sin", "sign"] },
     { phase: 2, emoji: "⏰", prompt: "Choose the correct word matching the picture.", correct: "hour", options: ["our", "hour"] },
 
-    // Phase 3: Application & Building (Rounds 11-15) - Drag and drop to spell
+    // Phase 3: Application & Building (gameData 11-15) - Drag and drop to spell
     { phase: 3, emoji: "⌚", word: "wrist", prompt: "Drag the letters to spell the word correctly. Don't forget the silent letter!" },
     { phase: 3, emoji: "❓", word: "doubt", prompt: "Drag the letters to spell the word correctly. Don't forget the silent letter!" },
     { phase: 3, emoji: "🏝️", word: "island", prompt: "Drag the letters to spell the word correctly. Don't forget the silent letter!" },
@@ -30,7 +30,7 @@ window.initGame = function (stageId) {
   let placedCount = 0;
 
   function build() {
-    const round = ROUNDS[levelIndex];
+    const round = gameData[levelIndex];
     stage.innerHTML = "";
     placedCount = 0;
 
@@ -229,7 +229,7 @@ window.initGame = function (stageId) {
 
   function nextRound() {
     levelIndex++;
-    if (levelIndex >= ROUNDS.length) {
+    if (levelIndex >= gameData.length) {
       window.GameHub.showComplete("Silent Letter Master!", "You discovered, identified, and built words with silent letters perfectly.");
     } else {
       build();

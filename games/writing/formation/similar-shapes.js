@@ -3,22 +3,22 @@ window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
   // 15 جولة مقسمة على 3 مراحل بحتة بصرياً
-  const ROUNDS = [
-    // Phase 1: Odd One Out (Rounds 1-5) - Find the flipped/different letter
+  const gameData = [
+    // Phase 1: Odd One Out (gameData 1-5) - Find the flipped/different letter
     { phase: 1, title: "Find the different letter!", items: ["b", "b", "d", "b"], answer: "d" },
     { phase: 1, title: "Find the different letter!", items: ["p", "p", "p", "q"], answer: "q" },
     { phase: 1, title: "Find the different letter!", items: ["n", "n", "u", "n"], answer: "u" },
     { phase: 1, title: "Find the different letter!", items: ["l", "l", "j", "l"], answer: "j" },
     { phase: 1, title: "Find the different letter!", items: ["m", "m", "w", "m"], answer: "w" },
 
-    // Phase 2: Shadow Match (Rounds 6-10) - Drag to the shadow
+    // Phase 2: Shadow Match (gameData 6-10) - Drag to the shadow
     { phase: 2, title: "Match the shadow!", target: "d", options: ["b", "d", "p"] },
     { phase: 2, title: "Match the shadow!", target: "q", options: ["p", "q", "d"] },
     { phase: 2, title: "Match the shadow!", target: "u", options: ["u", "n", "v"] },
     { phase: 2, title: "Match the shadow!", target: "j", options: ["i", "j", "l"] },
     { phase: 2, title: "Match the shadow!", target: "p", options: ["q", "p", "b"] },
 
-    // Phase 3: Mirror Challenge (Rounds 11-15) - Find the exact twin among mirrored options
+    // Phase 3: Mirror Challenge (gameData 11-15) - Find the exact twin among mirrored options
     { phase: 3, title: "Find the exact twin!", target: "b", options: ["d", "b", "p"] },
     { phase: 3, title: "Find the exact twin!", target: "d", options: ["b", "q", "d"] },
     { phase: 3, title: "Find the exact twin!", target: "n", options: ["u", "n", "h"] },
@@ -29,7 +29,7 @@ window.initGame = function (stageId) {
   let levelIndex = 0;
 
   function build() {
-    const round = ROUNDS[levelIndex];
+    const round = gameData[levelIndex];
     stage.innerHTML = "";
 
     const wrap = document.createElement("div");
@@ -77,7 +77,7 @@ window.initGame = function (stageId) {
             btn.style.borderColor = "var(--primary-green)";
             setTimeout(() => {
               levelIndex++;
-              if (levelIndex >= ROUNDS.length) {
+              if (levelIndex >= gameData.length) {
                 window.GameHub.showComplete("Sharp Eyes!", "You spotted every look-alike letter.");
               } else {
                 build();
@@ -132,7 +132,7 @@ window.initGame = function (stageId) {
               el.style.visibility = "hidden";
               setTimeout(() => {
                 levelIndex++;
-                if (levelIndex >= ROUNDS.length) {
+                if (levelIndex >= gameData.length) {
                   window.GameHub.showComplete("Perfect Match!", "You connected every letter to its shadow.");
                 } else {
                   build();
@@ -182,7 +182,7 @@ window.initGame = function (stageId) {
             btn.style.color = "white";
             setTimeout(() => {
               levelIndex++;
-              if (levelIndex >= ROUNDS.length) {
+              if (levelIndex >= gameData.length) {
                 window.GameHub.showComplete("Mirror Master!", "You conquered all the tricky reflections.");
               } else {
                 build();

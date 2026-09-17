@@ -1,5 +1,5 @@
 /**
- * Game 3: Linking Shapes (Mystery Identification)
+ * Game 3: Linking gameData (Mystery Identification)
  * Filename: games/read_d1_g3.js
  * Logic: Identify a partially hidden shape and drag the matching full shape to the target.
  * Features: 15 levels of progression with random rotation masking.
@@ -14,7 +14,7 @@
     const minRotation = -25; // Minimum degrees
     const maxRotation = 25;  // Maximum degrees
     
-    const shapes = [
+    const gameData = [
         { icon: '⭐', name: 'Star' },
         { icon: '🍎', name: 'Apple' },
         { icon: '🏠', name: 'House' },
@@ -42,7 +42,7 @@
     };
 
     function loadLevel(stage) {
-        const currentShape = shapes[Math.floor(Math.random() * shapes.length)];
+        const currentShape = gameData[Math.floor(Math.random() * gameData.length)];
         const randomRotation = Math.floor(Math.random() * (maxRotation - minRotation + 1)) + minRotation;
 
         stage.innerHTML = `
@@ -195,8 +195,8 @@
         const targetZone = document.getElementById('drop-target');
 
         // Logic for distractors
-        const otherShapes = shapes.filter(s => s.name !== currentShape.name);
-        const levelChoices = [currentShape, ...otherShapes.sort(() => Math.random() - 0.5).slice(0, 3)];
+        const othergameData = gameData.filter(s => s.name !== currentShape.name);
+        const levelChoices = [currentShape, ...othergameData.sort(() => Math.random() - 0.5).slice(0, 3)];
         const shuffledChoices = levelChoices.sort(() => Math.random() - 0.5);
 
         shuffledChoices.forEach(shape => {
@@ -253,7 +253,7 @@
                 loadLevel(stage);
             } else {
                 if (window.GameHub?.showComplete) {
-                    window.GameHub.showComplete("Shape Detective!", `You identified all 15 hidden shapes!`);
+                    window.GameHub.showComplete("Shape Detective!", `You identified all 15 hidden gameData!`);
                 }
             }
         }, 1200);

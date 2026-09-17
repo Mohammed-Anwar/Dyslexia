@@ -2,7 +2,7 @@ window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
   // قاعدة البيانات: 15 جولة مقسمة على 3 مراحل مع المشتتات
-  const ROUNDS = [
+  const gameData = [
     // --- المرحلة الأولى: أفعال الكينونة الواضحة (المستويات 1 إلى 5) ---
     {
       stage: 1, icon: "🌳",
@@ -120,7 +120,7 @@ window.initGame = function (stageId) {
   }
 
   function build() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     const shuffledBlocks = shuffle(r.blocks);
     let builtCount = 0;
 
@@ -206,7 +206,7 @@ window.initGame = function (stageId) {
       <div class="fq-wrap">
         <div class="fq-header">
           <span class="fq-icon">${r.icon}</span>
-          <span class="fq-title">${stageName} &nbsp;|&nbsp; Round ${levelIndex + 1} / ${ROUNDS.length}</span>
+          <span class="fq-title">${stageName} &nbsp;|&nbsp; Round ${levelIndex + 1} / ${gameData.length}</span>
         </div>
         
         <p style="color:var(--text-muted); font-weight:600; margin-top: -10px;">Build the QUESTION for this answer:</p>
@@ -262,7 +262,7 @@ window.initGame = function (stageId) {
           if (builtCount === r.correct.length) {
             setTimeout(() => {
               levelIndex++;
-              if (levelIndex >= ROUNDS.length) {
+              if (levelIndex >= gameData.length) {
                 window.GameHub.showComplete("Question Master!", "You perfectly formulated every question!");
               } else {
                 build();

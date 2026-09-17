@@ -2,8 +2,8 @@
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
-  const ROUNDS = [
-    // Phase 1: Abstract Distance Calibration (Drag & Drop Cables) - Rounds 1 to 5
+  const gameData = [
+    // Phase 1: Abstract Distance Calibration (Drag & Drop Cables) - gameData 1 to 5
     {
       phase: 1,
       badge: "Phase 1: Power Cable Calibration",
@@ -40,7 +40,7 @@ window.initGame = function (stageId) {
       neededKey: "long"
     },
 
-    // Phase 2: Letter Spacing Calibration - Rounds 6 to 10
+    // Phase 2: Letter Spacing Calibration - gameData 6 to 10
     {
       phase: 2,
       badge: "Phase 2: Letter Spacing",
@@ -97,7 +97,7 @@ window.initGame = function (stageId) {
       ]
     },
 
-    // Phase 3: Word Spacing Calibration - Rounds 11 to 15
+    // Phase 3: Word Spacing Calibration - gameData 11 to 15
     {
       phase: 3,
       badge: "Phase 3: Word Spacing",
@@ -145,7 +145,7 @@ window.initGame = function (stageId) {
   let selectedGaps = new Set();
 
   function build() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     selectedGaps.clear();
 
     let html = `
@@ -184,7 +184,7 @@ window.initGame = function (stageId) {
       </style>
       <div class="di-wrap">
         <span class="di-badge">${r.badge}</span>
-        <p class="di-progress">Round ${levelIndex + 1} / ${ROUNDS.length}</p>
+        <p class="di-progress">Round ${levelIndex + 1} / ${gameData.length}</p>
     `;
 
     if (r.phase === 1) {
@@ -374,7 +374,7 @@ function setupDragAndDropPhase1(r) {
       window.GameHub.triggerVFX(event.clientX || window.innerWidth / 2, event.clientY || window.innerHeight / 2);
       levelIndex++;
       setTimeout(() => {
-        if (levelIndex >= ROUNDS.length) {
+        if (levelIndex >= gameData.length) {
           window.GameHub.showComplete("System Calibrated!", "You matched and calibrated all 15 spacing modules correctly.");
         } else {
           build();

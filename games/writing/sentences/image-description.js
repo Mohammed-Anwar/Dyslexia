@@ -2,7 +2,7 @@ window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
   // قاعدة البيانات: 15 جولة مقسمة على 3 مراحل
-  const ROUNDS = [
+  const gameData = [
     // --- المرحلة الأولى: البناء الحركي للجملة (Kinesthetic Building) ---
     {
       stage: 1,
@@ -113,7 +113,7 @@ window.initGame = function (stageId) {
   }
 
   function build() {
-    const r = ROUNDS[levelIndex];
+    const r = gameData[levelIndex];
     const stageName = r.stage === 1 ? "Stage 1: Build the Sentence" : 
                       r.stage === 2 ? "Stage 2: Fill in the Blank" : 
                                       "Stage 3: Write the Sentence";
@@ -208,7 +208,7 @@ window.initGame = function (stageId) {
       <div class="cd-wrap">
         <div style="display:flex; justify-content:space-between; width:100%; max-width:500px; color:var(--text-muted); font-weight:700; font-size:0.9rem;">
           <span>${stageName}</span>
-          <span>Round ${levelIndex + 1} / ${ROUNDS.length}</span>
+          <span>Round ${levelIndex + 1} / ${gameData.length}</span>
         </div>
         
         <div class="scene-display">${r.scene}</div>
@@ -305,7 +305,7 @@ window.initGame = function (stageId) {
       
       levelIndex++;
       setTimeout(() => {
-        if (levelIndex >= ROUNDS.length) {
+        if (levelIndex >= gameData.length) {
           window.GameHub.showComplete("Amazing Writer!", "You successfully built and wrote all the sentences!");
         } else {
           build();

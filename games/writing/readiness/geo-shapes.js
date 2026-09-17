@@ -1,10 +1,10 @@
-// Writing > Readiness > Geo shapes (Explorer's Gadgets - 15 Rounds)
+// Writing > Readiness > Geo gameData (Explorer's Gadgets - 15 Rounds)
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
   // 15 Rounds divided into 3 stages (Solid -> Lines -> Complex)
-  const SHAPES = [
-    // Stage 1: Repairing Equipment (Solid Shapes)
+  const gameData = [
+    // Stage 1: Repairing Equipment (Solid gameData)
     { name: "Compass", pieces: [ { id: "body", label: "●", desc: "Core", target: { x: 200, y: 140 } }, { id: "n", label: "▲", desc: "North", target: { x: 200, y: 80 } }, { id: "s", label: "▼", desc: "South", target: { x: 200, y: 200 } } ] },
     { name: "Flashlight", pieces: [ { id: "handle", label: "▬", desc: "Handle", target: { x: 160, y: 140 } }, { id: "head", label: "■", desc: "Head", target: { x: 240, y: 140 } } ] },
     { name: "Radar", pieces: [ { id: "base", label: "▭", desc: "Base", target: { x: 200, y: 190 } }, { id: "dishL", label: "◤", desc: "Dish L", target: { x: 150, y: 110 } }, { id: "dishR", label: "◥", desc: "Dish R", target: { x: 250, y: 110 } }, { id: "ant", label: "▯", desc: "Antenna", target: { x: 200, y: 230 } } ] },
@@ -18,7 +18,7 @@ window.initGame = function (stageId) {
     { name: "Prism Lock", pieces: [ { id: "top", label: "△", desc: "Top", target: { x: 200, y: 90 } }, { id: "bot", label: "▽", desc: "Bot", target: { x: 200, y: 190 } }, { id: "link", label: "│", desc: "Link", target: { x: 200, y: 140 } } ] },
     { name: "Energy Core", pieces: [ { id: "c", label: "◎", desc: "Center", target: { x: 200, y: 140 } }, { id: "x", label: "✛", desc: "Crosshair", target: { x: 200, y: 140 } }, { id: "f", label: "□", desc: "Frame", target: { x: 200, y: 140 } } ] },
     
-    // Stage 3: Complex Assembly (Mixed Shapes & Lines)
+    // Stage 3: Complex Assembly (Mixed gameData & Lines)
     { name: "Mars Rover", pieces: [ { id: "body", label: "▅", desc: "Body", target: { x: 200, y: 140 } }, { id: "w1", label: "○", desc: "Wheel 1", target: { x: 150, y: 190 } }, { id: "w2", label: "○", desc: "Wheel 2", target: { x: 250, y: 190 } }, { id: "ant", label: "╱", desc: "Antenna", target: { x: 160, y: 90 } } ] },
     { name: "Scout Drone", pieces: [ { id: "chas", label: "▬", desc: "Chassis", target: { x: 200, y: 140 } }, { id: "rL", label: "✖", desc: "Rotor L", target: { x: 130, y: 140 } }, { id: "rR", label: "✖", desc: "Rotor R", target: { x: 270, y: 140 } } ] },
     { name: "Submarine", pieces: [ { id: "hull", label: "⬭", desc: "Hull", target: { x: 200, y: 150 } }, { id: "fin", label: "△", desc: "Fin", target: { x: 200, y: 90 } }, { id: "win", label: "◎", desc: "Window", target: { x: 240, y: 150 } } ] },
@@ -30,8 +30,8 @@ window.initGame = function (stageId) {
   let placed = 0;
 
   function buildStage() {
-    if(levelIndex >= SHAPES.length) return;
-    const shape = SHAPES[levelIndex];
+    if(levelIndex >= gameData.length) return;
+    const shape = gameData[levelIndex];
     placed = 0;
 
     stage.innerHTML = `
@@ -85,7 +85,7 @@ window.initGame = function (stageId) {
       </style>
       <div class="gs-wrap">
         <div class="gs-header">
-          <span>MISSION ${levelIndex + 1}/${SHAPES.length}</span>
+          <span>MISSION ${levelIndex + 1}/${gameData.length}</span>
           <span>SYSTEM: ONLINE</span>
         </div>
         <p class="gs-title">Assemble the <span>${shape.name}</span>!</p>
@@ -145,7 +145,7 @@ window.initGame = function (stageId) {
           if (placed >= shape.pieces.length) {
             levelIndex++;
             setTimeout(() => {
-              if (levelIndex >= SHAPES.length) {
+              if (levelIndex >= gameData.length) {
                 window.GameHub.showComplete("Gadget Master!", "All explorer gadgets are fully operational.");
               } else {
                 buildStage();

@@ -2,7 +2,7 @@
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
 
-  const ROUNDS = [
+  const gameData = [
     // Phase 1: End Marks (Levels 1-5)
     { phase: 1, text: "I live in a big house", answer: ".", options: [".", "?", "!"], fullText: "I live in a big house." },
     { phase: 1, text: "What is your favorite food", answer: "?", options: [".", "?", "!"], fullText: "What is your favorite food?" },
@@ -45,7 +45,7 @@ window.initGame = function (stageId) {
   }
 
   function build() {
-    const round = ROUNDS[levelIndex];
+    const round = gameData[levelIndex];
     stage.innerHTML = "";
     filledCount = 0;
     
@@ -197,7 +197,7 @@ window.initGame = function (stageId) {
 
   function nextRound() {
     levelIndex++;
-    if (levelIndex >= ROUNDS.length) {
+    if (levelIndex >= gameData.length) {
       window.GameHub.showComplete("Punctuation Master!", "You mastered end marks, capitalization, commas, and full sentence editing.");
     } else {
       build();
