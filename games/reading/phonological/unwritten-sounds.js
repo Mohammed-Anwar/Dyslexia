@@ -237,7 +237,7 @@
                     targetCard.style.pointerEvents = 'none';
                     
                     setTimeout(() => {
-                        if (levelIndex < totalLevels - 1) {
+                        if (levelIndex < gameData.length - 1) {
                             levelIndex++;
                             renderLevel(stage);
                         } else {

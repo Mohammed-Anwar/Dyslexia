@@ -225,7 +225,7 @@
         setTimeout(() => speak(data.word), 500);
 
         nextBtn.onclick = () => {
-            if (levelIndex < totalLevels - 1) {
+            if (levelIndex < gameData.length - 1) {
                 levelIndex++;
                 renderLevel(stage);
             } else {

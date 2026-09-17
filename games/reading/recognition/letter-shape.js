@@ -172,7 +172,7 @@
                         score++;
                         setTimeout(() => {
                             // Updated condition to account for 0-based indexing (0 to 14 is 15 levels)
-                            if (levelIndex < totalLevels - 1) {
+                            if (levelIndex < gameData.length - 1) {
                                 levelIndex++;
                                 renderLevel(stage);
                             } else {
