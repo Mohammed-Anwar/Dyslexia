@@ -6,7 +6,7 @@
  */
 
 (function() {
-    let levelIndex = 1;
+    let levelIndex = 0; // Changed to start from 0
     const totalLevels = 15;
     let score = 0;
 
@@ -38,13 +38,14 @@
         const stage = document.getElementById(containerId);
         if (!stage) return;
         
-        levelIndex = 1;
+        levelIndex = 0; // Reset to 0
         score = 0;
         renderLevel(stage);
     };
 
     function renderLevel(stage) {
-        const data = gameData[levelIndex - 1];
+        // Updated to use 0-based indexing directly
+        const data = gameData[levelIndex];
         const wordArr = data.word.split('');
 
         stage.innerHTML = `
@@ -136,7 +137,8 @@
             </style>
 
             <div class="game-wrapper">
-                <div class="level-indicator">Level ${levelIndex} / ${totalLevels}</div>
+                <!-- Display remains user-friendly (Level 1 / 15) while internal index is 0 -->
+                <div class="level-indicator">Level ${levelIndex + 1} / ${totalLevels}</div>
                 <div class="instruction-text">Find the target letter in the word!</div>
                 
                 <div class="target-display">${data.target}</div>
@@ -169,12 +171,13 @@
                     if (foundCount === totalTargets) {
                         score++;
                         setTimeout(() => {
-                            if (levelIndex < totalLevels) {
+                            // Updated condition to account for 0-based indexing (0 to 14 is 15 levels)
+                            if (levelIndex < totalLevels - 1) {
                                 levelIndex++;
                                 renderLevel(stage);
                             } else {
                                 if (window.GameHub?.showComplete) {
-                                    window.GameHub.showComplete("Letter Detective!", `You found all the letters! Score: ${score}/15`);
+                                    window.GameHub.showComplete("Letter Detective!", `You found all the letters! Score: ${score}/${totalLevels}`);
                                 }
                             }
                         }, 1000);

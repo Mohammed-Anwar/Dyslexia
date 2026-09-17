@@ -6,7 +6,7 @@
  */
 
 (function() {
-    let levelIndex = 1;
+    let levelIndex = 0; // Changed to start from 0
     const totalLevels = 15;
     let score = 0;
 
@@ -36,7 +36,7 @@
         const stage = document.getElementById(containerId);
         if (!stage) return;
         
-        levelIndex = 1;
+        levelIndex = 0; // Reset to 0
         score = 0;
         renderLevel(stage);
     };
@@ -175,7 +175,8 @@
             <div class="game-wrapper">
                 <div class="game-header">
                     <div class="instruction-text">What is hidden behind the wave?</div>
-                    <div class="level-indicator">Level ${levelIndex} / ${totalLevels}</div>
+                    <!-- Display remains user-friendly (Level 1 / 15) while internal index is 0 -->
+                    <div class="level-indicator">Level ${levelIndex + 1} / ${totalLevels}</div>
                 </div>
                 
                 <div id="drop-target" class="target-zone">
@@ -248,12 +249,13 @@
         }
         
         setTimeout(() => {
-            if (levelIndex < totalLevels) {
+            // Updated condition to account for 0-based indexing (0 to 14 is 15 levels)
+            if (levelIndex < totalLevels - 1) {
                 levelIndex++;
                 renderLevel(stage);
             } else {
                 if (window.GameHub?.showComplete) {
-                    window.GameHub.showComplete("Shape Detective!", `You identified all 15 hidden gameData!`);
+                    window.GameHub.showComplete("Shape Detective!", `You identified all ${totalLevels} hidden shapes!`);
                 }
             }
         }, 1200);

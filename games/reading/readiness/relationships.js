@@ -6,7 +6,7 @@
  */
 
 (function() {
-    let levelIndex = 1;
+    let levelIndex = 0; // Changed to start from 0
     const totalLevels = 15;
     let score = 0;
 
@@ -53,14 +53,14 @@
         const stage = document.getElementById(containerId);
         if (!stage) return;
         
-        levelIndex = 1;
+        levelIndex = 0; // Reset to 0
         score = 0;
         renderLevel(stage);
     };
 
     function renderLevel(stage) {
-        // Cycle through gameData based on level
-        const setIndex = Math.floor((levelIndex - 1) / 5) % gameData.length;
+        // Cycle through gameData based on level (0-4 -> set 0, 5-9 -> set 1, 10-14 -> set 2)
+        const setIndex = Math.floor(levelIndex / 5) % gameData.length;
         const currentData = gameData[setIndex];
         
         // Pick a random item from the current set
@@ -149,7 +149,8 @@
             </style>
 
             <div class="game-wrapper">
-                <div class="level-indicator">Level ${levelIndex} / ${totalLevels}</div>
+                <!-- Display remains user-friendly (Level 1 / 15) while internal index is 0 -->
+                <div class="level-indicator">Level ${levelIndex + 1} / ${totalLevels}</div>
                 <div class="instruction-text">Where does this belong?</div>
 
                 <div class="item-source">
@@ -205,7 +206,8 @@
         }
 
         setTimeout(() => {
-            if (levelIndex < totalLevels) {
+            // Updated condition to account for 0-based indexing (0 to 14 is 15 levels)
+            if (levelIndex < totalLevels - 1) {
                 levelIndex++;
                 renderLevel(stage);
             } else {

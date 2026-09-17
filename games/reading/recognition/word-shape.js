@@ -1,40 +1,40 @@
 /**
  * Game 7: Word Silhouette & Letter Boxes
  * Filename: games/read_d1_g7.js
- * Logic: Levels 1-7 use Silhouette style (from different lengths to similar shapes).
- *        Levels 8-15 use Letter Boxes style with baseline reference.
+ * Logic: Levels 0-6 use Silhouette style (from different lengths to similar shapes).
+ *        Levels 7-14 use Letter Boxes style with baseline reference.
  * Dyslexia Focus: Orthographic mapping and visual shape discrimination.
  */
 
 (function() {
-    let levelIndex = 1;
+    let levelIndex = 0;
     const totalLevels = 15;
     let score = 0;
 
     // Structured game data for 15 levels
     const gameData = [
-        // --- PHASE 1: Silhouette Style (Levels 1 - 7) ---
-        // Levels 1-3: Completely different in length and shape
+        // --- PHASE 1: Silhouette Style (Levels 0 - 6) ---
+        // Levels 0-2: Completely different in length and shape
         { type: 'silhouette', word: "cat", distractor: "elephant" },
         { type: 'silhouette', word: "sun", distractor: "butterfly" },
         { type: 'silhouette', word: "dog", distractor: "mountain" },
-        // Levels 4-5: Closer lengths
+        // Levels 3-4: Closer lengths
         { type: 'silhouette', word: "ship", distractor: "apple" },
         { type: 'silhouette', word: "jump", distractor: "bridge" },
-        // Levels 6-7: Very similar silhouette shapes
+        // Levels 5-6: Very similar silhouette shapes
         { type: 'silhouette', word: "boat", distractor: "boot" },
         { type: 'silhouette', word: "book", distractor: "look" },
 
-        // --- PHASE 2: Letter Boxes Style with Baseline (Levels 8 - 15) ---
-        // Levels 8-10: Different lengths and clear ascenders/descenders
+        // --- PHASE 2: Letter Boxes Style with Baseline (Levels 7 - 14) ---
+        // Levels 7-9: Different lengths and clear ascenders/descenders
         { type: 'boxes', word: "fish", distractor: "cat" },
         { type: 'boxes', word: "ball", distractor: "sun" },
         { type: 'boxes', word: "jump", distractor: "dog" },
-        // Levels 11-13: Same length, clear difference in long/short letters
+        // Levels 10-12: Same length, clear difference in long/short letters
         { type: 'boxes', word: "tall", distractor: "bill" },
         { type: 'boxes', word: "cold", distractor: "hold" },
         { type: 'boxes', word: "band", distractor: "hand" },
-        // Levels 14-15: Advanced geometric template differentiation (ascender/descender shift)
+        // Levels 13-14: Advanced geometric template differentiation (ascender/descender shift)
         { type: 'boxes', word: "bad", distractor: "red" },
         { type: 'boxes', word: "pen", distractor: "ped" }
     ];
@@ -43,7 +43,7 @@
         const stage = document.getElementById(containerId);
         if (!stage) return;
         
-        levelIndex = 1;
+        levelIndex = 0;
         score = 0;
         renderLevel(stage);
     };
@@ -83,7 +83,7 @@
     }
 
     function renderLevel(stage) {
-        const data = gameData[levelIndex - 1];
+        const data = gameData[levelIndex];
         const choices = [data.word, data.distractor].sort(() => Math.random() - 0.5);
         const isBoxMode = data.type === 'boxes';
 
@@ -253,7 +253,7 @@
             </style>
 
             <div class="game-wrapper">
-                <div class="level-indicator">Level ${levelIndex} / ${totalLevels} (${isBoxMode ? 'Letter Boxes' : 'Silhouette'})</div>
+                <div class="level-indicator">Level ${levelIndex + 1} / ${totalLevels} (${isBoxMode ? 'Letter Boxes' : 'Silhouette'})</div>
                 <div class="instruction-text">${isBoxMode ? 'Which word fits these letter boxes?' : 'Which word fits this shape?'}</div>
                 
                 <div class="silhouette-container">
@@ -294,7 +294,7 @@
                     }
 
                     setTimeout(() => {
-                        if (levelIndex < totalLevels) {
+                        if (levelIndex < totalLevels - 1) {
                             levelIndex++;
                             renderLevel(stage);
                         } else {
