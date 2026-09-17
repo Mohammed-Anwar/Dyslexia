@@ -19,7 +19,7 @@
  */
 
 (function() {
-    let currentLevel = 1;
+    let levelIndex = 1;
     const totalLevels = 15;
     let score = 0;
 
@@ -71,7 +71,7 @@
     window.initGame = function(containerId) {
         const stage = document.getElementById(containerId);
         if (!stage) return;
-        currentLevel = 1;
+        levelIndex = 1;
         score = 0;
         loadLevel(stage);
     };
@@ -114,7 +114,7 @@
     }
 
     function loadLevel(stage) {
-        const data = gameData[currentLevel - 1];
+        const data = gameData[levelIndex - 1];
         const isWordMode = data.mode === "word";
         const bucketOptions = shuffle([
             { ...data.target, isTarget: true },
@@ -226,7 +226,7 @@
             </style>
 
             <div class="sort-wrapper">
-                <div class="level-indicator">Level ${currentLevel} / ${totalLevels}</div>
+                <div class="level-indicator">Level ${levelIndex} / ${totalLevels}</div>
                 <div style="text-align:center">
                     <h2 style="margin:0">Sound Sort</h2>
                     <p style="color: #718096; margin:4px 0;">
@@ -265,8 +265,8 @@
                     }
 
                     setTimeout(() => {
-                        if (currentLevel < totalLevels) {
-                            currentLevel++;
+                        if (levelIndex < totalLevels) {
+                            levelIndex++;
                             loadLevel(stage);
                         } else {
                             if (window.GameHub?.showComplete) {

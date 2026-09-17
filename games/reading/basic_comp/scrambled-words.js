@@ -7,7 +7,7 @@
  */
 
 (function() {
-    let currentLevel = 0;
+    let levelIndex = 0;
     let score = 0;
     let correctlyPlaced = 0;
 
@@ -150,13 +150,13 @@
     window.initGame = function(containerId) {
         const stage = document.getElementById(containerId);
         if (!stage) return;
-        currentLevel = 0;
+        levelIndex = 0;
         score = 0;
         loadLevel(stage);
     };
 
     function loadLevel(stage) {
-        const data = gameData[currentLevel];
+        const data = gameData[levelIndex];
         correctlyPlaced = 0;
         
         // تحديد لون شارة المرحلة
@@ -399,10 +399,10 @@
         }
 
         // شرط الفوز يعتمد على targetLength (4) وليس عدد الكلمات الكلي (5 في المراحل المتقدمة)
-        if (correctlyPlaced === gameData[currentLevel].targetLength) {
+        if (correctlyPlaced === gameData[levelIndex].targetLength) {
             setTimeout(() => {
-                if (currentLevel < gameData.length - 1) {
-                    currentLevel++;
+                if (levelIndex < gameData.length - 1) {
+                    levelIndex++;
                     loadLevel(document.querySelector('.sentence-container').parentElement);
                 } else {
                     if (window.GameHub?.showComplete) {

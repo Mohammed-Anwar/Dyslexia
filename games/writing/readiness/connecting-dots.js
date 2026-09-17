@@ -26,7 +26,7 @@ window.initGame = function (stageId) {
     { d: "M 320,90 C 320,40 220,30 220,100 C 220,170 320,160 320,230 C 320,280 220,280 220,240", name: "Letter 's'" }
   ];
 
-  let level = 0;
+  let levelIndex = 0;
 
   stage.innerHTML = `
     <style>
@@ -75,9 +75,9 @@ window.initGame = function (stageId) {
 
   function renderLevel() {
     progress = 0;
-    const currentPath = ROUNDS[level];
+    const currentPath = ROUNDS[levelIndex];
     titleEl.innerText = `Trace: ${currentPath.name}`;
-    roundEl.innerText = level + 1;
+    roundEl.innerText = levelIndex + 1;
     
     // إنشاء مسار مخفي للحسابات
     pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -170,9 +170,9 @@ window.initGame = function (stageId) {
         window.GameHub.playSound("correct"); // Magic chime
         window.GameHub.triggerVFX(clientX, clientY);
         
-        level++;
+        levelIndex++;
         setTimeout(() => {
-          if (level >= ROUNDS.length) {
+          if (levelIndex >= ROUNDS.length) {
             window.GameHub.showComplete("Master Tracer!", "You've successfully completed all writing prep levels.");
           } else {
             renderLevel();

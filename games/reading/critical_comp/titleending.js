@@ -6,7 +6,7 @@
  */
 
 (function() {
-    let currentLevel = 0;
+    let levelIndex = 0;
     let score = 0;
     let shuffledGameData = []; // لتخزين المراحل بعد ترتيبها عشوائياً
 
@@ -99,7 +99,7 @@
     window.initGame = function(containerId) {
         const stage = document.getElementById(containerId);
         if (!stage) return;
-        currentLevel = 0;
+        levelIndex = 0;
         score = 0;
         
         // أخذ نسخة من المراحل وترتيبها عشوائياً في كل مرة تبدأ فيها اللعبة
@@ -109,7 +109,7 @@
     };
 
     function loadLevel(stage) {
-        const data = shuffledGameData[currentLevel];
+        const data = shuffledGameData[levelIndex];
         
         // ترتيب الخيارات (الأزرار) عشوائياً لهذه المرحلة تحديداً
         const shuffledOptions = shuffleArray([...data.options]);
@@ -216,7 +216,7 @@
 
             <div class="director-container">
                 <div class="header-stats">
-                    <span>Scene: ${currentLevel + 1} / ${shuffledGameData.length}</span>
+                    <span>Scene: ${levelIndex + 1} / ${shuffledGameData.length}</span>
                     <span>Score: ${score}</span>
                 </div>
 
@@ -260,8 +260,8 @@
                 }
 
                 setTimeout(() => {
-                    if (currentLevel < shuffledGameData.length - 1) {
-                        currentLevel++;
+                    if (levelIndex < shuffledGameData.length - 1) {
+                        levelIndex++;
                         loadLevel(stage);
                     } else {
                         if (window.GameHub?.showComplete) {

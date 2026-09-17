@@ -9,7 +9,7 @@ window.initGame = function (stageId) {
     "LIP", "LEG", "TEN", "SIX", "ZIP", "POT", "PAN", "JAM", "NUT", "TOY"
   ];
 
-  let level = 0;
+  let levelIndex = 0;
   const MAX_LEVELS = 15;
   let currentWord = "";
   let missingIndex = 0;
@@ -37,13 +37,13 @@ window.initGame = function (stageId) {
   };
 
   function build() {
-    if (level === 0) initWords();
-    currentWord = gameWords[level];
+    if (levelIndex === 0) initWords();
+    currentWord = gameWords[levelIndex];
 
     // Determine missing index based on the 15-round breakdown
-    if (level < 5) {
+    if (levelIndex < 5) {
       missingIndex = 0; // Rounds 1-5: First letter
-    } else if (level < 10) {
+    } else if (levelIndex < 10) {
       missingIndex = 2; // Rounds 6-10: Last letter
     } else {
       missingIndex = 1; // Rounds 11-15: Middle letter
@@ -84,7 +84,7 @@ window.initGame = function (stageId) {
       <div class="cd-wrap">
         <div class="pw-header">
           <div class="pw-title">The Password</div>
-          <div class="pw-round">Round ${level + 1}/${MAX_LEVELS}</div>
+          <div class="pw-round">Round ${levelIndex + 1}/${MAX_LEVELS}</div>
         </div>
 
         <!-- استخدام كلاس game-btn الخاص بموقعك -->
@@ -195,8 +195,8 @@ window.initGame = function (stageId) {
     window.playWordAudio(currentWord);
 
     setTimeout(() => {
-      level++;
-      if (level >= MAX_LEVELS) {
+      levelIndex++;
+      if (levelIndex >= MAX_LEVELS) {
         if(window.GameHub) {
           window.GameHub.showComplete("Password Accepted!", "You successfully unlocked all words!");
         } else {

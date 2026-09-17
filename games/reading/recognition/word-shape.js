@@ -7,7 +7,7 @@
  */
 
 (function() {
-    let currentLevel = 1;
+    let levelIndex = 1;
     const totalLevels = 15;
     let score = 0;
 
@@ -43,7 +43,7 @@
         const stage = document.getElementById(containerId);
         if (!stage) return;
         
-        currentLevel = 1;
+        levelIndex = 1;
         score = 0;
         loadLevel(stage);
     };
@@ -83,7 +83,7 @@
     }
 
     function loadLevel(stage) {
-        const data = gameData[currentLevel - 1];
+        const data = gameData[levelIndex - 1];
         const choices = [data.word, data.distractor].sort(() => Math.random() - 0.5);
         const isBoxMode = data.type === 'boxes';
 
@@ -253,7 +253,7 @@
             </style>
 
             <div class="game-wrapper">
-                <div class="level-indicator">Level ${currentLevel} / ${totalLevels} (${isBoxMode ? 'Letter Boxes' : 'Silhouette'})</div>
+                <div class="level-indicator">Level ${levelIndex} / ${totalLevels} (${isBoxMode ? 'Letter Boxes' : 'Silhouette'})</div>
                 <div class="instruction-text">${isBoxMode ? 'Which word fits these letter boxes?' : 'Which word fits this shape?'}</div>
                 
                 <div class="silhouette-container">
@@ -294,8 +294,8 @@
                     }
 
                     setTimeout(() => {
-                        if (currentLevel < totalLevels) {
-                            currentLevel++;
+                        if (levelIndex < totalLevels) {
+                            levelIndex++;
                             loadLevel(stage);
                         } else {
                             if (window.GameHub?.showComplete) {

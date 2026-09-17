@@ -9,7 +9,7 @@ window.initGame = function (stageId) {
       short: "cap", 
       long: "cape", 
       emoji: "🧢", 
-      vowelIdx: 1, // Index of the vowel that will glow (0-based)
+      vowellevelIndex: 1, // Index of the vowel that will glow (0-based)
       prompt: "Add Magic E to make the vowel say its name!", 
       options: ["e", "s", "t"] 
     },
@@ -18,7 +18,7 @@ window.initGame = function (stageId) {
       short: "hop", 
       long: "hope", 
       emoji: "🤸", 
-      vowelIdx: 1, 
+      vowellevelIndex: 1, 
       prompt: "Add Magic E to make the vowel say its name!", 
       options: ["e", "r", "n"] 
     },
@@ -27,7 +27,7 @@ window.initGame = function (stageId) {
       short: "kit", 
       long: "kite", 
       emoji: "🪁", 
-      vowelIdx: 1, 
+      vowellevelIndex: 1, 
       prompt: "Add Magic E to make the vowel say its name!", 
       options: ["e", "y", "d"] 
     },
@@ -36,7 +36,7 @@ window.initGame = function (stageId) {
       short: "tub", 
       long: "tube", 
       emoji: "🛁", 
-      vowelIdx: 1, 
+      vowellevelIndex: 1, 
       prompt: "Add Magic E to make the vowel say its name!", 
       options: ["e", "b", "p"] 
     },
@@ -45,7 +45,7 @@ window.initGame = function (stageId) {
       short: "mad", 
       long: "made", 
       emoji: "😠", 
-      vowelIdx: 1, 
+      vowellevelIndex: 1, 
       prompt: "Add Magic E to make the vowel say its name!", 
       options: ["e", "s", "n"] 
     },
@@ -98,10 +98,10 @@ window.initGame = function (stageId) {
     }
   ];
 
-  let idx = 0;
+  let levelIndex = 0;
 
   function build() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     
     // بناء عرض الكلمة بناءً على النوع
     let wordHTML = "";
@@ -109,7 +109,7 @@ window.initGame = function (stageId) {
       const letters = r.short.split("");
       wordHTML = letters.map((char, i) => {
         // إضافة فئة خاصة لحرف العلة ليتمكن من التوهج لاحقاً
-        const glowClass = i === r.vowelIdx ? "vs-vowel" : "";
+        const glowClass = i === r.vowellevelIndex ? "vs-vowel" : "";
         return `<span class="vs-letter ${glowClass}" id="letter-${i}">${char}</span>`;
       }).join("") + `<span class="vs-blank" id="vs-blank">?</span>`;
     } else {
@@ -135,7 +135,7 @@ window.initGame = function (stageId) {
         .vs-opt:active{transform:translateY(2px);box-shadow: 0 1px 0 #2b6cb0;}
       </style>
       <div class="vs-wrap">
-        <p style="color:var(--text-muted);font-weight:600;">Round ${idx + 1} / ${ROUNDS.length}</p>
+        <p style="color:var(--text-muted);font-weight:600;">Round ${levelIndex + 1} / ${ROUNDS.length}</p>
         
         <div class="vs-emoji">${r.emoji}</div>
         
@@ -186,16 +186,16 @@ window.initGame = function (stageId) {
           
           // التأثير التعليمي البصري: إذا كان Magic E، نجعل حرف العلة يضيء
           if (r.type === "magic_e") {
-            const vowelEl = document.getElementById(`letter-${r.vowelIdx}`);
+            const vowelEl = document.getElementById(`letter-${r.vowellevelIndex}`);
             if (vowelEl) vowelEl.classList.add("magic-glow");
             window.GameHub.speak(r.long); // نطق الكلمة الطويلة الجديدة
           } else {
             window.GameHub.speak(r.full);
           }
 
-          idx++;
+          levelIndex++;
           setTimeout(() => {
-            if (idx >= ROUNDS.length) {
+            if (levelIndex >= ROUNDS.length) {
               window.GameHub.showComplete("Vowel Master!", "You mastered short sounds, long sounds, and the Magic E!");
             } else {
               build();

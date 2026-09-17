@@ -6,7 +6,7 @@
  */
 
 (function() {
-    let currentLevel = 0;
+    let levelIndex = 0;
     let ghostsFound = [];
     
     // إعداد واجهة الصوت (AudioContext) لتوليد صوت الشبح
@@ -58,7 +58,7 @@
     window.initGame = function(containerId) {
         const stage = document.getElementById(containerId);
         if (!stage) return;
-        currentLevel = 0;
+        levelIndex = 0;
         loadLevel(stage);
     };
 
@@ -71,7 +71,7 @@
     }
 
     function loadLevel(stage) {
-        const data = gameData[currentLevel];
+        const data = gameData[levelIndex];
         ghostsFound = [];
         
         stage.innerHTML = `
@@ -167,11 +167,11 @@
             <div class="game-stage">
               <div class="ghost-container">
                 <div class="status-row">
-                    <div class="level-indicator">Level ${currentLevel + 1} / ${totalLevels}</div>
+                    <div class="level-indicator">Level ${levelIndex + 1} / ${totalLevels}</div>
                 </div>
 
                 <div class="instruction-box">
-                    <strong>Level ${currentLevel + 1}:</strong><br>
+                    <strong>Level ${levelIndex + 1}:</strong><br>
                     ${data.instruction}
                 </div>
 
@@ -225,8 +225,8 @@
         setTimeout(() => speak(data.word), 500);
 
         nextBtn.onclick = () => {
-            if (currentLevel < totalLevels - 1) {
-                currentLevel++;
+            if (levelIndex < totalLevels - 1) {
+                levelIndex++;
                 loadLevel(stage);
             } else {
                 if (window.GameHub?.showComplete) {

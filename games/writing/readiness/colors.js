@@ -2,7 +2,7 @@
 window.initGame = function (stageId) {
   const stage = document.getElementById(stageId);
   
-  let currentLevelIndex = 0;
+  let levelIndexIndex = 0;
 
   // Visual Definitions
   const COLORS = {
@@ -52,7 +52,7 @@ window.initGame = function (stageId) {
   let activeItem = null; // Used for touch/click fallback
 
   function build() {
-    const levelData = LEVELS[currentLevelIndex];
+    const levelData = LEVELS[levelIndexIndex];
     let itemsToRender = [];
 
     // Parse the items for this specific level
@@ -136,7 +136,7 @@ window.initGame = function (stageId) {
       </style>
       
       <div class="co-wrap">
-        <div class="co-level">Round ${currentLevelIndex + 1} / ${LEVELS.length}</div>
+        <div class="co-level">Round ${levelIndexIndex + 1} / ${LEVELS.length}</div>
         <p class="co-title">${levelData.text}</p>
         ${layoutHTML}
         <div class="co-items" id="co-items"></div>
@@ -250,9 +250,9 @@ window.initGame = function (stageId) {
     const itemsContainer = document.getElementById("co-items");
     // If no items are left in the starting container, the level is complete
     if (itemsContainer.children.length === 0) {
-      currentLevelIndex++;
+      levelIndexIndex++;
       setTimeout(() => {
-        if (currentLevelIndex >= LEVELS.length) {
+        if (levelIndexIndex >= LEVELS.length) {
           window.GameHub.showComplete("Writing Champion!", "You mastered all the writing zones.");
         } else {
           build(); // Proceed to next level

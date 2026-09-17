@@ -85,7 +85,7 @@ window.initGame = function (stageId) {
     }
   ];
 
-  let idx = 0;
+  let levelIndex = 0;
 
   // دالة نطق النص (Text-to-Speech)
   function speakText(text, event) {
@@ -105,7 +105,7 @@ window.initGame = function (stageId) {
   }
 
   function build() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     const shuffledSentences = shuffle(r.sentences.map((text, i) => ({ text, originalIndex: i })));
     
     let slotsHTML = "";
@@ -187,7 +187,7 @@ window.initGame = function (stageId) {
       <div class="pg-wrap">
         <div class="pg-header">
           <span class="pg-icon">${r.icon}</span>
-          <span class="pg-title">Round ${idx + 1} / ${ROUNDS.length} — Build the paragraph</span>
+          <span class="pg-title">Round ${levelIndex + 1} / ${ROUNDS.length} — Build the paragraph</span>
         </div>
         
         <div class="pg-paragraph" id="pg-paragraph">
@@ -254,8 +254,8 @@ window.initGame = function (stageId) {
           // التحقق من اكتمال الفقرة
           if (builtCount === r.sentences.length) {
             setTimeout(() => {
-              idx++;
-              if (idx >= ROUNDS.length) {
+              levelIndex++;
+              if (levelIndex >= ROUNDS.length) {
                 window.GameHub.showComplete("Paragraph Master!", "You perfectly sequenced all the paragraphs!");
               } else {
                 build();

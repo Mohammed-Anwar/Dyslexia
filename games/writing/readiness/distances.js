@@ -141,11 +141,11 @@ window.initGame = function (stageId) {
     { key: "long", width: 230 }
   ];
 
-  let idx = 0;
+  let levelIndex = 0;
   let selectedGaps = new Set();
 
   function build() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     selectedGaps.clear();
 
     let html = `
@@ -184,7 +184,7 @@ window.initGame = function (stageId) {
       </style>
       <div class="di-wrap">
         <span class="di-badge">${r.badge}</span>
-        <p class="di-progress">Round ${idx + 1} / ${ROUNDS.length}</p>
+        <p class="di-progress">Round ${levelIndex + 1} / ${ROUNDS.length}</p>
     `;
 
     if (r.phase === 1) {
@@ -372,9 +372,9 @@ function setupDragAndDropPhase1(r) {
     if (isCorrect) {
       window.GameHub.playSound("correct");
       window.GameHub.triggerVFX(event.clientX || window.innerWidth / 2, event.clientY || window.innerHeight / 2);
-      idx++;
+      levelIndex++;
       setTimeout(() => {
-        if (idx >= ROUNDS.length) {
+        if (levelIndex >= ROUNDS.length) {
           window.GameHub.showComplete("System Calibrated!", "You matched and calibrated all 15 spacing modules correctly.");
         } else {
           build();

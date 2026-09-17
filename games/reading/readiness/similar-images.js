@@ -6,7 +6,7 @@
 
 (function() {
     let score = 0;
-    let currentRound = 0;
+    let levelIndex = 0;
     const totalRounds = 10; // تم التعديل إلى 10 مستويات
 
     // مجموعات الصور للمرحلة الأولى
@@ -34,7 +34,7 @@
         if (!stage) return;
         
         stage.innerHTML = ''; 
-        currentRound = 0;
+        levelIndex = 0;
         score = 0;
 
         const gameWrapper = document.createElement('div');
@@ -91,24 +91,24 @@
     };
 
     function nextRound(grid, stats, instruction, targetIcon) {
-        if (currentRound >= totalRounds) {
+        if (levelIndex >= totalRounds) {
             if (window.GameHub?.showComplete) {
                 window.GameHub.showComplete("بطل الملاحظة!", `لقد أكملت جميع التحديات بنجاح! النتيجة: ${score}`);
             }
             return;
         }
 
-        currentRound++;
+        levelIndex++;
         grid.innerHTML = '';
-        stats.innerText = `المستوى: ${currentRound} / ${totalRounds} | النتيجة: ${score}`;
+        stats.innerText = `المستوى: ${levelIndex} / ${totalRounds} | النتيجة: ${score}`;
         
         targetIcon.style.filter = "none"; // Reset filter
         targetIcon.style.transform = "scale(1)"; // Reset transform
 
         // توزيع المراحل الجديد
-        if (currentRound <= 3) {
+        if (levelIndex <= 3) {
             setupThemeMatch(grid, instruction, targetIcon);
-        } else if (currentRound <= 6) {
+        } else if (levelIndex <= 6) {
             setupShapeMatch(grid, instruction, targetIcon);
         } else {
             setupShadowLogicMatch(grid, instruction, targetIcon);

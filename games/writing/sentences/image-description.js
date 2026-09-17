@@ -100,7 +100,7 @@ window.initGame = function (stageId) {
     }
   ];
 
-  let idx = 0;
+  let levelIndex = 0;
 
   // دالة لخلط المصفوفات (للكلمات المشتتة وبنك الكلمات)
   function shuffle(array) {
@@ -113,7 +113,7 @@ window.initGame = function (stageId) {
   }
 
   function build() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     const stageName = r.stage === 1 ? "Stage 1: Build the Sentence" : 
                       r.stage === 2 ? "Stage 2: Fill in the Blank" : 
                                       "Stage 3: Write the Sentence";
@@ -208,7 +208,7 @@ window.initGame = function (stageId) {
       <div class="cd-wrap">
         <div style="display:flex; justify-content:space-between; width:100%; max-width:500px; color:var(--text-muted); font-weight:700; font-size:0.9rem;">
           <span>${stageName}</span>
-          <span>Round ${idx + 1} / ${ROUNDS.length}</span>
+          <span>Round ${levelIndex + 1} / ${ROUNDS.length}</span>
         </div>
         
         <div class="scene-display">${r.scene}</div>
@@ -303,9 +303,9 @@ window.initGame = function (stageId) {
       const rect = btn.getBoundingClientRect();
       window.GameHub.triggerVFX(rect.left + rect.width / 2, rect.top + rect.height / 2);
       
-      idx++;
+      levelIndex++;
       setTimeout(() => {
-        if (idx >= ROUNDS.length) {
+        if (levelIndex >= ROUNDS.length) {
           window.GameHub.showComplete("Amazing Writer!", "You successfully built and wrote all the sentences!");
         } else {
           build();

@@ -6,7 +6,7 @@
  */
 
 (function() {
-    let currentLevel = 0;
+    let levelIndex = 0;
     let score = 0;
     let itemsPlaced = 0;
 
@@ -233,13 +233,13 @@
     window.initGame = function(containerId) {
         const stage = document.getElementById(containerId);
         if (!stage) return;
-        currentLevel = 0;
+        levelIndex = 0;
         score = 0;
         loadLevel(stage);
     };
 
     function loadLevel(stage) {
-        const data = gameData[currentLevel];
+        const data = gameData[levelIndex];
         itemsPlaced = 0;
         
         stage.innerHTML = `
@@ -351,7 +351,7 @@
 
             <div class="tree-game-container">
                 <div class="header">
-                    <span>Round: ${currentLevel + 1} / ${gameData.length}</span>
+                    <span>Round: ${levelIndex + 1} / ${gameData.length}</span>
                     <span>Score: ${score}</span>
                 </div>
                 <div class="instruction">${data.instruction}</div>
@@ -426,10 +426,10 @@
         setTimeout(() => trunkEl.style.transform = "scale(1)", 200);
 
         // Check if level complete
-        if (itemsPlaced === gameData[currentLevel].items.length) {
+        if (itemsPlaced === gameData[levelIndex].items.length) {
             setTimeout(() => {
-                if (currentLevel < gameData.length - 1) {
-                    currentLevel++;
+                if (levelIndex < gameData.length - 1) {
+                    levelIndex++;
                     loadLevel(document.querySelector('.tree-game-container').parentElement);
                 } else {
                     if (window.GameHub?.showComplete) {

@@ -26,7 +26,7 @@ window.initGame = function (stageId) {
     { desc: "Drag the title to the CENTER.", hl: "CENTER", drag: "📝", anchor: "", mode: "board_center" }
   ];
 
-  let idx = 0;
+  let levelIndex = 0;
 
   stage.innerHTML = `
     <style>
@@ -71,7 +71,7 @@ window.initGame = function (stageId) {
 
   // نظام التعليق الصوتي باستخدام SpeechSynthesis API
   function playVoiceOver() {
-    const round = ROUNDS[idx];
+    const round = ROUNDS[levelIndex];
     if (!round || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     const msg = new SpeechSynthesisUtterance(round.desc);
@@ -136,10 +136,10 @@ window.initGame = function (stageId) {
   }
 
   function setRound() {
-    if (idx >= ROUNDS.length) return;
-    const round = ROUNDS[idx];
+    if (levelIndex >= ROUNDS.length) return;
+    const round = ROUNDS[levelIndex];
 
-    document.getElementById('lp-round').innerText = idx + 1;
+    document.getElementById('lp-round').innerText = levelIndex + 1;
     document.getElementById('lp-instruction-text').innerHTML = round.desc.replace(round.hl, `<b>${round.hl}</b>`);
 
     // بناء البيئة بناءً على المرحلة
@@ -172,8 +172,8 @@ window.initGame = function (stageId) {
       if (checkPlacement(round)) {
         window.GameHub.playSound("correct");
         window.GameHub.triggerVFX(x, y);
-        idx++;
-        if (idx >= ROUNDS.length) {
+        levelIndex++;
+        if (levelIndex >= ROUNDS.length) {
           setTimeout(() => window.GameHub.showComplete("Excellent!", "You're ready for writing!"), 400);
         } else {
           setTimeout(setRound, 500);

@@ -26,12 +26,12 @@ window.initGame = function (stageId) {
     { name: "Spaceship", pieces: [ { id: "nose", label: "▲", desc: "Nose", target: { x: 200, y: 70 } }, { id: "hull", label: "▅", desc: "Hull", target: { x: 200, y: 140 } }, { id: "wL", label: "◢", desc: "Wing L", target: { x: 140, y: 160 } }, { id: "wR", label: "◣", desc: "Wing R", target: { x: 260, y: 160 } } ] }
   ];
 
-  let level = 0;
+  let levelIndex = 0;
   let placed = 0;
 
   function buildStage() {
-    if(level >= SHAPES.length) return;
-    const shape = SHAPES[level];
+    if(levelIndex >= SHAPES.length) return;
+    const shape = SHAPES[levelIndex];
     placed = 0;
 
     stage.innerHTML = `
@@ -85,7 +85,7 @@ window.initGame = function (stageId) {
       </style>
       <div class="gs-wrap">
         <div class="gs-header">
-          <span>MISSION ${level + 1}/${SHAPES.length}</span>
+          <span>MISSION ${levelIndex + 1}/${SHAPES.length}</span>
           <span>SYSTEM: ONLINE</span>
         </div>
         <p class="gs-title">Assemble the <span>${shape.name}</span>!</p>
@@ -143,9 +143,9 @@ window.initGame = function (stageId) {
           placed++;
           
           if (placed >= shape.pieces.length) {
-            level++;
+            levelIndex++;
             setTimeout(() => {
-              if (level >= SHAPES.length) {
+              if (levelIndex >= SHAPES.length) {
                 window.GameHub.showComplete("Gadget Master!", "All explorer gadgets are fully operational.");
               } else {
                 buildStage();

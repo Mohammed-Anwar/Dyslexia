@@ -55,8 +55,8 @@ window.initGame = function (stageId) {
   ];
 
   let isEndless = false;
-  let currentRounds = [];
-  let idx = 0;
+  let levelIndexs = [];
+  let levelIndex = 0;
   let built = "";
 
   // دالة لخلط المصفوفات عشوائياً
@@ -66,13 +66,13 @@ window.initGame = function (stageId) {
 
   // بدء جلسة جديدة (15 كلمة عشوائية)
   function startSession() {
-    currentRounds = shuffle([...WORD_BANK]).slice(0, 15);
-    idx = 0;
+    levelIndexs = shuffle([...WORD_BANK]).slice(0, 15);
+    levelIndex = 0;
     build();
   }
 
   function build() {
-    const r = currentRounds[idx];
+    const r = levelIndexs[levelIndex];
     built = "";
     const letters = r.word.split("");
     
@@ -82,7 +82,7 @@ window.initGame = function (stageId) {
     const distractors = shuffle(availableDistractors).slice(0, 3);
     const pool = shuffle([...letters, ...distractors]);
 
-    const roundInfo = isEndless ? "Endless Mode" : `Round ${idx + 1} / 15`;
+    const roundInfo = isEndless ? "Endless Mode" : `Round ${levelIndex + 1} / 15`;
 
     stage.innerHTML = `
       <style>
@@ -161,11 +161,11 @@ window.initGame = function (stageId) {
           window.GameHub.speak(word);
         }
 
-        idx++;
+        levelIndex++;
         setTimeout(() => {
-          if (!isEndless && idx >= 15) {
+          if (!isEndless && levelIndex >= 15) {
             window.GameHub.showComplete("Word Builder!", "You spelled every picture word correctly.");
-          } else if (isEndless && idx >= 15) {
+          } else if (isEndless && levelIndex >= 15) {
             // في الوضع الحر، نعيد توليد 15 كلمة جديدة بسلاسة دون إظهار شاشة النهاية
             startSession();
           } else {

@@ -6,7 +6,7 @@
  */
 
 (function() {
-    let currentLevel = 1;
+    let levelIndex = 1;
     const totalLevels = 15;
     let score = 0;
 
@@ -36,7 +36,7 @@
         const stage = document.getElementById(containerId);
         if (!stage) return;
         
-        currentLevel = 1;
+        levelIndex = 1;
         score = 0;
         loadLevel(stage);
     };
@@ -175,7 +175,7 @@
             <div class="game-wrapper">
                 <div class="game-header">
                     <div class="instruction-text">What is hidden behind the wave?</div>
-                    <div class="level-indicator">Level ${currentLevel} / ${totalLevels}</div>
+                    <div class="level-indicator">Level ${levelIndex} / ${totalLevels}</div>
                 </div>
                 
                 <div id="drop-target" class="target-zone">
@@ -248,8 +248,8 @@
         }
         
         setTimeout(() => {
-            if (currentLevel < totalLevels) {
-                currentLevel++;
+            if (levelIndex < totalLevels) {
+                levelIndex++;
                 loadLevel(stage);
             } else {
                 if (window.GameHub?.showComplete) {

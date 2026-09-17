@@ -5,7 +5,7 @@
  */
 
 (function() {
-    let currentLevel = 0;
+    let levelIndex = 0;
     let isPlaying = false;
     let synth = window.speechSynthesis;
 
@@ -29,7 +29,7 @@
     window.initGame = function(containerId) {
         const stage = document.getElementById(containerId);
         if (!stage) return;
-        currentLevel = 0;
+        levelIndex = 0;
         
         // Setup initial UI layout and styles scoped to this game
         stage.innerHTML = `
@@ -319,8 +319,8 @@
     };
 
     function loadLevel() {
-        const data = gameData[currentLevel];
-        document.getElementById('rg-level-text').innerText = `Level ${currentLevel + 1} / ${totalLevels}`;
+        const data = gameData[levelIndex];
+        document.getElementById('rg-level-text').innerText = `Level ${levelIndex + 1} / ${totalLevels}`;
         
         const drumBtns = document.querySelectorAll('.rg-drum-btn');
         drumBtns.forEach(btn => {
@@ -384,7 +384,7 @@
         const drumBtns = document.querySelectorAll('.rg-drum-btn');
         drumBtns.forEach(btn => btn.disabled = true);
         
-        const data = gameData[currentLevel];
+        const data = gameData[levelIndex];
         document.getElementById('rg-instruction-text').innerText = "🤖 Listening...";
 
         await sleep(300);
@@ -403,7 +403,7 @@
     function checkAnswer(selectedBeats, clickedBtn) {
         if (isPlaying) return;
         
-        const data = gameData[currentLevel];
+        const data = gameData[levelIndex];
         const correctBeats = data.syllables.length;
         const mouth = document.getElementById('rg-robot-mouth');
 
@@ -426,8 +426,8 @@
             document.getElementById('rg-listen-btn').disabled = true;
 
             setTimeout(() => {
-                if (currentLevel < totalLevels - 1) {
-                    currentLevel++;
+                if (levelIndex < totalLevels - 1) {
+                    levelIndex++;
                     loadLevel();
                 } else {
                     if (window.GameHub && window.GameHub.showComplete) {

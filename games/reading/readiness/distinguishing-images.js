@@ -6,7 +6,7 @@
 
 (function() {
     let score = 0;
-    let currentRound = 0;
+    let levelIndex = 0;
     const totalRounds = 15;
 
     // Level sets with color metadata to prevent similarity in Stage 1
@@ -31,7 +31,7 @@
         if (!stage) return;
         
         stage.innerHTML = ''; 
-        currentRound = 0;
+        levelIndex = 0;
         score = 0;
 
         const gameWrapper = document.createElement('div');
@@ -66,20 +66,20 @@
     };
 
     function nextRound(grid, stats, instruction) {
-        if (currentRound >= totalRounds) {
+        if (levelIndex >= totalRounds) {
             if (window.GameHub?.showComplete) {
                 window.GameHub.showComplete("Master Explorer!", `You completed all 15 levels with a score of ${score}!`);
             }
             return;
         }
 
-        currentRound++;
+        levelIndex++;
         grid.innerHTML = '';
-        stats.innerText = `Level: ${currentRound} / ${totalRounds} | Score: ${score}`;
+        stats.innerText = `Level: ${levelIndex} / ${totalRounds} | Score: ${score}`;
         
-        if (currentRound <= 5) {
+        if (levelIndex <= 5) {
             setupContrastStage(grid, instruction);
-        } else if (currentRound <= 10) {
+        } else if (levelIndex <= 10) {
             setupShapeStage(grid, instruction);
         } else {
             setupShadowStage(grid, instruction);

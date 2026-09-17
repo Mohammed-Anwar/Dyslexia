@@ -26,10 +26,10 @@ window.initGame = function (stageId) {
     { phase: 3, before: "Can you ", wrong: "here", after: " the bell?", correct: "hear", options: ["hear", "here"], fullText: "Can you hear the bell?" }
   ];
 
-  let idx = 0;
+  let levelIndex = 0;
 
   function build() {
-    const round = ROUNDS[idx];
+    const round = ROUNDS[levelIndex];
     stage.innerHTML = "";
 
     const wrap = document.createElement("div");
@@ -39,7 +39,7 @@ window.initGame = function (stageId) {
     const header = document.createElement("div");
     header.style.cssText = "width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding: 0 10px;";
     header.innerHTML = `
-      <span style="font-weight:700; color:var(--primary-blue); font-size: 1.1rem;">Round ${idx + 1}/15</span>
+      <span style="font-weight:700; color:var(--primary-blue); font-size: 1.1rem;">Round ${levelIndex + 1}/15</span>
       <span style="font-weight:600; color:var(--text-muted); font-size: 0.85rem; background: var(--card-bg); padding: 4px 12px; border-radius: 20px;">Phase ${round.phase}</span>
     `;
     wrap.appendChild(header);
@@ -205,8 +205,8 @@ window.initGame = function (stageId) {
   }
 
   function nextRound() {
-    idx++;
-    if (idx >= ROUNDS.length) {
+    levelIndex++;
+    if (levelIndex >= ROUNDS.length) {
       window.GameHub.showComplete("Homophone Hero!", "You mastered matching, context, and correcting sound-alike words.");
     } else {
       build();

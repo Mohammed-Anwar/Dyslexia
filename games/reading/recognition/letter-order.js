@@ -6,7 +6,7 @@
  */
 
 (function() {
-    let currentLevel = 1;
+    let levelIndex = 1;
     const totalLevels = 15;
     let score = 0;
 
@@ -52,13 +52,13 @@
         const stage = document.getElementById(containerId);
         if (!stage) return;
         
-        currentLevel = 1;
+        levelIndex = 1;
         score = 0;
         loadLevel(stage);
     };
 
     function loadLevel(stage) {
-        const data = gameData[currentLevel - 1];
+        const data = gameData[levelIndex - 1];
         let buttonMistakes = { 0: 0, 1: 0, 2: 0 };
 
         stage.innerHTML = `
@@ -237,7 +237,7 @@
             </style>
 
             <div class="game-wrapper">
-                <div class="level-indicator">المستوى ${currentLevel} / ${totalLevels}</div>
+                <div class="level-indicator">المستوى ${levelIndex} / ${totalLevels}</div>
                 <div class="instruction-text">أين تسمع هذا الصوت في الكلمة؟</div>
                 
                 <div class="target-prompt">
@@ -290,8 +290,8 @@
                     setTimeout(() => speakWord(data.word), 400);
 
                     setTimeout(() => {
-                        if (currentLevel < totalLevels) {
-                            currentLevel++;
+                        if (levelIndex < totalLevels) {
+                            levelIndex++;
                             loadLevel(stage);
                         } else {
                             if (window.GameHub?.showComplete) {

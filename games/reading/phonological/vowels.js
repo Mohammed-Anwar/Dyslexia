@@ -15,7 +15,7 @@
  */
 
 (function() {
-    let currentLevel = 0;
+    let levelIndex = 0;
     let isStretched = false; // accordion levels only
 
     // ---------------------------------------------------------------
@@ -83,7 +83,7 @@
     window.initGame = function(containerId) {
         const stage = document.getElementById(containerId);
         if (!stage) return;
-        currentLevel = 0;
+        levelIndex = 0;
         loadLevel(stage);
     };
 
@@ -164,7 +164,7 @@
     }
 
     function loadLevel(stage) {
-        const level = gameData[currentLevel];
+        const level = gameData[levelIndex];
         if (level.type === 'sort') {
             loadSortLevel(stage, level);
         } else {
@@ -173,8 +173,8 @@
     }
 
     function goNextLevel(stage) {
-        if (currentLevel < gameData.length - 1) {
-            currentLevel++;
+        if (levelIndex < gameData.length - 1) {
+            levelIndex++;
             loadLevel(stage);
         } else {
             if (window.GameHub?.showComplete) {
@@ -289,11 +289,11 @@
             <div class="game-stage">
               <div class="accordion-container">
                 <div class="status-row">
-                    <div class="level-indicator">Level ${currentLevel + 1} / ${totalLevels}</div>
+                    <div class="level-indicator">Level ${levelIndex + 1} / ${totalLevels}</div>
                 </div>
 
                 <div class="instruction-box">
-                    <strong>Level ${currentLevel + 1}:</strong><br>
+                    <strong>Level ${levelIndex + 1}:</strong><br>
                     ${data.instruction}
                 </div>
 
@@ -468,7 +468,7 @@
                 <div class="game-stage">
                   <div class="sort-container">
                     <div class="status-row">
-                        <div class="level-indicator">Level ${currentLevel + 1} / ${totalLevels}</div>
+                        <div class="level-indicator">Level ${levelIndex + 1} / ${totalLevels}</div>
                         <div class="round-indicator">Round ${roundIdx + 1} / ${rounds.length}</div>
                     </div>
 

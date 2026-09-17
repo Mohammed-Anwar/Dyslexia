@@ -6,7 +6,7 @@
  */
 
 (function() {
-    let currentLevel = 0;
+    let levelIndex = 0;
     let score = 0;
     let correctlyPlaced = 0;
 
@@ -193,7 +193,7 @@
     window.initGame = function(containerId) {
         const stage = document.getElementById(containerId);
         if (!stage) return;
-        currentLevel = 0;
+        levelIndex = 0;
         score = 0;
         loadLevel(stage);
     };
@@ -210,7 +210,7 @@
     }
 
     function loadLevel(stage) {
-        const data = gameData[currentLevel];
+        const data = gameData[levelIndex];
         correctlyPlaced = 0;
         
         // تحديد لون شارة المرحلة حسب الصعوبة
@@ -361,7 +361,7 @@
             <div class="story-container">
                 <div class="game-header">
                     <span class="level-badge">${data.phaseName}</span>
-                    <span>Stage ${currentLevel + 1} / ${gameData.length} | Score: ${score}</span>
+                    <span>Stage ${levelIndex + 1} / ${gameData.length} | Score: ${score}</span>
                 </div>
                 <h2 class="story-title">${data.storyTitle}</h2>
                 <p class="instruction-text">${data.instruction}</p>
@@ -440,8 +440,8 @@
 
         if (correctlyPlaced === 4) {
             setTimeout(() => {
-                if (currentLevel < gameData.length - 1) {
-                    currentLevel++;
+                if (levelIndex < gameData.length - 1) {
+                    levelIndex++;
                     loadLevel(document.querySelector('.story-container').parentElement);
                 } else {
                     if (window.GameHub?.showComplete) {

@@ -24,7 +24,7 @@ window.initGame = function (stageId) {
     { stage: 3, images: ["🏟️", "🏊", "🏠"], verbs: ["go", "swim", "go"], transitions: ["first", "then", "finally"], fullText: "First, I go to the club. Then, I swim. Finally, I go home." }
   ];
 
-  let idx = 0;
+  let levelIndex = 0;
   let built = [];
   const transitions = ["First,", "Then,", "After that,", "Finally,"];
 
@@ -48,7 +48,7 @@ window.initGame = function (stageId) {
   }
 
   function build() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     built = [];
     let specificHTML = "";
     const stageName = r.stage === 1 ? "Stage 1: Drag & Build" : 
@@ -60,7 +60,7 @@ window.initGame = function (stageId) {
       specificHTML = `
         <p class="dr-instruction">Drag the sentences to the correct order to build your paragraph.</p>
         <div class="dr-paragraph" id="dr-paragraph">
-          ${[0,1,2,3].map(i => `<div class="dr-slot" data-idx="${i}">${i+1}</div>`).join('')}
+          ${[0,1,2,3].map(i => `<div class="dr-slot" data-levelIndex="${i}">${i+1}</div>`).join('')}
         </div>
         <div class="dr-pool" id="dr-pool">
           ${shuffledSentences.map((s, i) => `<div class="dr-card" data-text="${s}" data-id="c${i}">${s}</div>`).join('')}
@@ -71,7 +71,7 @@ window.initGame = function (stageId) {
       let paraHTML = "";
       for(let i=0; i<r.blanks.length; i++) {
         paraHTML += r.parts[i];
-        paraHTML += `<span class="dr-blank-wrap"><span class="dr-hint">${r.blanks[i].h}</span><input type="text" class="dr-blank" data-idx="${i}" maxlength="10" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></span>`;
+        paraHTML += `<span class="dr-blank-wrap"><span class="dr-hint">${r.blanks[i].h}</span><input type="text" class="dr-blank" data-levelIndex="${i}" maxlength="10" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></span>`;
       }
       paraHTML += r.parts[r.parts.length - 1];
       specificHTML = `
@@ -140,7 +140,7 @@ window.initGame = function (stageId) {
             <span class="dr-icon">🦸</span>
             <span class="dr-title">The Hero's Daily Quests</span>
           </div>
-          <span class="dr-round">${stageName} | ${idx + 1} / ${ROUNDS.length}</span>
+          <span class="dr-round">${stageName} | ${levelIndex + 1} / ${ROUNDS.length}</span>
         </div>
 
         <div style="width:100%; max-width:600px; display:flex; flex-direction:column; align-items:center; gap:15px;">
@@ -156,7 +156,7 @@ window.initGame = function (stageId) {
 
   // --- محرك السحب والإفلات المتقدم (يعمل على اللمس والماوس) ---
   function setupStage1DragAndDrop() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     const pool = document.getElementById("dr-pool");
     const cards = pool.querySelectorAll(".dr-card");
     
@@ -208,7 +208,7 @@ window.initGame = function (stageId) {
           
           const slot = elemBelow ? elemBelow.closest(".dr-slot") : null;
           
-          if (slot && parseInt(slot.dataset.idx) === built.length && draggedItem.dataset.text === expectedText) {
+          if (slot && parseInt(slot.dataset.levelIndex) === built.length && draggedItem.dataset.text === expectedText) {
             handleCorrectDrop(draggedItem, upEvent.clientX, upEvent.clientY);
           } else {
             handleWrongDrop(draggedItem);
@@ -227,7 +227,7 @@ window.initGame = function (stageId) {
       window.GameHub.playSound("correct");
       window.GameHub.triggerVFX(x, y);
       
-      const slot = document.querySelector(`.dr-slot[data-idx="${built.length}"]`);
+      const slot = document.querySelector(`.dr-slot[data-levelIndex="${built.length}"]`);
       slot.classList.add("filled");
       // التلقين التلقائي للروابط وإضافة النقطة
       slot.innerHTML = `<span class="dr-trans">${transitions[built.length]}</span> ${item.dataset.text}<span class="dr-period">.</span>`;
@@ -248,12 +248,12 @@ window.initGame = function (stageId) {
   }
 
   function setupStage2() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     const inputs = document.querySelectorAll(".dr-blank");
     let completedCount = 0;
 
     inputs.forEach(input => {
-      const i = parseInt(input.dataset.idx);
+      const i = parseInt(input.dataset.levelIndex);
       
       const checkBlank = () => {
         const correctAns = r.blanks[i].a.toLowerCase();
@@ -287,7 +287,7 @@ window.initGame = function (stageId) {
   }
 
   function setupStage3() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     const textarea = document.getElementById("dr-textarea");
     const checkBtn = document.getElementById("dr-check-btn");
 
@@ -311,8 +311,8 @@ window.initGame = function (stageId) {
   }
 
   function advanceRound() {
-    idx++;
-    if (idx >= ROUNDS.length) {
+    levelIndex++;
+    if (levelIndex >= ROUNDS.length) {
       window.GameHub.showComplete("Hero's Quest Complete!", "You mastered your daily routine and wrote perfect paragraphs!");
     } else {
       build();

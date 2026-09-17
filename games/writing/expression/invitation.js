@@ -122,7 +122,7 @@ window.initGame = function (stageId) {
     }
   ];
 
-  let idx = 0;
+  let levelIndex = 0;
   let lineStates = [{}, {}, {}]; // تتبع حالة كل سطر (الكلمات المختارة)
   let isDragging = false;
 
@@ -139,11 +139,11 @@ window.initGame = function (stageId) {
   }
 
   // إعادة رسم منطقة سحب محددة
-  function renderLineZone(lineIdx) {
-    const zone = document.getElementById(`zone-${lineIdx}`);
+  function renderLineZone(linelevelIndex) {
+    const zone = document.getElementById(`zone-${linelevelIndex}`);
     if (!zone) return;
     
-    const words = lineStates[lineIdx];
+    const words = lineStates[linelevelIndex];
     zone.innerHTML = '';
     
     if (Object.keys(words).length === 0) {
@@ -160,14 +160,14 @@ window.initGame = function (stageId) {
       chip.innerText = data.value;
       chip.onclick = (e) => { 
         e.stopPropagation(); 
-        returnWordToBank(lineIdx, originalId); 
+        returnWordToBank(linelevelIndex, originalId); 
       };
       zone.appendChild(chip);
     });
   }
 
   function build() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     const phaseName = r.phase === 1 ? "Phase 1: Build the Sentences" : r.phase === 2 ? "Phase 2: Fill in the Blanks" : "Phase 3: Write the Invitation";
     
     // تصفير الحالات
@@ -178,16 +178,16 @@ window.initGame = function (stageId) {
     if (r.phase === 1) {
       // إنشاء 3 أسطر معاً
       contentHTML = '<div class="lines-container">';
-      r.lines.forEach((line, lineIdx) => {
+      r.lines.forEach((line, linelevelIndex) => {
         const shuffledWords = [...line.words].sort(() => Math.random() - 0.5);
         contentHTML += `
-          <div class="single-line" data-line="${lineIdx}">
-            <div class="line-label">Line ${lineIdx + 1}</div>
-            <div class="drop-zone" id="zone-${lineIdx}">
+          <div class="single-line" data-line="${linelevelIndex}">
+            <div class="line-label">Line ${linelevelIndex + 1}</div>
+            <div class="drop-zone" id="zone-${linelevelIndex}">
               <span class="placeholder-text">Tap or drag words here...</span>
             </div>
-            <div class="options-bank" id="bank-${lineIdx}">
-              ${shuffledWords.map((word, i) => `<div class="word-chip" draggable="true" data-value="${word}" data-line="${lineIdx}" data-idx="${i}" id="w-${lineIdx}-${i}">${word}</div>`).join('')}
+            <div class="options-bank" id="bank-${linelevelIndex}">
+              ${shuffledWords.map((word, i) => `<div class="word-chip" draggable="true" data-value="${word}" data-line="${linelevelIndex}" data-levelIndex="${i}" id="w-${linelevelIndex}-${i}">${word}</div>`).join('')}
             </div>
           </div>
         `;
@@ -195,15 +195,15 @@ window.initGame = function (stageId) {
       contentHTML += '</div><button class="game-btn success check-btn" style="margin-top:20px;">Check All Lines</button>';
     } else if (r.phase === 2) {
       let html = '<div class="typing-invitation">';
-      let bIdx = 0;
+      let blevelIndex = 0;
       for (let i = 0; i < r.textParts.length; i++) {
         html += `<span class="text-part">${r.textParts[i]}</span>`;
-        if (bIdx < r.blanks.length && i < r.textParts.length - 1) {
+        if (blevelIndex < r.blanks.length && i < r.textParts.length - 1) {
           html += `<div class="blank-wrapper">
-                     <input type="text" class="blank-input" data-idx="${bIdx}" placeholder="${r.blanks[bIdx].placeholder}" autocomplete="off">
-                     <span class="hint-badge" onclick="speakText('${r.blanks[bIdx].hint}')" title="Listen to hint">💡 ${r.blanks[bIdx].hint}</span>
+                     <input type="text" class="blank-input" data-levelIndex="${blevelIndex}" placeholder="${r.blanks[blevelIndex].placeholder}" autocomplete="off">
+                     <span class="hint-badge" onclick="speakText('${r.blanks[blevelIndex].hint}')" title="Listen to hint">💡 ${r.blanks[blevelIndex].hint}</span>
                    </div>`;
-          bIdx++;
+          blevelIndex++;
         }
       }
       html += '</div><button class="game-btn success check-btn" style="margin-top:20px;">Send Invitation</button>';
@@ -296,7 +296,7 @@ window.initGame = function (stageId) {
 
       <div class="po-wrap">
         <div class="phase-badge">${phaseName}</div>
-        <div class="round-badge">Round ${idx + 1} / ${ROUNDS.length}</div>
+        <div class="round-badge">Round ${levelIndex + 1} / ${ROUNDS.length}</div>
 
         <div class="invitation-card" id="invite-card">
           <div class="card-header">
@@ -314,17 +314,17 @@ window.initGame = function (stageId) {
     `;
 
     // --- ربط الأحداث بأمان ---
-    const currentRound = ROUNDS[idx];
+    const levelIndex = ROUNDS[levelIndex];
 
     // Voice button
     const voiceBtn = stage.querySelector('.voice-btn');
-    if (voiceBtn) voiceBtn.addEventListener('click', () => speakText(currentRound.event + " Invitation"));
+    if (voiceBtn) voiceBtn.addEventListener('click', () => speakText(levelIndex.event + " Invitation"));
 
-    if (currentRound.phase === 1) {
+    if (levelIndex.phase === 1) {
       // إعداد كل سطر
-      currentRound.lines.forEach((line, lineIdx) => {
-        const zone = document.getElementById(`zone-${lineIdx}`);
-        const bank = document.getElementById(`bank-${lineIdx}`);
+      levelIndex.lines.forEach((line, linelevelIndex) => {
+        const zone = document.getElementById(`zone-${linelevelIndex}`);
+        const bank = document.getElementById(`bank-${linelevelIndex}`);
         
         // Drop zone events
         zone.addEventListener('dragover', (e) => { 
@@ -335,10 +335,10 @@ window.initGame = function (stageId) {
         zone.addEventListener('drop', (e) => {
           e.preventDefault(); 
           zone.classList.remove('drag-over');
-          const lineData = e.dataTransfer.getData('line-idx');
-          const wordIdx = e.dataTransfer.getData('word-idx');
-          if (lineData !== undefined && wordIdx !== undefined) {
-            moveWordToZone(parseInt(lineData), parseInt(wordIdx), lineIdx);
+          const lineData = e.dataTransfer.getData('line-levelIndex');
+          const wordlevelIndex = e.dataTransfer.getData('word-levelIndex');
+          if (lineData !== undefined && wordlevelIndex !== undefined) {
+            moveWordToZone(parseInt(lineData), parseInt(wordlevelIndex), linelevelIndex);
           }
         });
 
@@ -348,8 +348,8 @@ window.initGame = function (stageId) {
           chip.addEventListener('dragstart', (e) => {
             isDragging = true;
             e.dataTransfer.setData('text/plain', chip.getAttribute('data-value'));
-            e.dataTransfer.setData('line-idx', chip.getAttribute('data-line'));
-            e.dataTransfer.setData('word-idx', chip.getAttribute('data-idx'));
+            e.dataTransfer.setData('line-levelIndex', chip.getAttribute('data-line'));
+            e.dataTransfer.setData('word-levelIndex', chip.getAttribute('data-levelIndex'));
           });
           chip.addEventListener('dragend', () => { 
             setTimeout(() => { isDragging = false; }, 50); 
@@ -361,22 +361,22 @@ window.initGame = function (stageId) {
               return; 
             }
             const wLine = parseInt(chip.getAttribute('data-line'));
-            const wIdx = parseInt(chip.getAttribute('data-idx'));
-            moveWordToZone(wLine, wIdx, lineIdx);
+            const wlevelIndex = parseInt(chip.getAttribute('data-levelIndex'));
+            moveWordToZone(wLine, wlevelIndex, linelevelIndex);
           });
         });
       });
 
       stage.querySelector('.check-btn').addEventListener('click', () => checkAllLines());
     } 
-    else if (currentRound.phase === 2) {
+    else if (levelIndex.phase === 2) {
       stage.querySelector('.check-btn').addEventListener('click', () => checkPhase2());
       setTimeout(() => {
         const firstBlank = stage.querySelector('.blank-input');
         if (firstBlank) firstBlank.focus();
       }, 100);
     } 
-    else if (currentRound.phase === 3) {
+    else if (levelIndex.phase === 3) {
       stage.querySelector('.check-btn').addEventListener('click', () => checkPhase3());
       setTimeout(() => {
         const textarea = stage.querySelector('.invite-textarea');
@@ -391,10 +391,10 @@ window.initGame = function (stageId) {
   }
 
   // --- منطق المرحلة الأولى: Unscramble (3 أسطر معاً) ---
-  function moveWordToZone(fromLine, wordIdx, toLine) {
+  function moveWordToZone(fromLine, wordlevelIndex, toLine) {
     if (fromLine !== toLine) return; // لا يمكن نقل الكلمات بين أسطر مختلفة
     
-    const chipId = `w-${fromLine}-${wordIdx}`;
+    const chipId = `w-${fromLine}-${wordlevelIndex}`;
     const bankChip = document.getElementById(chipId);
     
     if (!bankChip || bankChip.classList.contains('used')) return;
@@ -408,35 +408,35 @@ window.initGame = function (stageId) {
     renderLineZone(toLine);
   }
 
-  function returnWordToBank(lineIdx, originalId) {
-    const data = lineStates[lineIdx][originalId];
+  function returnWordToBank(linelevelIndex, originalId) {
+    const data = lineStates[linelevelIndex][originalId];
     if (!data) return;
     
-    delete lineStates[lineIdx][originalId];
+    delete lineStates[linelevelIndex][originalId];
     
     const bankChip = document.getElementById(originalId);
     if (bankChip) bankChip.classList.remove('used');
     
     // إعادة ترتيب المواقع
-    const remainingWords = Object.entries(lineStates[lineIdx]);
+    const remainingWords = Object.entries(lineStates[linelevelIndex]);
     remainingWords.sort((a, b) => a[1].position - b[1].position);
     remainingWords.forEach(([id, wordData], newPos) => {
       wordData.position = newPos;
     });
     
-    renderLineZone(lineIdx);
+    renderLineZone(linelevelIndex);
   }
 
   function checkAllLines() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     let allCorrect = true;
     
-    r.lines.forEach((line, lineIdx) => {
-      const zone = document.getElementById(`zone-${lineIdx}`);
+    r.lines.forEach((line, linelevelIndex) => {
+      const zone = document.getElementById(`zone-${linelevelIndex}`);
       const lineContainer = zone.closest('.single-line');
       
       // تجميع الكلمات بالترتيب
-      const words = lineStates[lineIdx];
+      const words = lineStates[linelevelIndex];
       const sortedWords = Object.entries(words).sort((a, b) => a[1].position - b[1].position);
       const userAnswer = sortedWords.map(([_, data]) => data.value).join(' ');
       
@@ -468,7 +468,7 @@ window.initGame = function (stageId) {
 
   // --- منطق المرحلة الثانية: Guided Typing ---
   function checkPhase2() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     const inputs = stage.querySelectorAll('.blank-input');
     let allCorrect = true;
     let firstWrong = null;
@@ -501,7 +501,7 @@ window.initGame = function (stageId) {
 
   // --- منطق المرحلة الثالثة: Independent Writing ---
   function checkPhase3() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     const textarea = stage.querySelector('.invite-textarea');
     const text = textarea.value.toLowerCase();
     
@@ -530,8 +530,8 @@ window.initGame = function (stageId) {
     envelope.style.display = 'flex';
     
     setTimeout(() => {
-      idx++;
-      if (idx >= ROUNDS.length) {
+      levelIndex++;
+      if (levelIndex >= ROUNDS.length) {
         if (window.GameHub) {
           window.GameHub.showComplete("Master Inviter!", "You successfully wrote and sent all the invitations!");
         } else {

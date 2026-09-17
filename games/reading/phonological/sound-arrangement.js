@@ -6,7 +6,7 @@
  */
 
 (function() {
-    let currentLevel = 0;
+    let levelIndex = 0;
     let placedCount = 0;
 
     const gameData = [
@@ -28,7 +28,7 @@
     window.initGame = function(containerId) {
         const stage = document.getElementById(containerId);
         if (!stage) return;
-        currentLevel = 0;
+        levelIndex = 0;
         loadLevel(stage);
     };
 
@@ -41,7 +41,7 @@
     }
 
     function loadLevel(stage) {
-        const data = gameData[currentLevel];
+        const data = gameData[levelIndex];
         placedCount = 0;
         
         // Shuffle letters for the choice area
@@ -162,7 +162,7 @@
             <div class="game-stage">
               <div class="builder-container">
                 <div class="status-row">
-                    <div class="level-indicator">Level ${currentLevel + 1} / ${totalLevels}</div>
+                    <div class="level-indicator">Level ${levelIndex + 1} / ${totalLevels}</div>
                 </div>
 
                 <div class="instruction-box">${data.instruction}</div>
@@ -252,8 +252,8 @@
         });
 
         nextBtn.onclick = () => {
-            if (currentLevel < totalLevels - 1) {
-                currentLevel++;
+            if (levelIndex < totalLevels - 1) {
+                levelIndex++;
                 loadLevel(stage);
             } else {
                 if (window.GameHub?.showComplete) {

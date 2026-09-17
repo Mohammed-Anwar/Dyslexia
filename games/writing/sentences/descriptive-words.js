@@ -141,7 +141,7 @@ window.initGame = function (stageId) {
     }
   ];
 
-  let idx = 0;
+  let levelIndex = 0;
   let draggedEl = null;
   let originParent = null;
   let shiftX = 0;
@@ -169,7 +169,7 @@ window.initGame = function (stageId) {
   };
 
   function build() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     placedWords = {};
     wrongWordRemoved = false;
 
@@ -322,7 +322,7 @@ window.initGame = function (stageId) {
         }
       </style>
       <div class="dw-wrap">
-        <p style="color:var(--text-muted);font-weight:700;">Level ${idx + 1} / ${ROUNDS.length} — Phase ${r.phase}</p>
+        <p style="color:var(--text-muted);font-weight:700;">Level ${levelIndex + 1} / ${ROUNDS.length} — Phase ${r.phase}</p>
         <div class="dw-image-container">${IMAGES[r.image] || "️"}</div>
         <div class="dw-sentence-container" id="dw-sentence"></div>
         ${r.phase === 3 ? '<div class="dw-trash-zone" id="dw-trash">🗑️<br><small>Trash</small></div>' : ''}
@@ -567,13 +567,13 @@ window.initGame = function (stageId) {
   }
 
   function checkWinCondition() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     const filledBlanks = document.querySelectorAll('.dw-blank.filled');
     
     if (filledBlanks.length === r.blanks.length) {
-      idx++;
+      levelIndex++;
       setTimeout(() => {
-        if (idx >= ROUNDS.length) {
+        if (levelIndex >= ROUNDS.length) {
           if (window.GameHub && window.GameHub.showComplete) {
             window.GameHub.showComplete("Descriptive Master!", "You've mastered the art of describing with adjectives!");
           }
@@ -587,7 +587,7 @@ window.initGame = function (stageId) {
   function checkPhase3Win() {
     if (wrongWordRemoved) {
       // Now show the blank for the correct word
-      const r = ROUNDS[idx];
+      const r = ROUNDS[levelIndex];
       const container = document.getElementById("dw-sentence");
       const wrongEl = container.querySelector('.dw-wrong-word');
       

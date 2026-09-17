@@ -6,7 +6,7 @@
  */
 
 (function() {
-    let currentLevel = 1;
+    let levelIndex = 1;
     const totalLevels = 15;
     let score = 0;
     let soundPlayed = false;
@@ -39,7 +39,7 @@
         const stage = document.getElementById(containerId);
         if (!stage) return;
         
-        currentLevel = 1;
+        levelIndex = 1;
         score = 0;
         loadLevel(stage);
     };
@@ -84,7 +84,7 @@
     }
 
     function loadLevel(stage) {
-        const data = gameData[currentLevel - 1];
+        const data = gameData[levelIndex - 1];
         soundPlayed = false;
         const shuffledOptions = [...data.options].sort(() => Math.random() - 0.5);
 
@@ -184,7 +184,7 @@
             </style>
 
             <div class="game-wrapper">
-                <div class="level-indicator">Level ${currentLevel} / ${totalLevels}</div>
+                <div class="level-indicator">Level ${levelIndex} / ${totalLevels}</div>
                 <div class="instruction">First, tap the letter to hear its sound!</div>
 
                 <div id="letter-card" class="letter-card">
@@ -222,8 +222,8 @@
                     }
                     
                     setTimeout(() => {
-                        if (currentLevel < totalLevels) {
-                            currentLevel++;
+                        if (levelIndex < totalLevels) {
+                            levelIndex++;
                             loadLevel(stage);
                         } else {
                             if (window.GameHub?.showComplete) {

@@ -100,7 +100,7 @@ window.initGame = function (stageId) {
     }
   ];
 
-  let idx = 0;
+  let levelIndex = 0;
 
   // دالة نطق النص (Text-to-Speech)
   function speakText(text, event) {
@@ -120,7 +120,7 @@ window.initGame = function (stageId) {
   }
 
   function build() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     const shuffledBlocks = shuffle(r.blocks);
     let builtCount = 0;
 
@@ -206,7 +206,7 @@ window.initGame = function (stageId) {
       <div class="fq-wrap">
         <div class="fq-header">
           <span class="fq-icon">${r.icon}</span>
-          <span class="fq-title">${stageName} &nbsp;|&nbsp; Round ${idx + 1} / ${ROUNDS.length}</span>
+          <span class="fq-title">${stageName} &nbsp;|&nbsp; Round ${levelIndex + 1} / ${ROUNDS.length}</span>
         </div>
         
         <p style="color:var(--text-muted); font-weight:600; margin-top: -10px;">Build the QUESTION for this answer:</p>
@@ -261,8 +261,8 @@ window.initGame = function (stageId) {
           // التحقق من اكتمال السؤال
           if (builtCount === r.correct.length) {
             setTimeout(() => {
-              idx++;
-              if (idx >= ROUNDS.length) {
+              levelIndex++;
+              if (levelIndex >= ROUNDS.length) {
                 window.GameHub.showComplete("Question Master!", "You perfectly formulated every question!");
               } else {
                 build();

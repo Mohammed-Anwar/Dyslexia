@@ -100,7 +100,7 @@ window.initGame = function (stageId) {
     }
   ];
 
-  let idx = 0;
+  let levelIndex = 0;
   // مصفوفة لتتبع الكلمات المختارة مع معرفها الأصلي لمنع التكرار أو الحذف الخاطئ
   let currentUnscrambleWords = []; 
   let isDragging = false; // لمنع تعارض النقر مع السحب
@@ -149,7 +149,7 @@ window.initGame = function (stageId) {
   }
 
   function build() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     const phaseName = r.phase === 1 ? "Phase 1: Choose the Response" : r.phase === 2 ? "Phase 2: Unscramble the Words" : "Phase 3: Complete the Sentence";
     
     let interactionHTML = '';
@@ -257,7 +257,7 @@ window.initGame = function (stageId) {
 
       <div class="cd-wrap">
         <div class="phase-indicator">${phaseName}</div>
-        <div class="round-indicator">Round ${idx + 1} / ${ROUNDS.length}</div>
+        <div class="round-indicator">Round ${levelIndex + 1} / ${ROUNDS.length}</div>
 
         <div class="comic-scene">
           <div class="character-box">
@@ -363,7 +363,7 @@ window.initGame = function (stageId) {
   function selectChoice(element) {
     if (!element) return;
     const value = element.getAttribute('data-value');
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     const zone = document.getElementById('answer-zone');
     if (!zone) return;
     
@@ -403,7 +403,7 @@ window.initGame = function (stageId) {
   }
 
   function checkUnscramble() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     // تجميع الكلمات من المصفوفة مع تطبيع المسافات حول علامات الترقيم
     const userAnswer = currentUnscrambleWords.map(w => w.value).join(' ');
     const zone = document.getElementById('answer-zone');
@@ -419,7 +419,7 @@ window.initGame = function (stageId) {
   }
 
   function checkTyping() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     const input = document.getElementById('typing-input');
     if (!input) return;
     const userAnswer = input.value.trim().toLowerCase();
@@ -439,8 +439,8 @@ window.initGame = function (stageId) {
     }
     
     setTimeout(() => {
-      idx++;
-      if (idx >= ROUNDS.length) {
+      levelIndex++;
+      if (levelIndex >= ROUNDS.length) {
         if (window.GameHub) {
           window.GameHub.showComplete("Polite & Kind!", "You picked the perfect phrase for every situation!");
         } else {

@@ -6,7 +6,7 @@
  */
 
 (function() {
-    let currentLevel = 1;
+    let levelIndex = 1;
     const totalLevels = 15;
     let score = 0;
 
@@ -53,14 +53,14 @@
         const stage = document.getElementById(containerId);
         if (!stage) return;
         
-        currentLevel = 1;
+        levelIndex = 1;
         score = 0;
         loadLevel(stage);
     };
 
     function loadLevel(stage) {
         // Cycle through gameData based on level
-        const setIndex = Math.floor((currentLevel - 1) / 5) % gameData.length;
+        const setIndex = Math.floor((levelIndex - 1) / 5) % gameData.length;
         const currentData = gameData[setIndex];
         
         // Pick a random item from the current set
@@ -149,7 +149,7 @@
             </style>
 
             <div class="game-wrapper">
-                <div class="level-indicator">Level ${currentLevel} / ${totalLevels}</div>
+                <div class="level-indicator">Level ${levelIndex} / ${totalLevels}</div>
                 <div class="instruction-text">Where does this belong?</div>
 
                 <div class="item-source">
@@ -205,8 +205,8 @@
         }
 
         setTimeout(() => {
-            if (currentLevel < totalLevels) {
-                currentLevel++;
+            if (levelIndex < totalLevels) {
+                levelIndex++;
                 loadLevel(stage);
             } else {
                 if (window.GameHub?.showComplete) {

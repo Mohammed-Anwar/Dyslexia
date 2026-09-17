@@ -6,7 +6,7 @@
  */
 
 (function() {
-    let currentLevel = 0;
+    let levelIndex = 0;
     let score = 0;
 
     const gameData = [
@@ -64,13 +64,13 @@
     window.initGame = function(containerId) {
         const stage = document.getElementById(containerId);
         if (!stage) return;
-        currentLevel = 0;
+        levelIndex = 0;
         score = 0;
         loadLevel(stage);
     };
 
     function loadLevel(stage) {
-        const data = gameData[currentLevel];
+        const data = gameData[levelIndex];
         
         stage.innerHTML = `
             <style>
@@ -185,7 +185,7 @@
 
             <div class="portal-container">
                 <div class="header-stats">
-                    <span>Level: ${currentLevel + 1} / ${gameData.length}</span>
+                    <span>Level: ${levelIndex + 1} / ${gameData.length}</span>
                     <span>Score: ${score}</span>
                 </div>
 
@@ -231,8 +231,8 @@
                 }
 
                 setTimeout(() => {
-                    if (currentLevel < gameData.length - 1) {
-                        currentLevel++;
+                    if (levelIndex < gameData.length - 1) {
+                        levelIndex++;
                         loadLevel(stage);
                     } else {
                         if (window.GameHub?.showComplete) {

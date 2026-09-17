@@ -26,7 +26,7 @@ window.initGame = function (stageId) {
     { words: ["Do", "you", "like", "ice", "cream?"] }
   ];
 
-  let idx = 0;
+  let levelIndex = 0;
 
   // Drag and Drop State Variables
   let draggedEl = null;
@@ -35,7 +35,7 @@ window.initGame = function (stageId) {
   let shiftY = 0;
 
   function build() {
-    const r = ROUNDS[idx];
+    const r = ROUNDS[levelIndex];
     // Shuffle words for the pool
     const shuffled = [...r.words].sort(() => Math.random() - 0.5);
     
@@ -145,7 +145,7 @@ window.initGame = function (stageId) {
         }
       </style>
       <div class="wa-wrap">
-        <p class="wa-instructions">Level ${idx + 1} / ${ROUNDS.length} — Drag words into the boxes in the right order</p>
+        <p class="wa-instructions">Level ${levelIndex + 1} / ${ROUNDS.length} — Drag words into the boxes in the right order</p>
         <div class="wa-line" id="wa-line"></div>
         <div class="wa-pool" id="wa-pool"></div>
       </div>
@@ -222,7 +222,7 @@ window.initGame = function (stageId) {
     if (slot && !slot.hasChildNodes()) {
       const slotIndex = Array.from(slot.parentElement.children).indexOf(slot);
       const word = draggedEl.innerText;
-      const expected = ROUNDS[idx].words[slotIndex];
+      const expected = ROUNDS[levelIndex].words[slotIndex];
 
       if (word === expected) {
         // Correct placement
@@ -271,10 +271,10 @@ window.initGame = function (stageId) {
 
   function checkWinCondition() {
     const lockedCards = document.querySelectorAll('.wa-card.locked');
-    if (lockedCards.length === ROUNDS[idx].words.length) {
-      idx++;
+    if (lockedCards.length === ROUNDS[levelIndex].words.length) {
+      levelIndex++;
       setTimeout(() => {
-        if (idx >= ROUNDS.length) {
+        if (levelIndex >= ROUNDS.length) {
           if (window.GameHub && window.GameHub.showComplete) {
             window.GameHub.showComplete("Sentence Builder!", "You arranged every sentence in the right order. Amazing job!");
           }

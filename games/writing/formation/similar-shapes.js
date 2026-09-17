@@ -26,10 +26,10 @@ window.initGame = function (stageId) {
     { phase: 3, title: "Find the exact twin!", target: "u", options: ["n", "v", "u"] }
   ];
 
-  let idx = 0;
+  let levelIndex = 0;
 
   function build() {
-    const round = ROUNDS[idx];
+    const round = ROUNDS[levelIndex];
     stage.innerHTML = "";
 
     const wrap = document.createElement("div");
@@ -39,7 +39,7 @@ window.initGame = function (stageId) {
     const header = document.createElement("div");
     header.style.cssText = "width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding: 0 10px;";
     header.innerHTML = `
-      <span style="font-weight:700; color:var(--primary-blue); font-size: 1.1rem;">Round ${idx + 1}/15</span>
+      <span style="font-weight:700; color:var(--primary-blue); font-size: 1.1rem;">Round ${levelIndex + 1}/15</span>
       <span style="font-weight:600; color:var(--text-muted); font-size: 0.85rem; background: var(--card-bg); padding: 4px 12px; border-radius: 20px;">Phase ${round.phase}</span>
     `;
     wrap.appendChild(header);
@@ -76,8 +76,8 @@ window.initGame = function (stageId) {
             btn.style.color = "white";
             btn.style.borderColor = "var(--primary-green)";
             setTimeout(() => {
-              idx++;
-              if (idx >= ROUNDS.length) {
+              levelIndex++;
+              if (levelIndex >= ROUNDS.length) {
                 window.GameHub.showComplete("Sharp Eyes!", "You spotted every look-alike letter.");
               } else {
                 build();
@@ -131,8 +131,8 @@ window.initGame = function (stageId) {
               shadow.style.background = "rgba(72,187,120,0.1)";
               el.style.visibility = "hidden";
               setTimeout(() => {
-                idx++;
-                if (idx >= ROUNDS.length) {
+                levelIndex++;
+                if (levelIndex >= ROUNDS.length) {
                   window.GameHub.showComplete("Perfect Match!", "You connected every letter to its shadow.");
                 } else {
                   build();
@@ -181,8 +181,8 @@ window.initGame = function (stageId) {
             btn.style.background = "var(--primary-green)";
             btn.style.color = "white";
             setTimeout(() => {
-              idx++;
-              if (idx >= ROUNDS.length) {
+              levelIndex++;
+              if (levelIndex >= ROUNDS.length) {
                 window.GameHub.showComplete("Mirror Master!", "You conquered all the tricky reflections.");
               } else {
                 build();

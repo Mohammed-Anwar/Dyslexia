@@ -6,7 +6,7 @@
 
 (function() {
     let score = 0;
-    let currentRound = 0;
+    let levelIndex = 0;
     const totalRounds = 15;
 
     // المرحلة الأولى: ارتباط الأدوات والأشياء (التكامل)
@@ -41,7 +41,7 @@
         if (!stage) return;
         
         stage.innerHTML = ''; 
-        currentRound = 0;
+        levelIndex = 0;
         score = 0;
 
         const gameWrapper = document.createElement('div');
@@ -95,24 +95,24 @@
     };
 
     function nextRound(grid, stats, instruction, promptIcon) {
-        if (currentRound >= totalRounds) {
+        if (levelIndex >= totalRounds) {
             if (window.GameHub?.showComplete) {
                 window.GameHub.showComplete("بطل الربط المنطقي!", `لقد أنهيت جميع المراحل بذكاء! النتيجة: ${score} / ${totalRounds}`);
             }
             return;
         }
 
-        currentRound++;
+        levelIndex++;
         grid.innerHTML = '';
-        stats.innerText = `المستوى: ${currentRound} / ${totalRounds} | النتيجة: ${score}`;
+        stats.innerText = `المستوى: ${levelIndex} / ${totalRounds} | النتيجة: ${score}`;
 
         let currentPair;
-        if (currentRound <= 5) {
-            currentPair = toolPairs[currentRound - 1];
-        } else if (currentRound <= 10) {
-            currentPair = contextPairs[currentRound - 6];
+        if (levelIndex <= 5) {
+            currentPair = toolPairs[levelIndex - 1];
+        } else if (levelIndex <= 10) {
+            currentPair = contextPairs[levelIndex - 6];
         } else {
-            currentPair = advancedPairs[currentRound - 11];
+            currentPair = advancedPairs[levelIndex - 11];
         }
 
         instruction.innerText = currentPair.label;
