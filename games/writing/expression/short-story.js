@@ -223,6 +223,47 @@ window.initGame = function (stageId) {
     });
   }
 
+  // NEW: Dynamically enable/disable the check button based on phase requirements
+  function updateCheckButtonState() {
+    const r = gameData[levelIndex];
+    const checkBtn = stage.querySelector('.check-btn');
+    if (!checkBtn || !r) return;
+
+    let isReady = false;
+
+    if (r.phase === 1) {
+      isReady = currentOrder.length === r.sentences.length;
+    } else if (r.phase === 2) {
+      const blanks = stage.querySelectorAll('.story-blank');
+      isReady = Array.from(blanks).every(b => b.value.trim().length > 0);
+    } else if (r.phase === 3) {
+      const textarea = stage.querySelector('.story-textarea');
+      if (textarea) {
+        const text = textarea.value.toLowerCase();
+        const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
+        const hasThreeSentences = text.split(/[.!?]/).filter(s => s.trim().length > 10).length >= 3;
+        const hasKeywords = r.requiredKeywords.every(kw => text.includes(kw.toLowerCase()));
+        isReady = hasKeywords && wordCount >= 20 && hasThreeSentences;
+      }
+    }
+
+    if (isReady) {
+      checkBtn.disabled = false;
+      checkBtn.style.opacity = '1';
+      checkBtn.style.cursor = 'pointer';
+      checkBtn.style.backgroundColor = ''; 
+      checkBtn.style.color = '';
+      checkBtn.style.boxShadow = '';
+    } else {
+      checkBtn.disabled = true;
+      checkBtn.style.opacity = '0.6';
+      checkBtn.style.cursor = 'not-allowed';
+      checkBtn.style.backgroundColor = '#CBD5E0'; // Grayed out background
+      checkBtn.style.color = '#718096';
+      checkBtn.style.boxShadow = 'none';
+    }
+  }
+
   function renderLevel() {
     const r = gameData[levelIndex];
     const phaseName = r.phase === 1 ? "Phase 1: Build the Story" : r.phase === 2 ? "Phase 2: Complete the Story" : "Phase 3: Write Your Story";
@@ -289,12 +330,6 @@ window.initGame = function (stageId) {
         .phase-badge { font-size:0.8rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:var(--primary-blue); }
         .round-badge { font-size:0.9rem; color:var(--text-muted); font-weight:600; }
         
-        .story-header {
-          width:min(700px, 95%); display:flex; justify-content:space-between; align-items:center;
-          padding:15px 20px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius:16px; color:white; box-shadow:0 4px 15px rgba(0,0,0,0.1);
-        }
-        .story-title { font-size:1.3rem; font-weight:700; display:flex; align-items:center; gap:10px; }
         .voice-btn { background:rgba(255,255,255,0.2); border:none; border-radius:50%; width:36px; height:36px; cursor:pointer; font-size:1.2rem; transition:var(--transition); color:white; }
         .voice-btn:hover { background:rgba(255,255,255,0.3); transform:scale(1.1); }
 
@@ -424,11 +459,6 @@ window.initGame = function (stageId) {
         <div class="phase-badge">${phaseName}</div>
         <div class="round-badge">Round ${levelIndex + 1} / ${gameData.length}</div>
 
-        <div class="story-header">
-          <div class="story-title">📖 ${r.storyTitle}</div>
-          <button class="voice-btn" onclick="speakText('${r.storyTitle}')" title="Listen">🔊</button>
-        </div>
-
         <div class="visual-clues">
           ${r.panels.map(p => `<span class="clue-emoji">${p}</span>`).join('')}
         </div>
@@ -484,6 +514,13 @@ window.initGame = function (stageId) {
     } 
     else if (currentLevel.phase === 2) {
       stage.querySelector('.check-btn').addEventListener('click', () => checkTypedStory());
+      
+      // Listen for typing to enable button dynamically
+      const blanks = stage.querySelectorAll('.story-blank');
+      blanks.forEach(blank => {
+        blank.addEventListener('input', updateCheckButtonState);
+      });
+      
       setTimeout(() => {
         const firstBlank = stage.querySelector('.story-blank');
         if (firstBlank) firstBlank.focus();
@@ -491,16 +528,22 @@ window.initGame = function (stageId) {
     } 
     else if (currentLevel.phase === 3) {
       stage.querySelector('.check-btn').addEventListener('click', () => checkWrittenStory());
+      
+      const textarea = stage.querySelector('.story-textarea');
+      if (textarea) {
+        // Listen for typing to enable button dynamically
+        textarea.addEventListener('input', updateCheckButtonState);
+        textarea.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) checkWrittenStory();
+        });
+      }
       setTimeout(() => {
-        const textarea = stage.querySelector('.story-textarea');
-        if (textarea) {
-          textarea.focus();
-          textarea.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) checkWrittenStory();
-          });
-        }
+        if (textarea) textarea.focus();
       }, 100);
     }
+
+    // Initialize button state on render
+    updateCheckButtonState();
   }
 
   // --- Phase 1 Functions ---
@@ -516,6 +559,7 @@ window.initGame = function (stageId) {
     
     chip.classList.add('used');
     renderStoryPages();
+    updateCheckButtonState(); // Update button state after adding
   }
 
   window.removeSentence = function(position) {
@@ -528,14 +572,21 @@ window.initGame = function (stageId) {
     if (chip) chip.classList.remove('used');
     
     renderStoryPages();
+    updateCheckButtonState(); // Update button state after removing
   };
 
   function checkStoryOrder() {
     const r = gameData[levelIndex];
     const pages = document.querySelectorAll('.story-page');
     
+    // Safeguard: if somehow clicked while disabled, just shake and return (no alert)
     if (currentOrder.length !== r.sentences.length) {
-      alert("Please place all sentences in the story!");
+      const book = document.querySelector('.story-book');
+      if (book) {
+        if (window.GameHub) window.GameHub.playSound("wrong");
+        book.classList.add('shake');
+        setTimeout(() => book.classList.remove('shake'), 400);
+      }
       return;
     }
     
@@ -560,8 +611,10 @@ window.initGame = function (stageId) {
     } else {
       if (window.GameHub) window.GameHub.playSound("wrong");
       const book = document.querySelector('.story-book');
-      book.classList.add('shake');
-      setTimeout(() => book.classList.remove('shake'), 400);
+      if (book) {
+        book.classList.add('shake');
+        setTimeout(() => book.classList.remove('shake'), 400);
+      }
     }
   }
 
@@ -614,12 +667,6 @@ window.initGame = function (stageId) {
       if (window.GameHub) window.GameHub.playSound("wrong");
       textarea.classList.add('shake');
       setTimeout(() => textarea.classList.remove('shake'), 400);
-      
-      let msg = "Your story needs: ";
-      if (!hasKeywords) msg += "key words from the pictures, ";
-      if (wordCount < 20) msg += "more words (at least 20), ";
-      if (!hasThreeSentences) msg += "at least 3 complete sentences";
-      alert(msg);
     }
   }
 
