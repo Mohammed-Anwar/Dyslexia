@@ -69,15 +69,13 @@ window.initGame = function (stageId) {
   const arena = document.getElementById("lp-arena");
   const speakBtn = document.getElementById("lp-speak-btn");
 
-  // نظام التعليق الصوتي باستخدام SpeechSynthesis API
+  // نظام التعليق الصوتي باستخدام النظام المشترك
   function playVoiceOver() {
     const round = gameData[levelIndex];
-    if (!round || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const msg = new SpeechSynthesisUtterance(round.desc);
-    msg.lang = 'en-US';
-    msg.rate = 0.85; // سرعة أبطأ قليلاً لتناسب الأطفال
-    window.speechSynthesis.speak(msg);
+    if (!round) return;
+    if (window.GameHub && typeof window.GameHub.speak === 'function') {
+      window.GameHub.speak(round.desc, 'en-US');
+    }
   }
 
   speakBtn.addEventListener("click", playVoiceOver);

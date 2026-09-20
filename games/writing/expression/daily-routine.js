@@ -29,17 +29,11 @@ window.initGame = function (stageId) {
   const transitions = ["First,", "Then,", "After that,", "Finally,"];
 
   function speakParagraph(text, callback) {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.85;
-      utterance.pitch = 1.0;
-      utterance.onend = () => { if (callback) setTimeout(callback, 800); };
-      utterance.onerror = () => { if (callback) setTimeout(callback, 800); };
-      window.speechSynthesis.speak(utterance);
-    } else {
-      if (callback) setTimeout(callback, 1500);
+    if (window.GameHub && typeof window.GameHub.speak === 'function') {
+      window.GameHub.speak(text, 'en-US');
+      if (callback) setTimeout(callback, 800);
+    } else if (callback) {
+      setTimeout(callback, 1500);
     }
   }
 

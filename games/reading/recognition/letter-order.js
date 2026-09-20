@@ -37,14 +37,10 @@
         { word: "fish", emoji: "🐟", sound: "/sh/", pos: 2 }
     ];
 
-    // دالة نطق الكلمات باستخدام نظام المتصفح (Web Speech API)
+    // دالة نطق الكلمات باستخدام النظام العالمي المشترك
     function speakWord(word, slow = false) {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel(); // إيقاف أي نطق سابق لمنع التداخل
-            const utterance = new SpeechSynthesisUtterance(word);
-            utterance.lang = 'en-US';
-            utterance.rate = slow ? 0.6 : 0.9; // سرعة أبطأ عند الحاجة للتدقيق
-            window.speechSynthesis.speak(utterance);
+        if (window.GameHub && typeof window.GameHub.speak === 'function') {
+            window.GameHub.speak(word, 'en-US');
         }
     }
 

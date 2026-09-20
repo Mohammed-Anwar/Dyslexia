@@ -88,11 +88,9 @@
     };
 
     function speak(text, rate = 0.8) {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = 'en-US';
-        utter.rate = rate;
-        window.speechSynthesis.speak(utter);
+        if (window.GameHub && typeof window.GameHub.speak === 'function') {
+            window.GameHub.speak(text, 'en-US');
+        }
     }
 
     function shuffle(arr) {

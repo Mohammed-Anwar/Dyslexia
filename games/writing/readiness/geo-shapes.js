@@ -98,11 +98,8 @@ window.initGame = function (stageId) {
     const tray = document.getElementById("gs-tray");
 
     // نطق المهمة باستخدام Voice-over
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const msg = new SpeechSynthesisUtterance(`Assemble the ${shape.name}`);
-      msg.rate = 0.9;
-      window.speechSynthesis.speak(msg);
+    if (window.GameHub && typeof window.GameHub.speak === 'function') {
+      window.GameHub.speak(`Assemble the ${shape.name}`, 'en-US');
     }
 
     shape.pieces.forEach(p => {

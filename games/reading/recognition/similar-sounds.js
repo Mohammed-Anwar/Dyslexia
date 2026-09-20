@@ -79,29 +79,12 @@
     function playSound(text) {
         const status = document.getElementById('sort-status');
         if (status) status.innerText = "Listening... 🔊";
-
-        // Cancel any ongoing speech to prevent overlapping
-        window.speechSynthesis.cancel();
-
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.rate = 0.8; // slower = better for dyslexia
-        utter.pitch = 1;
-        utter.lang = "en-US";
-
-        utter.onend = () => {
-            const buckets = document.getElementById('buckets-container');
-            if (buckets) buckets.classList.remove('disabled');
-            if (status) status.innerText = "Which one did you hear?";
-        };
-
-        utter.onerror = (event) => {
-            console.error("SpeechSynthesis error:", event);
-            if (status) status.innerText = "Speech error. Try again.";
-            const buckets = document.getElementById('buckets-container');
-            if (buckets) buckets.classList.remove('disabled');
-        };
-
-        window.speechSynthesis.speak(utter);
+        if (window.GameHub && typeof window.GameHub.speak === 'function') {
+            window.GameHub.speak(text, 'en-US');
+        }
+        const buckets = document.getElementById('buckets-container');
+        if (buckets) buckets.classList.remove('disabled');
+        if (status) status.innerText = "Which one did you hear?";
     }
 
     function shuffle(arr) {

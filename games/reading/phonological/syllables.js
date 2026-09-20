@@ -7,7 +7,6 @@
 (function() {
     let levelIndex = 0;
     let isPlaying = false;
-    let synth = window.speechSynthesis;
 
     // Game data merged from Salami Slicer but adapted for syllable counting
     const gameData = [
@@ -301,9 +300,6 @@
 
         document.getElementById('rg-start-btn').addEventListener('click', () => {
             document.getElementById('rg-start-overlay').style.display = 'none';
-            // Init speech context
-            let utter = new SpeechSynthesisUtterance("");
-            synth.speak(utter);
             renderLevel();
         });
 
@@ -338,29 +334,22 @@
 
     function speakSyllable(text) {
         return new Promise((resolve) => {
-            if (!synth) {
+            if (!window.GameHub || typeof window.GameHub.speak !== 'function') {
                 animateMouth();
-                setTimeout(resolve, 600);
+                setTimeout(() => {
+                    resetMouth();
+                    resolve();
+                }, 600);
                 return;
             }
 
-            synth.cancel();
-            const u = new SpeechSynthesisUtterance(text);
-            u.lang = 'en-US';
-            u.rate = 0.7;  // Speak slowly
-            u.pitch = 1.3; // Robot pitch
-            
-            u.onstart = () => animateMouth();
-            u.onend = () => {
+            animateMouth();
+            window.GameHub.speak(text, 'en-US');
+            const delay = Math.max(500, Math.min(1800, text.length * 220));
+            setTimeout(() => {
                 resetMouth();
                 resolve();
-            };
-            u.onerror = () => {
-                resetMouth();
-                resolve();
-            };
-            
-            synth.speak(u);
+            }, delay);
         });
     }
 

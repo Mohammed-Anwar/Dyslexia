@@ -49,38 +49,17 @@
         const letterCard = document.getElementById('letter-card');
         
         if (statusText) statusText.innerText = "Listening... 🔊";
-        
-        // Cancel any ongoing speech
-        window.speechSynthesis.cancel();
-
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.rate = 0.8; // slower = better for dyslexia
-        utter.pitch = 1;
-        utter.lang = "en-US";
-
-        utter.onstart = () => {
-            if (letterCard) {
-                letterCard.classList.add('heard');
-                letterCard.style.opacity = "1";
-            }
-        };
-
-        utter.onend = () => {
-            soundPlayed = true;
-            if (statusText) statusText.innerText = "Tap to listen again 🔊";
-            const grid = document.getElementById('options-grid');
-            if (grid) grid.classList.remove('disabled');
-        };
-
-        utter.onerror = (event) => {
-            console.error("SpeechSynthesis error:", event);
-            if (statusText) statusText.innerText = "Speech error. Try again.";
-            // Fallback: enable game even if speech fails
-            const grid = document.getElementById('options-grid');
-            if (grid) grid.classList.remove('disabled');
-        };
-
-        window.speechSynthesis.speak(utter);
+        if (letterCard) {
+            letterCard.classList.add('heard');
+            letterCard.style.opacity = "1";
+        }
+        if (window.GameHub && typeof window.GameHub.speak === 'function') {
+            window.GameHub.speak(text, 'en-US');
+        }
+        soundPlayed = true;
+        if (statusText) statusText.innerText = "Tap to listen again 🔊";
+        const grid = document.getElementById('options-grid');
+        if (grid) grid.classList.remove('disabled');
     }
 
     function renderLevel(stage) {

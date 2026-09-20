@@ -28,11 +28,8 @@ window.initGame = function (stageId) {
 
   // Text-to-Speech function
   window.playWordAudio = function(word) {
-    if ('speechSynthesis' in window) {
-      const msg = new SpeechSynthesisUtterance(word);
-      msg.lang = 'en-US';
-      msg.rate = 0.9;
-      window.speechSynthesis.speak(msg);
+    if (window.GameHub && typeof window.GameHub.speak === 'function') {
+      window.GameHub.speak(word, 'en-US');
     }
   };
 

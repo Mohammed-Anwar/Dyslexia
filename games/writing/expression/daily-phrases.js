@@ -107,13 +107,9 @@ window.initGame = function (stageId) {
 
   // Text-to-Speech Helper
   function speakText(text) {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const cleanText = text.replace(/[^\w\s\?\.]/g, '');
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
+    const cleanText = String(text || '').replace(/[^\w\s\?\.]/g, '').trim();
+    if (window.GameHub && typeof window.GameHub.speak === 'function' && cleanText) {
+      window.GameHub.speak(cleanText, 'en-US');
     }
   }
 

@@ -11,15 +11,8 @@
 
     // TTS Function for reading clues aloud
     window.speakText = function(text) {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.85; 
-            utterance.pitch = 1;
-            window.speechSynthesis.speak(utterance);
-        } else {
-            console.warn("Text-to-Speech not supported in this browser.");
+        if (window.GameHub && typeof window.GameHub.speak === 'function') {
+            window.GameHub.speak(text, 'en-US');
         }
     };
 
@@ -356,7 +349,9 @@
 
             card.onclick = (e) => {
                 // Stop any reading audio when an answer is selected
-                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                if (window.GameHub && typeof window.GameHub.speak === 'function') {
+                    // The shared hub already handles speech overlap and queueing.
+                }
 
                 if (opt.isMain) {
                     score++;

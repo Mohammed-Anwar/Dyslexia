@@ -129,13 +129,8 @@ window.initGame = function (stageId) {
   let hasPlayedIntro = false;
 
   function speakText(text, lang = 'en-US') {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
-      utterance.rate = lang === 'ar-SA' ? 0.9 : 0.85;
-      utterance.pitch = 1.1;
-      window.speechSynthesis.speak(utterance);
+    if (window.GameHub && typeof window.GameHub.speak === 'function') {
+      window.GameHub.speak(text, lang);
     }
   }
 

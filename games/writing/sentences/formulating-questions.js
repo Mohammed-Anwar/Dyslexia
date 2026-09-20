@@ -105,13 +105,8 @@ window.initGame = function (stageId) {
   // دالة نطق النص (Text-to-Speech)
   function speakText(text, event) {
     if (event) event.stopPropagation();
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.85; // أبطأ قليلاً للوضوح
-      utterance.pitch = 1.1; // نبرة ودية
-      window.speechSynthesis.speak(utterance);
+    if (window.GameHub && typeof window.GameHub.speak === 'function') {
+      window.GameHub.speak(text, 'en-US');
     }
   }
 
