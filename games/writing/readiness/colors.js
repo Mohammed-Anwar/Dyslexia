@@ -51,6 +51,22 @@ window.initGame = function (stageId) {
 
   let activeItem = null; // Used for touch/click fallback
 
+  function nextRound() {
+    if (levelIndexIndex >= gameData.length - 1) {
+      window.GameHub.showComplete("Writing Champion!", "You mastered all the writing zones.");
+    } else {
+      levelIndexIndex++;
+      renderLevel();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndexIndex > 0) {
+      levelIndexIndex--;
+      renderLevel();
+    }
+  }
+
   function renderLevel() {
     const levelData = gameData[levelIndexIndex];
     let itemsToRender = [];
@@ -250,17 +266,12 @@ window.initGame = function (stageId) {
     const itemsContainer = document.getElementById("co-items");
     // If no items are left in the starting container, the level is complete
     if (itemsContainer.children.length === 0) {
-      levelIndexIndex++;
-      setTimeout(() => {
-        if (levelIndexIndex >= gameData.length) {
-          window.GameHub.showComplete("Writing Champion!", "You mastered all the writing zones.");
-        } else {
-          renderLevel(); // Proceed to next level
-        }
-      }, 700);
+      setTimeout(() => nextRound(), 700);
     }
   }
 
   // Start Game
   renderLevel();
+  window.nextRound = nextRound;
+window.previousRound = previousRound;
 };

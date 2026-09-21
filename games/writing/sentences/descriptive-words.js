@@ -582,21 +582,30 @@ window.initGame = function (stageId) {
     }, 400);
   }
 
+  function nextRound() {
+    if (levelIndex >= gameData.length - 1) {
+      if (window.GameHub && window.GameHub.showComplete) {
+        window.GameHub.showComplete("Descriptive Master!", "You've mastered the art of describing with adjectives!");
+      }
+    } else {
+      levelIndex++;
+      renderLevel();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel();
+    }
+  }
+
   function checkWinCondition() {
     const r = gameData[levelIndex];
     const filledBlanks = document.querySelectorAll('.dw-blank.filled');
     
     if (filledBlanks.length === r.blanks.length) {
-      levelIndex++;
-      setTimeout(() => {
-        if (levelIndex >= gameData.length) {
-          if (window.GameHub && window.GameHub.showComplete) {
-            window.GameHub.showComplete("Descriptive Master!", "You've mastered the art of describing with adjectives!");
-          }
-        } else {
-          renderLevel();
-        }
-      }, 800);
+      setTimeout(() => nextRound(), 800);
     }
   }
 
@@ -626,4 +635,6 @@ window.initGame = function (stageId) {
   }
 
   renderLevel();
+  window.nextRound = nextRound;
+window.previousRound = previousRound;
 };

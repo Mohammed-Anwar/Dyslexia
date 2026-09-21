@@ -80,6 +80,22 @@ window.initGame = function (stageId) {
 
   speakBtn.addEventListener("click", playVoiceOver);
 
+  function nextRound() {
+    if (levelIndex >= gameData.length - 1) {
+      setTimeout(() => window.GameHub.showComplete("Excellent!", "You're ready for writing!"), 400);
+    } else {
+      levelIndex++;
+      setTimeout(setRound, 500);
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      setRound();
+    }
+  }
+
   function checkPlacement(round) {
     const star = document.getElementById("lp-star");
     const arenaRect = arena.getBoundingClientRect();
@@ -170,12 +186,7 @@ window.initGame = function (stageId) {
       if (checkPlacement(round)) {
         window.GameHub.playSound("correct");
         window.GameHub.triggerVFX(x, y);
-        levelIndex++;
-        if (levelIndex >= gameData.length) {
-          setTimeout(() => window.GameHub.showComplete("Excellent!", "You're ready for writing!"), 400);
-        } else {
-          setTimeout(setRound, 500);
-        }
+        nextRound();
       } else {
         window.GameHub.playSound("wrong");
         // إعادة العنصر لنقطة البداية بلطف
@@ -189,4 +200,6 @@ window.initGame = function (stageId) {
 
   // بدء الجولة الأولى
   setRound();
+  window.nextRound = nextRound;
+window.previousRound = previousRound;
 };

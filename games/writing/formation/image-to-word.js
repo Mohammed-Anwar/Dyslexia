@@ -71,6 +71,25 @@ window.initGame = function (stageId) {
     renderLevel();
   }
 
+  function nextRound() {
+    levelIndex++;
+    if (!isEndless && levelIndex >= 15) {
+      window.GameHub.showComplete("Word Builder!", "You spelled every picture word correctly.");
+    } else if (isEndless && levelIndex >= 15) {
+      // في الوضع الحر، نعيد توليد 15 كلمة جديدة بسلاسة دون إظهار شاشة النهاية
+      startSession();
+    } else {
+      renderLevel();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel();
+    }
+  }
+
   function renderLevel() {
     const r = levelIndexs[levelIndex];
     built = "";
@@ -161,17 +180,7 @@ window.initGame = function (stageId) {
           window.GameHub.speak(word);
         }
 
-        levelIndex++;
-        setTimeout(() => {
-          if (!isEndless && levelIndex >= 15) {
-            window.GameHub.showComplete("Word Builder!", "You spelled every picture word correctly.");
-          } else if (isEndless && levelIndex >= 15) {
-            // في الوضع الحر، نعيد توليد 15 كلمة جديدة بسلاسة دون إظهار شاشة النهاية
-            startSession();
-          } else {
-            renderLevel();
-          }
-        }, 800);
+        setTimeout(() => nextRound(), 800);
       }
     } else {
       window.GameHub.playSound("wrong");
@@ -189,4 +198,6 @@ window.initGame = function (stageId) {
 
   // بدء اللعبة لأول مرة
   startSession();
+  window.nextRound = nextRound;
+  window.previousRound = previousRound;
 };

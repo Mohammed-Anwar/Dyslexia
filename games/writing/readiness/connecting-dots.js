@@ -73,6 +73,22 @@ window.initGame = function (stageId) {
   let pathEl; 
   let totalLength = 0;
 
+  function nextRound() {
+    if (levelIndex >= gameData.length - 1) {
+      window.GameHub.showComplete("Master Tracer!", "You've successfully completed all writing prep levels.");
+    } else {
+      levelIndex++;
+      renderLevel();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel();
+    }
+  }
+
   function renderLevel() {
     progress = 0;
     const currentPath = gameData[levelIndex];
@@ -170,14 +186,8 @@ window.initGame = function (stageId) {
         window.GameHub.playSound("correct"); // Magic chime
         window.GameHub.triggerVFX(clientX, clientY);
         
-        levelIndex++;
-        setTimeout(() => {
-          if (levelIndex >= gameData.length) {
-            window.GameHub.showComplete("Master Tracer!", "You've successfully completed all writing prep levels.");
-          } else {
-            renderLevel();
-          }
-        }, 1200);
+        setTimeout(() => nextRound(), 1200);
+        return;
       }
     }
     // إذا ابتعد أكثر من اللازم لا يحدث شيء (ينتظره ليعود للخط)
@@ -232,4 +242,6 @@ window.initGame = function (stageId) {
   window.addEventListener("touchend", end);
 
   renderLevel();
+  window.nextRound = nextRound;
+window.previousRound = previousRound;
 };

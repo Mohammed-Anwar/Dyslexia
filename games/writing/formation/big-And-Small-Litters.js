@@ -28,6 +28,22 @@ window.initGame = function (stageId) {
   let levelIndex = 0;
   let phase2SortedCount = 0;
 
+  function nextRound() {
+    if (levelIndex >= gameData.length - 1) {
+      window.GameHub.showComplete("You're a Master!", "You conquered all the letter twin challenges!");
+    } else {
+      levelIndex++;
+      renderLevel();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel();
+    }
+  }
+
   function renderLevel() {
     const round = gameData[levelIndex];
     stage.innerHTML = '';
@@ -82,14 +98,7 @@ window.initGame = function (stageId) {
               slot.style.borderStyle = "solid";
               slot.style.borderColor = "var(--primary-green)";
               el.style.visibility = "hidden";
-              setTimeout(() => {
-                levelIndex++;
-                if (levelIndex >= gameData.length) {
-                  window.GameHub.showComplete("Amazing!", "You mastered Uppercase and Lowercase letters!");
-                } else {
-                  renderLevel();
-                }
-              }, 800);
+              setTimeout(() => nextRound(), 800);
             } else {
               window.GameHub.playSound("wrong");
               el.style.transform = "translate3d(0,0,0)";
@@ -167,14 +176,7 @@ window.initGame = function (stageId) {
       
       function checkPhase2Complete() {
         if (phase2SortedCount >= round.letters.length) {
-          setTimeout(() => {
-            levelIndex++;
-            if (levelIndex >= gameData.length) {
-              window.GameHub.showComplete("Fantastic!", "You sorted all the letter families!");
-            } else {
-              renderLevel();
-            }
-          }, 800);
+          setTimeout(() => nextRound(), 800);
         }
       }
 
@@ -216,14 +218,7 @@ window.initGame = function (stageId) {
               slot.style.borderStyle = "solid";
               slot.style.borderColor = "var(--primary-green)";
               el.style.visibility = "hidden";
-              setTimeout(() => {
-                levelIndex++;
-                if (levelIndex >= gameData.length) {
-                  window.GameHub.showComplete("You're a Master!", "You conquered all the tricky letter twins!");
-                } else {
-                  renderLevel();
-                }
-              }, 800);
+              setTimeout(() => nextRound(), 800);
             } else {
               window.GameHub.playSound("wrong");
               el.style.transform = "translate3d(0,0,0)";
@@ -239,4 +234,6 @@ window.initGame = function (stageId) {
 
   // بدء اللعبة
   renderLevel();
+  window.nextRound = nextRound;
+  window.previousRound = previousRound;
 };

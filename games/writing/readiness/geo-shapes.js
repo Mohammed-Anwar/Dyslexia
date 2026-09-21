@@ -29,6 +29,22 @@ window.initGame = function (stageId) {
   let levelIndex = 0;
   let placed = 0;
 
+  function nextRound() {
+    if (levelIndex >= gameData.length - 1) {
+      window.GameHub.showComplete("Gadget Master!", "All explorer gadgets are fully operational.");
+    } else {
+      levelIndex++;
+      buildStage();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      buildStage();
+    }
+  }
+
   function buildStage() {
     if(levelIndex >= gameData.length) return;
     const shape = gameData[levelIndex];
@@ -140,14 +156,7 @@ window.initGame = function (stageId) {
           placed++;
           
           if (placed >= shape.pieces.length) {
-            levelIndex++;
-            setTimeout(() => {
-              if (levelIndex >= gameData.length) {
-                window.GameHub.showComplete("Gadget Master!", "All explorer gadgets are fully operational.");
-              } else {
-                buildStage();
-              }
-            }, 800); // تأخير بسيط ليرى الطفل الشكل مكتملاً وهو يتوهج
+            setTimeout(() => nextRound(), 800); // تأخير بسيط ليرى الطفل الشكل مكتملاً وهو يتوهج
           }
         } else {
           window.GameHub.playSound("wrong");
@@ -159,4 +168,6 @@ window.initGame = function (stageId) {
   }
 
   buildStage();
+  window.nextRound = nextRound;
+window.previousRound = previousRound;
 };

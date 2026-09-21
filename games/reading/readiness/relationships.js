@@ -1,162 +1,84 @@
 /**
- * Game 5: Categorization Station (تحديد العلاقات بين الأشياء)
- * Filename: games/read_d1_g5.js
- * Logic: Drag items into the correct categories (e.g., Hot vs Cold, Big vs Small).
- * Dyslexia Focus: Categorization and abstract reasoning.
- */
-
+Game 5: Categorization Station (تحديد العلاقات بين الأشياء)
+Filename: games/read_d1_g5.js
+Logic: Drag items into the correct categories (e.g., Hot vs Cold, Big vs Small).
+Dyslexia Focus: Categorization and abstract reasoning.
+*/
 (function() {
-    let levelIndex = 0; // Changed to start from 0
+    let levelIndex = 0;
     const totalLevels = 15;
     let score = 0;
+    let currentStage = null;
 
     const gameData = [
         {
             categoryA: { name: "Hot", icon: "🔥", color: "#FEEBC8" },
             categoryB: { name: "Cold", icon: "❄️", color: "#E0F2FE" },
             items: [
-                { icon: "☀️", belongsTo: "Hot" },
-                { icon: "☕", belongsTo: "Hot" },
-                { icon: "🍦", belongsTo: "Cold" },
-                { icon: "🧊", belongsTo: "Cold" },
-                { icon: "🌋", belongsTo: "Hot" },
-                { icon: "⛄", belongsTo: "Cold" }
+                { icon: "☀️", belongsTo: "Hot" }, { icon: "☕", belongsTo: "Hot" },
+                { icon: "🍦", belongsTo: "Cold" }, { icon: "🧊", belongsTo: "Cold" },
+                { icon: "🌋", belongsTo: "Hot" }, { icon: "⛄", belongsTo: "Cold" }
             ]
         },
         {
             categoryA: { name: "Big", icon: "🐘", color: "#E2E8F0" },
             categoryB: { name: "Small", icon: "🐜", color: "#F7FAFC" },
             items: [
-                { icon: "🐳", belongsTo: "Big" },
-                { icon: "🐭", belongsTo: "Small" },
-                { icon: "🏢", belongsTo: "Big" },
-                { icon: "🐝", belongsTo: "Small" },
-                { icon: "🚢", belongsTo: "Big" },
-                { icon: "🐞", belongsTo: "Small" }
+                { icon: "🐳", belongsTo: "Big" }, { icon: "🐭", belongsTo: "Small" },
+                { icon: "🏢", belongsTo: "Big" }, { icon: "🐝", belongsTo: "Small" },
+                { icon: "🚢", belongsTo: "Big" }, { icon: "🐞", belongsTo: "Small" }
             ]
         },
         {
             categoryA: { name: "Fly", icon: "☁️", color: "#EBF8FF" },
             categoryB: { name: "Swim", icon: "🌊", color: "#E0F2F1" },
             items: [
-                { icon: "🦅", belongsTo: "Fly" },
-                { icon: "🐠", belongsTo: "Swim" },
-                { icon: "🚁", belongsTo: "Fly" },
-                { icon: "🦈", belongsTo: "Swim" },
-                { icon: "🦋", belongsTo: "Fly" },
-                { icon: "🐙", belongsTo: "Swim" }
+                { icon: "🦅", belongsTo: "Fly" }, { icon: "🐠", belongsTo: "Swim" },
+                { icon: "🚁", belongsTo: "Fly" }, { icon: "🦈", belongsTo: "Swim" },
+                { icon: "🦋", belongsTo: "Fly" }, { icon: "🐙", belongsTo: "Swim" }
             ]
         }
     ];
 
     window.initGame = function(containerId) {
-        const stage = document.getElementById(containerId);
-        if (!stage) return;
-        
-        levelIndex = 0; // Reset to 0
+        currentStage = document.getElementById(containerId);
+        if (!currentStage) return;
+        levelIndex = 0;
         score = 0;
-        renderLevel(stage);
+        renderLevel();
     };
 
-    function renderLevel(stage) {
-        // Cycle through gameData based on level (0-4 -> set 0, 5-9 -> set 1, 10-14 -> set 2)
+    function renderLevel() {
+        const stage = currentStage;
         const setIndex = Math.floor(levelIndex / 5) % gameData.length;
         const currentData = gameData[setIndex];
-        
-        // Pick a random item from the current set
         const currentItem = currentData.items[Math.floor(Math.random() * currentData.items.length)];
-
+        
         stage.innerHTML = `
             <style>
-                .game-wrapper {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 20px;
-                    width: 100%;
-                    max-width: 500px;
-                    margin: 0 auto;
-                    padding: 10px;
-                    font-family: system-ui, -apple-system, sans-serif;
-                    animation: fadeIn 0.5s ease;
-                }
-
-                .instruction-text {
-                    font-size: 1.3rem;
-                    color: #2D3748;
-                    font-weight: 700;
-                    text-align: center;
-                }
-
-                .level-indicator {
-                    font-size: 14px;
-                    font-weight: bold;
-                    color: #718096;
-                    background: #EDF2F7;
-                    padding: 4px 12px;
-                    border-radius: 20px;
-                }
-
-                .buckets-container {
-                    display: flex;
-                    justify-content: space-between;
-                    width: 100%;
-                    gap: 20px;
-                    margin-top: 10px;
-                }
-
-                .bucket {
-                    flex: 1;
-                    height: 150px;
-                    border: 3px dashed #CBD5E0;
-                    border-radius: 24px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    transition: all 0.3s ease;
-                    position: relative;
-                }
-
+                .game-wrapper { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; max-width: 500px; margin: 0 auto; padding: 10px; font-family: system-ui, -apple-system, sans-serif; animation: fadeIn 0.5s ease; }
+                .header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 10px; }
+                .prev-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #718096; visibility: ${levelIndex > 0 ? 'visible' : 'hidden'}; }
+                .instruction-text { font-size: 1.3rem; color: #2D3748; font-weight: 700; text-align: center; }
+                .level-indicator { font-size: 14px; font-weight: bold; color: #718096; background: #EDF2F7; padding: 4px 12px; border-radius: 20px; }
+                .buckets-container { display: flex; justify-content: space-between; width: 100%; gap: 20px; margin-top: 10px; }
+                .bucket { flex: 1; height: 150px; border: 3px dashed #CBD5E0; border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s ease; position: relative; }
                 .bucket-icon { font-size: 40px; margin-bottom: 5px; }
                 .bucket-label { font-weight: bold; color: #4A5568; }
-
-                .item-source {
-                    width: 120px;
-                    height: 120px;
-                    background: white;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-                    border: 4px solid #EDF2F7;
-                    margin: 20px 0;
-                }
-
-                .draggable-item {
-                    font-size: 60px;
-                    cursor: grab;
-                    touch-action: none;
-                    z-index: 100;
-                }
-
-                @keyframes bounceIn {
-                    0% { transform: scale(0.3); opacity: 0; }
-                    50% { transform: scale(1.1); opacity: 1; }
-                    100% { transform: scale(1); }
-                }
+                .item-source { width: 120px; height: 120px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 4px solid #EDF2F7; margin: 20px 0; }
+                .draggable-item { font-size: 60px; cursor: grab; touch-action: none; z-index: 100; }
+                @keyframes bounceIn { 0% { transform: scale(0.3); opacity: 0; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
+                @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
             </style>
-
             <div class="game-wrapper">
-                <!-- Display remains user-friendly (Level 1 / 15) while internal index is 0 -->
-                <div class="level-indicator">Level ${levelIndex + 1} / ${totalLevels}</div>
+                <div class="header-row">
+                    <button class="prev-btn" id="prev-btn">⬅️ Previous</button>
+                    <div class="level-indicator">Level ${levelIndex + 1} / ${totalLevels}</div>
+                </div>
                 <div class="instruction-text">Where does this belong?</div>
-
                 <div class="item-source">
                     <div id="drag-item" class="draggable-item" data-belongs="${currentItem.belongsTo}">${currentItem.icon}</div>
                 </div>
-
                 <div class="buckets-container">
                     <div class="bucket" id="bucket-A" data-name="${currentData.categoryA.name}" style="background: ${currentData.categoryA.color}">
                         <div class="bucket-icon">${currentData.categoryA.icon}</div>
@@ -170,23 +92,24 @@
             </div>
         `;
 
+        const prevBtn = document.getElementById('prev-btn');
+        if (prevBtn) prevBtn.onclick = previousRound;
+
         const dragEl = document.getElementById('drag-item');
         const bucketA = document.getElementById('bucket-A');
         const bucketB = document.getElementById('bucket-B');
-
+        
         if (window.GameHub?.utils?.makeDraggable) {
             window.GameHub.utils.makeDraggable(dragEl, (x, y, element) => {
                 const rectA = bucketA.getBoundingClientRect();
                 const rectB = bucketB.getBoundingClientRect();
                 const targetName = element.dataset.belongs;
-
                 const inA = (x > rectA.left && x < rectA.right && y > rectA.top && y < rectA.bottom);
                 const inB = (x > rectB.left && x < rectB.right && y > rectB.top && y < rectB.bottom);
-
                 if (inA && targetName === bucketA.dataset.name) {
-                    handleSuccess(element, bucketA, stage, x, y);
+                    handleSuccess(element, bucketA, x, y);
                 } else if (inB && targetName === bucketB.dataset.name) {
-                    handleSuccess(element, bucketB, stage, x, y);
+                    handleSuccess(element, bucketB, x, y);
                 } else {
                     handleFailure(element);
                 }
@@ -194,38 +117,45 @@
         }
     }
 
-    function handleSuccess(element, bucket, stage, x, y) {
+    function handleSuccess(element, bucket, x, y) {
         element.style.display = "none";
         bucket.style.transform = "scale(1.1)";
         bucket.style.borderColor = "#48BB78";
-        
         score++;
         if (window.GameHub) {
             window.GameHub.triggerVFX(x, y);
             window.GameHub.playSound('correct');
         }
+        setTimeout(() => nextRound(), 1000);
+    }
 
-        setTimeout(() => {
-            // Updated condition to account for 0-based indexing (0 to 14 is 15 levels)
-            if (levelIndex < gameData.length - 1) {
-                levelIndex++;
-                renderLevel(stage);
-            } else {
-                if (window.GameHub?.showComplete) {
-                    window.GameHub.showComplete("Categorization Expert!", "You sorted all items perfectly!");
-                }
+    function nextRound() {
+        if (levelIndex < totalLevels - 1) {
+            levelIndex++;
+            renderLevel();
+        } else {
+            if (window.GameHub?.showComplete) {
+                window.GameHub.showComplete("Categorization Expert!", "You sorted all items perfectly!");
             }
-        }, 1000);
+        }
+    }
+
+    function previousRound() {
+        if (levelIndex > 0) {
+            levelIndex--;
+            renderLevel();
+        }
     }
 
     function handleFailure(element) {
         if (window.GameHub) window.GameHub.playSound('wrong');
         element.style.transition = "transform 0.3s ease";
-        
         if (element.resetPosition) {
             element.resetPosition();
         } else {
             element.style.transform = "translate3d(0,0,0)";
         }
     }
+    window.nextRound = nextRound;
+    window.previousRound = previousRound;
 })();

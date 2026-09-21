@@ -54,11 +54,32 @@
     const totalLevels = gameData.length;
 
     window.initGame = function(containerId) {
-        const stage = document.getElementById(containerId);
-        if (!stage) return;
+        currentStage = document.getElementById(containerId);
+        if (!currentStage) return;
         levelIndex = 0;
-        renderLevel(stage);
+        renderLevel(currentStage);
     };
+
+    // --- ADD THESE TWO FUNCTIONS ---
+    function nextRound() {
+        levelIndex++;
+        if (levelIndex >= gameData.length) {
+            if (window.GameHub?.showComplete) {
+                window.GameHub.showComplete("Well Done!", "You are a sound matching expert!");
+            } else {
+                document.getElementById('feedback').innerText = "🎉 Congrats! You finished the game!";
+            }
+        } else {
+            renderLevel(currentStage);
+        }
+    }
+
+    function previousRound() {
+        if (levelIndex > 0) {
+            levelIndex--;
+            renderLevel(currentStage);
+        }
+    }
 
     // Text-to-Speech function for reading words aloud
     function speakWord(text) {
@@ -234,18 +255,7 @@
                     Array.from(optionsContainer.children).forEach(c => c.style.pointerEvents = 'none');
                     targetCard.style.pointerEvents = 'none';
                     
-                    setTimeout(() => {
-                        if (levelIndex < gameData.length - 1) {
-                            levelIndex++;
-                            renderLevel(stage);
-                        } else {
-                            if (window.GameHub?.showComplete) {
-                                window.GameHub.showComplete("Well Done!", "You are a sound matching expert!");
-                            } else {
-                                feedback.innerText = "🎉 Congrats! You finished the game!";
-                            }
-                        }
-                    }, 4000); // Give enough time to read the explanation
+                    setTimeout(nextRound, 4000);
                 } else {
                     card.classList.add('wrong');
                     feedback.innerText = "Try again! The sounds don't match.";
@@ -267,4 +277,6 @@
         // Automatically read the target word when the level starts
         setTimeout(() => speakWord(data.targetWord), 800);
     }
+window.nextRound = nextRound;
+window.previousRound = previousRound;
 })();

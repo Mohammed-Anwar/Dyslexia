@@ -102,6 +102,22 @@ window.initGame = function (stageId) {
 
   let levelIndex = 0;
 
+  function nextRound() {
+    if (levelIndex >= gameData.length - 1) {
+      window.GameHub.showComplete("Amazing Writer!", "You successfully built and wrote all the sentences!");
+    } else {
+      levelIndex++;
+      renderLevel();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel();
+    }
+  }
+
   // دالة لخلط المصفوفات (للكلمات المشتتة وبنك الكلمات)
   function shuffle(array) {
     return [...array].sort(() => Math.random() - 0.5);
@@ -303,14 +319,7 @@ window.initGame = function (stageId) {
       const rect = btn.getBoundingClientRect();
       window.GameHub.triggerVFX(rect.left + rect.width / 2, rect.top + rect.height / 2);
       
-      levelIndex++;
-      setTimeout(() => {
-        if (levelIndex >= gameData.length) {
-          window.GameHub.showComplete("Amazing Writer!", "You successfully built and wrote all the sentences!");
-        } else {
-          renderLevel();
-        }
-      }, 800);
+      setTimeout(() => nextRound(), 800);
     } else {
       window.GameHub.playSound("wrong");
       targetElement.classList.add("shake-anim");
@@ -327,4 +336,6 @@ window.initGame = function (stageId) {
 
   // بدء اللعبة
   renderLevel();
+  window.nextRound = nextRound;
+  window.previousRound = previousRound;
 };

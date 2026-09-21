@@ -1,178 +1,69 @@
 // Writing > Expression > Invitation (Post Office Theme)
 window.initGame = function (stageId) {
-  const stage = document.getElementById(stageId);
+  const currentStage = document.getElementById(stageId);
+  if (!currentStage) return;
 
-  // قاعدة البيانات للـ 15 جولة
   const gameData = [
     // --- Phase 1: Unscramble (gameData 1-5) ---
-    { 
-      phase: 1, type: 'unscramble', event: "Birthday Party",
-      lines: [
-        { words: ["party", "my", "to", "come", "Please"], answer: "Please come to my party" },
-        { words: ["is", "Sunday", "It", "on"], answer: "It is on Sunday" },
-        { words: ["at", "house", "my", "It", "is"], answer: "It is at my house" }
-      ]
-    },
-    { 
-      phase: 1, type: 'unscramble', event: "Graduation Party",
-      lines: [
-        { words: ["graduation", "my", "to", "come", "Please"], answer: "Please come to my graduation" },
-        { words: ["is", "Friday", "It", "on"], answer: "It is on Friday" },
-        { words: ["at", "school", "the", "It", "is"], answer: "It is at the school" }
-      ]
-    },
-    { 
-      phase: 1, type: 'unscramble', event: "Football Match",
-      lines: [
-        { words: ["match", "football", "the", "to", "come", "Please"], answer: "Please come to the football match" },
-        { words: ["is", "Saturday", "It", "on"], answer: "It is on Saturday" },
-        { words: ["at", "stadium", "the", "It", "is"], answer: "It is at the stadium" }
-      ]
-    },
-    { 
-      phase: 1, type: 'unscramble', event: "BBQ Party",
-      lines: [
-        { words: ["party", "BBQ", "our", "to", "come", "Please"], answer: "Please come to our BBQ party" },
-        { words: ["is", "Sunday", "It", "on"], answer: "It is on Sunday" },
-        { words: ["in", "garden", "the", "It", "is"], answer: "It is in the garden" }
-      ]
-    },
-    { 
-      phase: 1, type: 'unscramble', event: "End of Year Party",
-      lines: [
-        { words: ["party", "year", "of", "end", "the", "to", "come", "Please"], answer: "Please come to the end of year party" },
-        { words: ["is", "Thursday", "It", "on"], answer: "It is on Thursday" },
-        { words: ["at", "club", "the", "It", "is"], answer: "It is at the club" }
-      ]
-    },
-
+    { phase: 1, type: 'unscramble', event: "Birthday Party ", lines: [ { words: [ "party ", "my ", "to ", "come ", "Please "], answer: "Please come to my party " }, { words: [ "is ", "Sunday ", "It ", "on "], answer: "It is on Sunday " }, { words: [ "at ", "house ", "my ", "It ", "is "], answer: "It is at my house " } ] },
+    { phase: 1, type: 'unscramble', event: "Graduation Party ", lines: [ { words: [ "graduation ", "my ", "to ", "come ", "Please "], answer: "Please come to my graduation " }, { words: [ "is ", "Friday ", "It ", "on "], answer: "It is on Friday " }, { words: [ "at ", "school ", "the ", "It ", "is "], answer: "It is at the school " } ] },
+    { phase: 1, type: 'unscramble', event: "Football Match ", lines: [ { words: [ "match ", "football ", "the ", "to ", "come ", "Please "], answer: "Please come to the football match " }, { words: [ "is ", "Saturday ", "It ", "on "], answer: "It is on Saturday " }, { words: [ "at ", "stadium ", "the ", "It ", "is "], answer: "It is at the stadium " } ] },
+    { phase: 1, type: 'unscramble', event: "BBQ Party ", lines: [ { words: [ "party ", "BBQ ", "our ", "to ", "come ", "Please "], answer: "Please come to our BBQ party " }, { words: [ "is ", "Sunday ", "It ", "on "], answer: "It is on Sunday " }, { words: [ "in ", "garden ", "the ", "It ", "is "], answer: "It is in the garden " } ] },
+    { phase: 1, type: 'unscramble', event: "End of Year Party ", lines: [ { words: [ "party ", "year ", "of ", "end ", "the ", "to ", "come ", "Please "], answer: "Please come to the end of year party " }, { words: [ "is ", "Thursday ", "It ", "on "], answer: "It is on Thursday " }, { words: [ "at ", "club ", "the ", "It ", "is "], answer: "It is at the club " } ] },
     // --- Phase 2: Guided Typing (gameData 6-10) ---
-    { 
-      phase: 2, type: 'typing', event: "Success Party",
-      textParts: ["Please come to my party.", "It is on ", " PM.", "It is in the ", "."],
-      blanks: [
-        { hint: " Friday", answer: "friday", placeholder: "day" },
-        { hint: "🕕 6", answer: "6", placeholder: "time" },
-        { hint: "🌳 Park", answer: "park", placeholder: "place" }
-      ]
-    },
-    { 
-      phase: 2, type: 'typing', event: "Graduation",
-      textParts: ["Please come to my graduation.", "It is on ", ".", "It is at ", "."],
-      blanks: [
-        { hint: "📅 Monday", answer: "monday", placeholder: "day" },
-        { hint: " School", answer: "school", placeholder: "place" }
-      ]
-    },
-    { 
-      phase: 2, type: 'typing', event: "Football Match",
-      textParts: ["Please come to the match.", "It is on ", ".", "It is at the ", "."],
-      blanks: [
-        { hint: "📅 Saturday", answer: "saturday", placeholder: "day" },
-        { hint: "🏟️ Stadium", answer: "stadium", placeholder: "place" }
-      ]
-    },
-    { 
-      phase: 2, type: 'typing', event: "BBQ Party",
-      textParts: ["Please come to our BBQ.", "It is on ", ".", "It is in the ", "."],
-      blanks: [
-        { hint: "📅 Sunday", answer: "sunday", placeholder: "day" },
-        { hint: "🌻 Garden", answer: "garden", placeholder: "place" }
-      ]
-    },
-    { 
-      phase: 2, type: 'typing', event: "Movie Night",
-      textParts: ["Please come to movie night.", "It is on ", ".", "It is at the ", "."],
-      blanks: [
-        { hint: "📅 Friday", answer: "friday", placeholder: "day" },
-        { hint: " Cinema", answer: "cinema", placeholder: "place" }
-      ]
-    },
-
+    { phase: 2, type: 'typing', event: "Success Party", textParts: ["Please come to my party.", "It is on ", " PM.", "It is in the ", "."], blanks: [ { hint: " Friday", answer: "friday", placeholder: "day" }, { hint: "🕕 6", answer: "6", placeholder: "time" }, { hint: "🌳 Park", answer: "park", placeholder: "place" } ] },
+    { phase: 2, type: 'typing', event: "Graduation", textParts: ["Please come to my graduation.", "It is on ", ".", "It is at ", "."], blanks: [ { hint: "📅 Monday", answer: "monday", placeholder: "day" }, { hint: " School", answer: "school", placeholder: "place" } ] },
+    { phase: 2, type: 'typing', event: "Football Match", textParts: ["Please come to the match.", "It is on ", ".", "It is at the ", "."], blanks: [ { hint: "📅 Saturday", answer: "saturday", placeholder: "day" }, { hint: "🏟️ Stadium", answer: "stadium", placeholder: "place" } ] },
+    { phase: 2, type: 'typing', event: "BBQ Party", textParts: ["Please come to our BBQ.", "It is on ", ".", "It is in the ", "."], blanks: [ { hint: "📅 Sunday", answer: "sunday", placeholder: "day" }, { hint: "🌻 Garden", answer: "garden", placeholder: "place" } ] },
+    { phase: 2, type: 'typing', event: "Movie Night", textParts: ["Please come to movie night.", "It is on ", ".", "It is at the ", "."], blanks: [ { hint: "📅 Friday", answer: "friday", placeholder: "day" }, { hint: " Cinema", answer: "cinema", placeholder: "place" } ] },
     // --- Phase 3: Independent Writing (gameData 11-15) ---
-    { 
-      phase: 3, type: 'writing', event: "Birthday",
-      stickyNote: "Event: Birthday\nDay: Monday\nPlace: Club",
-      wordBank: ["Please", "come", "to", "my", "birthday", "It", "is", "on", "Monday", "at", "the", "club"],
-      requiredKeywords: ["come", "monday", "club"]
-    },
-    { 
-      phase: 3, type: 'writing', event: "Pizza Party",
-      stickyNote: "Event: Pizza Party\nDay: Thursday\nTime: 7 PM",
-      wordBank: ["Please", "come", "to", "my", "pizza", "party", "It", "is", "on", "Thursday", "at", "7", "PM"],
-      requiredKeywords: ["pizza", "thursday", "7"]
-    },
-    { 
-      phase: 3, type: 'writing', event: "Football Match",
-      stickyNote: "Event: Football Match\nDay: Friday\nPlace: School",
-      wordBank: ["Please", "come", "to", "the", "football", "match", "It", "is", "on", "Friday", "at", "school"],
-      requiredKeywords: ["football", "friday", "school"]
-    },
-    { 
-      phase: 3, type: 'writing', event: "Movie Night",
-      stickyNote: "Event: Movie Night\nDay: Saturday\nPlace: My house",
-      wordBank: ["Please", "come", "to", "movie", "night", "It", "is", "on", "Saturday", "at", "my", "house"],
-      requiredKeywords: ["movie", "saturday", "house"]
-    },
-    { 
-      phase: 3, type: 'writing', event: "Class Party",
-      stickyNote: "Event: Class Party\nDay: Tuesday\nTime: 10 AM",
-      wordBank: ["Please", "come", "to", "the", "class", "party", "It", "is", "on", "Tuesday", "at", "10", "AM"],
-      requiredKeywords: ["class", "tuesday", "10"]
-    }
+    { phase: 3, type: 'writing', event: "Birthday", stickyNote: "Event: Birthday\nDay: Monday\nPlace: Club", wordBank: ["Please", "come", "to", "my", "birthday", "It", "is", "on", "Monday", "at", "the", "club"], requiredKeywords: ["come", "monday", "club"] },
+    { phase: 3, type: 'writing', event: "Pizza Party", stickyNote: "Event: Pizza Party\nDay: Thursday\nTime: 7 PM", wordBank: ["Please", "come", "to", "my", "pizza", "party", "It", "is", "on", "Thursday", "at", "7", "PM"], requiredKeywords: ["pizza", "thursday", "7"] },
+    { phase: 3, type: 'writing', event: "Football Match", stickyNote: "Event: Football Match\nDay: Friday\nPlace: School", wordBank: ["Please", "come", "to", "the", "football", "match", "It", "is", "on", "Friday", "at", "school"], requiredKeywords: ["football", "friday", "school"] },
+    { phase: 3, type: 'writing', event: "Movie Night", stickyNote: "Event: Movie Night\nDay: Saturday\nPlace: My house", wordBank: ["Please", "come", "to", "movie", "night", "It", "is", "on", "Saturday", "at", "my", "house"], requiredKeywords: ["movie", "saturday", "house"] },
+    { phase: 3, type: 'writing', event: "Class Party", stickyNote: "Event: Class Party\nDay: Tuesday\nTime: 10 AM", wordBank: ["Please", "come", "to", "the", "class", "party", "It", "is", "on", "Tuesday", "at", "10", "AM"], requiredKeywords: ["class", "tuesday", "10"] }
   ];
 
   let levelIndex = 0;
-  let lineStates = [{}, {}, {}]; // تتبع حالة كل سطر (الكلمات المختارة)
+  let lineStates = [{}, {}, {}];
   let isDragging = false;
 
-  // Text-to-Speech Helper
   function speakText(text) {
-    const cleanText = String(text || '').replace(/[^\w\s\?\.]/g, '').trim();
+    const cleanText = String(text || '').replace(/[^\w\s?.]/g, '').trim();
     if (window.GameHub && typeof window.GameHub.speak === 'function' && cleanText) {
       window.GameHub.speak(cleanText, 'en-US');
     }
   }
 
-  // إعادة رسم منطقة سحب محددة
-  function renderLineZone(lineIndex) {
-    const zone = document.getElementById(`zone-${lineIndex}`);
+  function renderLineZone(lineIndex, stage) {
+    const zone = stage.querySelector(`#zone-${lineIndex}`);
     if (!zone) return;
-    
     const words = lineStates[lineIndex];
     zone.innerHTML = '';
-    
     if (Object.keys(words).length === 0) {
       zone.innerHTML = '<span class="placeholder-text">Tap or drag words here...</span>';
       return;
     }
-    
-    // ترتيب الكلمات حسب موقعها
     const sortedWords = Object.entries(words).sort((a, b) => a[1].position - b[1].position);
-    
     sortedWords.forEach(([originalId, data]) => {
       const chip = document.createElement('div');
       chip.className = 'word-chip active-chip';
       chip.innerText = data.value;
       chip.onclick = (e) => { 
         e.stopPropagation(); 
-        returnWordToBank(lineIndex, originalId); 
+        returnWordToBank(lineIndex, originalId, stage); 
       };
       zone.appendChild(chip);
     });
   }
 
-  function renderLevel() {
+  function renderLevel(stage) {
     const r = gameData[levelIndex];
     const phaseName = r.phase === 1 ? "Phase 1: Build the Sentences" : r.phase === 2 ? "Phase 2: Fill in the Blanks" : "Phase 3: Write the Invitation";
-    
-    // تصفير الحالات
     lineStates = [{}, {}, {}];
-    
     let contentHTML = '';
-
+    
     if (r.phase === 1) {
-      // إنشاء 3 أسطر معاً
       contentHTML = '<div class="lines-container">';
       r.lines.forEach((line, lineIndex) => {
         const shuffledWords = [...line.words].sort(() => Math.random() - 0.5);
@@ -227,18 +118,11 @@ window.initGame = function (stageId) {
         .po-wrap { display:flex; flex-direction:column; align-items:center; gap:15px; padding:20px; width:100%; height:100%; font-family: 'Segoe UI', sans-serif; user-select: none; }
         .phase-badge { font-size:0.8rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:var(--primary-blue); }
         .round-badge { font-size:0.9rem; color:var(--text-muted); font-weight:600; }
-        
-        .invitation-card {
-          width:min(600px, 95%); background:white; border:2px solid #E2E8F0; border-radius:16px;
-          padding:24px; box-shadow:0 8px 20px rgba(0,0,0,0.06); position:relative;
-          background-image: radial-gradient(#F7FAFC 1px, transparent 1px); background-size: 20px 20px;
-        }
+        .invitation-card { width:min(600px, 95%); background:white; border:2px solid #E2E8F0; border-radius:16px; padding:24px; box-shadow:0 8px 20px rgba(0,0,0,0.06); position:relative; background-image: radial-gradient(#F7FAFC 1px, transparent 1px); background-size: 20px 20px; }
         .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:2px dashed #E2E8F0; padding-bottom:10px; }
         .card-title { font-size:1.2rem; font-weight:700; color:var(--primary-green); display:flex; align-items:center; gap:8px; }
         .voice-btn { background:var(--bg-light); border:none; border-radius:50%; width:32px; height:32px; cursor:pointer; font-size:1rem; transition:var(--transition); }
         .voice-btn:hover { background:var(--primary-blue); color:white; }
-
-        /* Phase 1 Styles - Multiple Lines */
         .lines-container { display:flex; flex-direction:column; gap:20px; }
         .single-line { background:rgba(255,255,255,0.6); border-radius:12px; padding:15px; border:2px solid transparent; transition:var(--transition); }
         .single-line.correct { border-color:var(--primary-green); background:rgba(72, 187, 120, 0.1); }
@@ -254,8 +138,6 @@ window.initGame = function (stageId) {
         .word-chip.used { opacity:0.3; pointer-events:none; }
         .word-chip.active-chip { background:var(--primary-blue); color:white; border-color:var(--primary-blue); }
         .placeholder-text { color:#A0AEC0; font-size:0.85rem; width:100%; text-align:center; }
-
-        /* Phase 2 Styles */
         .typing-invitation { font-size:1.1rem; font-weight:600; color:var(--text-dark); line-height:2.2; display:flex; flex-wrap:wrap; align-items:center; gap:5px; }
         .blank-wrapper { display:inline-flex; flex-direction:column; align-items:center; gap:4px; margin:0 4px; }
         .blank-input { width:100px; padding:6px 8px; border:none; border-bottom:3px solid var(--primary-blue); background:rgba(74, 144, 226, 0.1); font-size:1rem; font-weight:700; text-align:center; color:var(--text-dark); outline:none; border-radius:4px 4px 0 0; }
@@ -263,8 +145,6 @@ window.initGame = function (stageId) {
         .blank-input.correct { border-bottom-color:var(--primary-green); background:rgba(72, 187, 120, 0.2); }
         .blank-input.incorrect { border-bottom-color:#E53E3E; background:rgba(229, 62, 62, 0.2); }
         .hint-badge { font-size:0.75rem; background:#FFFBEA; border:1px solid #F6E05E; color:#B7791F; padding:2px 8px; border-radius:12px; cursor:pointer; display:flex; align-items:center; gap:4px; }
-
-        /* Phase 3 Styles */
         .sticky-note { background:#FFFBEA; border:1px solid #F6E05E; border-radius:8px; padding:15px; margin-bottom:15px; position:relative; box-shadow:0 2px 4px rgba(0,0,0,0.05); transform:rotate(-1deg); }
         .sticky-pin { position:absolute; top:-10px; left:50%; transform:translateX(-50%); font-size:1.2rem; }
         .sticky-note h4 { margin:0 0 8px 0; color:#B7791F; font-size:0.9rem; text-transform:uppercase; }
@@ -275,32 +155,26 @@ window.initGame = function (stageId) {
         .wb-label { font-size:0.8rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px; }
         .wb-chips { display:flex; flex-wrap:wrap; gap:6px; }
         .wb-chip { font-size:0.8rem; padding:4px 10px; background:white; border:1px solid #CBD5E0; border-radius:12px; color:var(--text-dark); }
-
-        /* Envelope Animation */
-        .envelope-overlay {
-          position:absolute; inset:0; background:rgba(255,255,255,0.95); display:none; flex-direction:column; align-items:center; justify-content:center; z-index:50; border-radius:16px;
-        }
+        .envelope-overlay { position:absolute; inset:0; background:rgba(255,255,255,0.95); display:none; flex-direction:column; align-items:center; justify-content:center; z-index:50; border-radius:16px; }
         .envelope-icon { font-size:4rem; animation: flyAway 1.2s ease-in-out forwards; }
-        @keyframes flyAway {
-          0% { transform: scale(0.5) translateY(0); opacity: 0; }
-          30% { transform: scale(1.2) translateY(-10px); opacity: 1; }
-          100% { transform: scale(0.8) translateY(-200px) rotate(15deg); opacity: 0; }
-        }
+        @keyframes flyAway { 0% { transform: scale(0.5) translateY(0); opacity: 0; } 30% { transform: scale(1.2) translateY(-10px); opacity: 1; } 100% { transform: scale(0.8) translateY(-200px) rotate(15deg); opacity: 0; } }
         .shake { animation: shake 0.4s ease-in-out; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
       </style>
-
       <div class="po-wrap">
-        <div class="phase-badge">${phaseName}</div>
-        <div class="round-badge">Round ${levelIndex + 1} / ${gameData.length}</div>
-
+        <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:600px; margin-bottom:10px;">
+          <button id="prev-btn" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:var(--text-muted); visibility: ${levelIndex > 0 ? 'visible' : 'hidden'};">⬅️ Previous</button>
+          <div style="text-align:right;">
+            <div class="phase-badge">${phaseName}</div>
+            <div class="round-badge">Round ${levelIndex + 1} / ${gameData.length}</div>
+          </div>
+        </div>
         <div class="invitation-card" id="invite-card">
           <div class="card-header">
             <div class="card-title">✉️ ${r.event} Invitation</div>
             <button class="voice-btn" onclick="speakText('${r.event} Invitation')" title="Listen">🔊</button>
           </div>
           ${contentHTML}
-          
           <div class="envelope-overlay" id="envelope-anim">
             <div class="envelope-icon">✉️</div>
             <p style="margin-top:10px; font-weight:700; color:var(--primary-green);">Sent Successfully!</p>
@@ -309,21 +183,17 @@ window.initGame = function (stageId) {
       </div>
     `;
 
-    // Voice button
+    const prevBtn = stage.querySelector('#prev-btn');
+    if (prevBtn) prevBtn.onclick = previousRound;
+
     const voiceBtn = stage.querySelector('.voice-btn');
     if (voiceBtn) voiceBtn.addEventListener('click', () => speakText(r.event + " Invitation"));
-
+    
     if (r.phase === 1) {
-      // إعداد كل سطر
       r.lines.forEach((line, lineIndex) => {
-        const zone = document.getElementById(`zone-${lineIndex}`);
-        const bank = document.getElementById(`bank-${lineIndex}`);
-        
-        // Drop zone events
-        zone.addEventListener('dragover', (e) => { 
-          e.preventDefault(); 
-          zone.classList.add('drag-over'); 
-        });
+        const zone = stage.querySelector(`#zone-${lineIndex}`);
+        const bank = stage.querySelector(`#bank-${lineIndex}`);
+        zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
         zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
         zone.addEventListener('drop', (e) => {
           e.preventDefault(); 
@@ -331,11 +201,9 @@ window.initGame = function (stageId) {
           const lineData = e.dataTransfer.getData('line-index');
           const wordIndex = e.dataTransfer.getData('word-index');
           if (lineData !== undefined && wordIndex !== undefined && lineData !== "" && wordIndex !== "") {
-            moveWordToZone(parseInt(lineData), parseInt(wordIndex), lineIndex);
+            moveWordToZone(parseInt(lineData), parseInt(wordIndex), lineIndex, stage);
           }
         });
-
-        // Word chips events
         const chips = bank.querySelectorAll('.word-chip');
         chips.forEach(chip => {
           chip.addEventListener('dragstart', (e) => {
@@ -344,100 +212,72 @@ window.initGame = function (stageId) {
             e.dataTransfer.setData('line-index', chip.getAttribute('data-line'));
             e.dataTransfer.setData('word-index', chip.getAttribute('data-index'));
           });
-          chip.addEventListener('dragend', () => { 
-            setTimeout(() => { isDragging = false; }, 50); 
-          });
+          chip.addEventListener('dragend', () => { setTimeout(() => { isDragging = false; }, 50); });
           chip.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (isDragging) { 
-              isDragging = false; 
-              return; 
-            }
+            if (isDragging) { isDragging = false; return; }
             const wLine = parseInt(chip.getAttribute('data-line'));
             const wIndex = parseInt(chip.getAttribute('data-index'));
-            moveWordToZone(wLine, wIndex, lineIndex);
+            moveWordToZone(wLine, wIndex, lineIndex, stage);
           });
         });
       });
-
-      stage.querySelector('.check-btn').addEventListener('click', () => checkAllLines());
-    } 
-    else if (r.phase === 2) {
-      stage.querySelector('.check-btn').addEventListener('click', () => checkPhase2());
+      stage.querySelector('.check-btn').addEventListener('click', () => checkAllLines(stage));
+    } else if (r.phase === 2) {
+      stage.querySelector('.check-btn').addEventListener('click', () => checkPhase2(stage));
       setTimeout(() => {
         const firstBlank = stage.querySelector('.blank-input');
         if (firstBlank) firstBlank.focus();
       }, 100);
-    } 
-    else if (r.phase === 3) {
-      stage.querySelector('.check-btn').addEventListener('click', () => checkPhase3());
+    } else if (r.phase === 3) {
+      stage.querySelector('.check-btn').addEventListener('click', () => checkPhase3(stage));
       setTimeout(() => {
         const textarea = stage.querySelector('.invite-textarea');
         if (textarea) {
           textarea.focus();
           textarea.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) checkPhase3();
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) checkPhase3(stage);
           });
         }
       }, 100);
     }
   }
 
-  // --- منطق المرحلة الأولى: Unscramble (3 أسطر معاً) ---
-  function moveWordToZone(fromLine, wordIndex, toLine) {
-    if (fromLine !== toLine) return; // لا يمكن نقل الكلمات بين أسطر مختلفة
-    
+  function moveWordToZone(fromLine, wordIndex, toLine, stage) {
+    if (fromLine !== toLine) return;
     const chipId = `w-${fromLine}-${wordIndex}`;
-    const bankChip = document.getElementById(chipId);
-    
+    const bankChip = stage.querySelector(`#${chipId}`);
     if (!bankChip || bankChip.classList.contains('used')) return;
-    
     const wordValue = bankChip.getAttribute('data-value');
     const position = Object.keys(lineStates[toLine]).length;
-    
     lineStates[toLine][chipId] = { value: wordValue, position };
     bankChip.classList.add('used');
-    
-    renderLineZone(toLine);
+    renderLineZone(toLine, stage);
   }
 
-  function returnWordToBank(lineIndex, originalId) {
+  function returnWordToBank(lineIndex, originalId, stage) {
     const data = lineStates[lineIndex][originalId];
     if (!data) return;
-    
     delete lineStates[lineIndex][originalId];
-    
-    const bankChip = document.getElementById(originalId);
+    const bankChip = stage.querySelector(`#${originalId}`);
     if (bankChip) bankChip.classList.remove('used');
-    
-    // إعادة ترتيب المواقع
     const remainingWords = Object.entries(lineStates[lineIndex]);
     remainingWords.sort((a, b) => a[1].position - b[1].position);
-    remainingWords.forEach(([id, wordData], newPos) => {
-      wordData.position = newPos;
-    });
-    
-    renderLineZone(lineIndex);
+    remainingWords.forEach(([id, wordData], newPos) => { wordData.position = newPos; });
+    renderLineZone(lineIndex, stage);
   }
 
-  function checkAllLines() {
+  function checkAllLines(stage) {
     const r = gameData[levelIndex];
     let allCorrect = true;
-    
     r.lines.forEach((line, lineIndex) => {
-      const zone = document.getElementById(`zone-${lineIndex}`);
+      const zone = stage.querySelector(`#zone-${lineIndex}`);
       const lineContainer = zone.closest('.single-line');
-      
-      // تجميع الكلمات بالترتيب
       const words = lineStates[lineIndex];
       const sortedWords = Object.entries(words).sort((a, b) => a[1].position - b[1].position);
       const userAnswer = sortedWords.map(([_, data]) => data.value).join(' ');
-      
-      // إزالة التأثيرات السابقة
       lineContainer.classList.remove('correct', 'incorrect');
       zone.classList.remove('correct', 'incorrect');
-      
-      // التحقق من الإجابة
       if (userAnswer.toLowerCase() === line.answer.toLowerCase()) {
         lineContainer.classList.add('correct');
         zone.classList.add('correct');
@@ -447,31 +287,25 @@ window.initGame = function (stageId) {
         allCorrect = false;
       }
     });
-    
     if (allCorrect) {
       handleCorrect(stage.querySelector('.lines-container'));
     } else {
       if (window.GameHub) window.GameHub.playSound("wrong");
-      // اهتزاز البطاقة
-      const card = document.getElementById('invite-card');
+      const card = stage.querySelector('#invite-card');
       card.classList.add('shake');
       setTimeout(() => card.classList.remove('shake'), 400);
     }
   }
 
-  // --- منطق المرحلة الثانية: Guided Typing ---
-  function checkPhase2() {
+  function checkPhase2(stage) {
     const r = gameData[levelIndex];
     const inputs = stage.querySelectorAll('.blank-input');
     let allCorrect = true;
     let firstWrong = null;
-
     inputs.forEach((input, i) => {
       const userVal = input.value.trim().toLowerCase();
       const correctVal = r.blanks[i].answer.toLowerCase();
-      
       input.classList.remove('correct', 'incorrect');
-      
       if (userVal === correctVal) {
         input.classList.add('correct');
       } else {
@@ -480,7 +314,6 @@ window.initGame = function (stageId) {
         if (!firstWrong) firstWrong = input;
       }
     });
-
     if (allCorrect) {
       handleCorrect(stage.querySelector('.typing-invitation'));
     } else {
@@ -492,15 +325,11 @@ window.initGame = function (stageId) {
     }
   }
 
-  // --- منطق المرحلة الثالثة: Independent Writing ---
-  function checkPhase3() {
+  function checkPhase3(stage) {
     const r = gameData[levelIndex];
     const textarea = stage.querySelector('.invite-textarea');
     const text = textarea.value.toLowerCase();
-    
-    // التحقق المرن: التأكد من وجود الكلمات المفتاحية الأساسية في النص
     const isCorrect = r.requiredKeywords.every(keyword => text.includes(keyword.toLowerCase()));
-    
     if (isCorrect && text.split(/\s+/).length >= 10) {
       handleCorrect(textarea);
     } else {
@@ -510,18 +339,18 @@ window.initGame = function (stageId) {
     }
   }
 
-  // --- دوال المعالجة المشتركة ---
   function handleCorrect(element) {
     if (window.GameHub) window.GameHub.playSound("correct");
     if (element && window.GameHub) {
       const rect = element.getBoundingClientRect();
       window.GameHub.triggerVFX(rect.left + rect.width / 2, rect.top + rect.height / 2);
     }
-
-    // تشغيل أنيميشن الظرف
     const envelope = document.getElementById('envelope-anim');
-    envelope.style.display = 'flex';
-    
+    if (envelope) envelope.style.display = 'flex';
+    nextRound();
+  }
+
+  function nextRound() {
     setTimeout(() => {
       levelIndex++;
       if (levelIndex >= gameData.length) {
@@ -531,12 +360,21 @@ window.initGame = function (stageId) {
           alert("Master Inviter! You successfully wrote and sent all the invitations!");
         }
       } else {
-        envelope.style.display = 'none';
-        renderLevel();
+        const envelope = document.getElementById('envelope-anim');
+        if (envelope) envelope.style.display = 'none';
+        renderLevel(currentStage);
       }
     }, 1200);
   }
 
-  // بدء اللعبة
-  renderLevel();
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel(currentStage);
+    }
+  }
+
+  renderLevel(currentStage);
+  window.nextRound = nextRound;
+  window.previousRound = previousRound;
 };

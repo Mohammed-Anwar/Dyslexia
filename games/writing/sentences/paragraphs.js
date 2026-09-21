@@ -87,6 +87,22 @@ window.initGame = function (stageId) {
 
   let levelIndex = 0;
 
+  function nextRound() {
+    if (levelIndex >= gameData.length - 1) {
+      window.GameHub.showComplete("Paragraph Master!", "You perfectly sequenced all the paragraphs!");
+    } else {
+      levelIndex++;
+      renderLevel();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel();
+    }
+  }
+
   // دالة نطق النص (Text-to-Speech)
   function speakText(text, event) {
     event.stopPropagation(); // منع تفعيل حدث النقر على البطاقة نفسها
@@ -248,14 +264,7 @@ window.initGame = function (stageId) {
 
           // التحقق من اكتمال الفقرة
           if (builtCount === r.sentences.length) {
-            setTimeout(() => {
-              levelIndex++;
-              if (levelIndex >= gameData.length) {
-                window.GameHub.showComplete("Paragraph Master!", "You perfectly sequenced all the paragraphs!");
-              } else {
-                renderLevel();
-              }
-            }, 1000);
+            setTimeout(() => nextRound(), 1000);
           }
         } else {
           // إجابة خاطئة: تغذية راجعة هادئة (Bounce Back)
@@ -272,4 +281,6 @@ window.initGame = function (stageId) {
   }
 
   renderLevel();
+  window.nextRound = nextRound;
+  window.previousRound = previousRound;
 };

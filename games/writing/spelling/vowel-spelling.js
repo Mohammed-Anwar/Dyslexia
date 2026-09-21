@@ -100,6 +100,22 @@ window.initGame = function (stageId) {
 
   let levelIndex = 0;
 
+  function nextRound() {
+    if (levelIndex >= gameData.length - 1) {
+      window.GameHub.showComplete("Vowel Master!", "You mastered short sounds, long sounds, and the Magic E!");
+    } else {
+      levelIndex++;
+      renderLevel();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel();
+    }
+  }
+
   function renderLevel() {
     const r = gameData[levelIndex];
     
@@ -193,14 +209,7 @@ window.initGame = function (stageId) {
             window.GameHub.speak(r.full);
           }
 
-          levelIndex++;
-          setTimeout(() => {
-            if (levelIndex >= gameData.length) {
-              window.GameHub.showComplete("Vowel Master!", "You mastered short sounds, long sounds, and the Magic E!");
-            } else {
-              renderLevel();
-            }
-          }, 1200); // وقت أطول قليلاً ليستوعب الطفل التغيير البصري والصوتي
+          setTimeout(() => nextRound(), 1200); // وقت أطول قليلاً ليستوعب الطفل التغيير البصري والصوتي
         } else {
           // إجابة خاطئة
           window.GameHub.playSound("wrong");
@@ -221,4 +230,7 @@ window.initGame = function (stageId) {
   }
 
   renderLevel();
+  window.nextRound = nextRound;
+  window.previousRound = previousRound;
 };
+

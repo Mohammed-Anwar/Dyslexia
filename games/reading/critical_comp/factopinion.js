@@ -92,12 +92,30 @@
     ];
 
     window.initGame = function(containerId) {
-        const stage = document.getElementById(containerId);
-        if (!stage) return;
+        currentStage = document.getElementById(containerId);
+        if (!currentStage) return;
         levelIndex = 0;
         score = 0;
-        renderLevel(stage);
+        renderLevel(currentStage);
     };
+    // --- ADD THESE TWO FUNCTIONS ---
+    function nextRound() {
+        levelIndex++;
+        if (levelIndex >= gameData.length) {
+            if (window.GameHub?.showComplete) {
+                window.GameHub.showComplete("Sharp Eye!", `You scored ${score} out of ${gameData.length}. You're a Proof Lens Expert!`);
+            }
+        } else {
+            renderLevel(currentStage);
+        }
+    }
+
+    function previousRound() {
+        if (levelIndex > 0) {
+            levelIndex--;
+            renderLevel(currentStage);
+        }
+    }
 
     function renderLevel(stage) {
         const data = gameData[levelIndex];
@@ -240,10 +258,7 @@
                 
                 if (window.GameHub) window.GameHub.playSound('wrong');
                 
-                setTimeout(() => {
-                    selectedCard.classList.remove('wrong');
-                    optionsRow.style.pointerEvents = 'auto';
-                }, 1200);
+                setTimeout(nextRound, 2500);
                 return;
             }
 
@@ -262,4 +277,6 @@
         factBtn.onclick = (e) => handleChoice(true, e);
         opinionBtn.onclick = (e) => handleChoice(false, e);
     }
+window.nextRound = nextRound;
+window.previousRound = previousRound;
 })();

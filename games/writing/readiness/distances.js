@@ -368,22 +368,33 @@ function setupDragAndDropPhase1(r) {
     }
   }
 
+  function nextRound() {
+    if (levelIndex >= gameData.length - 1) {
+      window.GameHub.showComplete("System Calibrated!", "You matched and calibrated all 15 spacing modules correctly.");
+    } else {
+      levelIndex++;
+      renderLevel();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel();
+    }
+  }
+
   function handleAnswer(isCorrect, event) {
     if (isCorrect) {
       window.GameHub.playSound("correct");
       window.GameHub.triggerVFX(event.clientX || window.innerWidth / 2, event.clientY || window.innerHeight / 2);
-      levelIndex++;
-      setTimeout(() => {
-        if (levelIndex >= gameData.length) {
-          window.GameHub.showComplete("System Calibrated!", "You matched and calibrated all 15 spacing modules correctly.");
-        } else {
-          renderLevel();
-        }
-      }, 1000);
+      setTimeout(() => nextRound(), 1000);
     } else {
       window.GameHub.playSound("wrong");
     }
   }
 
   renderLevel();
+  window.nextRound = nextRound;
+window.previousRound = previousRound;
 };

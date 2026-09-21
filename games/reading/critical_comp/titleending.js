@@ -97,16 +97,31 @@
     }
 
     window.initGame = function(containerId) {
-        const stage = document.getElementById(containerId);
-        if (!stage) return;
+        currentStage = document.getElementById(containerId);
+        if (!currentStage) return;
         levelIndex = 0;
         score = 0;
-        
-        // أخذ نسخة من المراحل وترتيبها عشوائياً في كل مرة تبدأ فيها اللعبة
         shuffledGameData = shuffleArray([...gameData]); 
-        
-        renderLevel(stage);
+        renderLevel(currentStage);
     };
+    // --- ADD THESE TWO FUNCTIONS ---
+    function nextRound() {
+        levelIndex++;
+        if (levelIndex >= shuffledGameData.length) {
+            if (window.GameHub?.showComplete) {
+                window.GameHub.showComplete("Master Director!", `Score: ${score}. You have a great eye for story endings!`);
+            }
+        } else {
+            renderLevel(currentStage);
+        }
+    }
+
+    function previousRound() {
+        if (levelIndex > 0) {
+            levelIndex--;
+            renderLevel(currentStage);
+        }
+    }
 
     function renderLevel(stage) {
         const data = shuffledGameData[levelIndex];
@@ -258,17 +273,7 @@
                     const rect = selectedCard.getBoundingClientRect();
                     window.GameHub.triggerVFX(rect.left + rect.width/2, rect.top + rect.height/2);
                 }
-
-                setTimeout(() => {
-                    if (levelIndex < shuffledGameData.length - 1) {
-                        levelIndex++;
-                        renderLevel(stage);
-                    } else {
-                        if (window.GameHub?.showComplete) {
-                            window.GameHub.showComplete("Master Director!", `Score: ${score}. You have a great eye for story endings!`);
-                        }
-                    }
-                }, 2500);
+                setTimeout(nextRound, 2500);
             } else {
                 selectedCard.classList.add('wrong');
                 feedback.style.color = "#C53030";
@@ -283,4 +288,6 @@
             }
         };
     }
+window.nextRound = nextRound;
+window.previousRound = previousRound;
 })();

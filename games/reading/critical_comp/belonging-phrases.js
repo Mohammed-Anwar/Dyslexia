@@ -68,12 +68,30 @@
     ];
 
     window.initGame = function(containerId) {
-        const stage = document.getElementById(containerId);
-        if (!stage) return;
+        currentStage = document.getElementById(containerId);
+        if (!currentStage) return;
         levelIndex = 0;
         score = 0;
-        renderLevel(stage);
+        renderLevel(currentStage);
     };
+    // --- ADD THESE TWO FUNCTIONS ---
+    function nextRound() {
+        levelIndex++;
+        if (levelIndex >= gameData.length) {
+            if (window.GameHub?.showComplete) {
+                window.GameHub.showComplete("Topical Expert!", `Score: ${score}. You're great at finding the intruder!`);
+            }
+        } else {
+            renderLevel(currentStage);
+        }
+    }
+
+    function previousRound() {
+        if (levelIndex > 0) {
+            levelIndex--;
+            renderLevel(currentStage);
+        }
+    }
 
     function renderLevel(stage) {
         const data = gameData[levelIndex];
@@ -203,16 +221,7 @@
                     window.GameHub.triggerVFX(rect.left + rect.width/2, rect.top + rect.height/2);
                 }
 
-                setTimeout(() => {
-                    if (levelIndex < gameData.length - 1) {
-                        levelIndex++;
-                        renderLevel(stage);
-                    } else {
-                        if (window.GameHub?.showComplete) {
-                            window.GameHub.showComplete("Topical Expert!", `Score: ${score}. You're great at finding the intruder!`);
-                        }
-                    }
-                }, 2500);
+                setTimeout(nextRound, 2500);
             } else {
                 // Tapped a sentence that DOES belong
                 selectedCard.classList.add('wrong');
@@ -227,4 +236,6 @@
             }
         };
     }
+window.nextRound = nextRound;
+window.previousRound = previousRound;
 })();

@@ -7,7 +7,7 @@
 (function() {
     let score = 0;
     let levelIndex = 0;
-    const totalRounds = 10; // تم التعديل إلى 10 مستويات
+    const totalRounds = 10;
 
     // مجموعات الصور للمرحلة الأولى
     const itemSets = [
@@ -45,6 +45,23 @@
             direction: rtl; font-family: 'Tajawal', sans-serif, Arial;
         `;
 
+        // Header with Previous Button and Round Indicator
+        const header = document.createElement('div');
+        header.style.cssText = "display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 350px; margin-bottom: 10px;";
+        
+        const prevBtn = document.createElement('button');
+        prevBtn.id = "prev-btn";
+        prevBtn.innerText = "⬅️ السابق";
+        prevBtn.style.cssText = "background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #718096; font-family: 'Tajawal', sans-serif; visibility: hidden; transition: opacity 0.2s;";
+        prevBtn.onclick = () => previousRound();
+        
+        const roundIndicator = document.createElement('div');
+        roundIndicator.id = "round-indicator";
+        roundIndicator.style.cssText = "font-weight: bold; color: #718096; font-size: 1rem;";
+
+        header.appendChild(prevBtn);
+        header.appendChild(roundIndicator);
+
         const instruction = document.createElement('h2');
         instruction.id = "game-instruction";
         instruction.style.cssText = "margin-bottom: 10px; color: #2D3748; text-align: center; font-size: 1.4rem; width: 100%;";
@@ -81,27 +98,34 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-top: 10px; direction: rtl;
         `;
 
+        gameWrapper.appendChild(header);
         gameWrapper.appendChild(instruction);
         gameWrapper.appendChild(targetContainer);
         gameWrapper.appendChild(grid);
         gameWrapper.appendChild(stats);
         stage.appendChild(gameWrapper);
 
-        nextRound(grid, stats, instruction, targetIcon);
+        nextRound();
     };
 
-    function nextRound(grid, stats, instruction, targetIcon) {
-        if (levelIndex >= totalRounds) {
-            if (window.GameHub?.showComplete) {
-                window.GameHub.showComplete("بطل الملاحظة!", `لقد أكملت جميع التحديات بنجاح! النتيجة: ${score}`);
-            }
-            return;
+    function renderRound() {
+        const grid = document.getElementById('game-grid');
+        const stats = document.getElementById('game-stats');
+        const instruction = document.getElementById('game-instruction');
+        const targetIcon = document.getElementById('target-icon');
+        const prevBtn = document.getElementById('prev-btn');
+        const roundIndicator = document.getElementById('round-indicator');
+
+        if (!grid || !stats || !instruction || !targetIcon) return;
+
+        grid.innerHTML = '';
+        roundIndicator.innerText = `المستوى: ${levelIndex} / ${totalRounds} | النتيجة: ${score}`;
+        
+        // Hide "Previous" button on the first round
+        if (prevBtn) {
+            prevBtn.style.visibility = levelIndex <= 1 ? 'hidden' : 'visible';
         }
 
-        levelIndex++;
-        grid.innerHTML = '';
-        stats.innerText = `المستوى: ${levelIndex} / ${totalRounds} | النتيجة: ${score}`;
-        
         targetIcon.style.filter = "none"; // Reset filter
         targetIcon.style.transform = "scale(1)"; // Reset transform
 
@@ -113,6 +137,25 @@
         } else {
             setupShadowLogicMatch(grid, instruction, targetIcon);
         }
+    }
+
+    function nextRound() {
+        if (levelIndex >= totalRounds) {
+            if (window.GameHub?.showComplete) {
+                window.GameHub.showComplete("بطل الملاحظة!", `لقد أكملت جميع التحديات بنجاح! النتيجة: ${score}`);
+            }
+            return;
+        }
+
+        levelIndex++;
+        renderRound();
+    }
+
+    function previousRound() {
+        if (levelIndex <= 1) return; // Already at the first round
+
+        levelIndex--;
+        renderRound();
     }
 
     function setupThemeMatch(grid, instruction, targetIcon) {
@@ -146,7 +189,7 @@
         targetIcon.innerText = targetItem;
         
         let options = [{ symbol: targetItem, transform: "scaleX(1)", isCorrect: true }];
-        for(let i=0; i<5; i++) {
+        for(let i = 0; i < 5; i++) {
             options.push({ symbol: distractor, transform: "scaleX(1)", isCorrect: false });
         }
         
@@ -218,12 +261,7 @@
         card.style.borderColor = "#48BB78";
         grid.querySelectorAll('button').forEach(b => b.style.pointerEvents = 'none');
         setTimeout(() => {
-            nextRound(
-                document.getElementById('game-grid'), 
-                document.getElementById('game-stats'), 
-                document.getElementById('game-instruction'),
-                document.getElementById('target-icon')
-            );
+            nextRound();
         }, 800);
     }
 
@@ -248,4 +286,6 @@
         `;
         document.head.appendChild(style);
     }
+    window.nextRound = nextRound;
+    window.previousRound = previousRound;
 })();

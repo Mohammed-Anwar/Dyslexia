@@ -102,6 +102,22 @@ window.initGame = function (stageId) {
 
   let levelIndex = 0;
 
+  function nextRound() {
+    if (levelIndex >= gameData.length - 1) {
+      window.GameHub.showComplete("Question Master!", "You perfectly formulated every question!");
+    } else {
+      levelIndex++;
+      renderLevel();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel();
+    }
+  }
+
   // دالة نطق النص (Text-to-Speech)
   function speakText(text, event) {
     if (event) event.stopPropagation();
@@ -255,14 +271,7 @@ window.initGame = function (stageId) {
 
           // التحقق من اكتمال السؤال
           if (builtCount === r.correct.length) {
-            setTimeout(() => {
-              levelIndex++;
-              if (levelIndex >= gameData.length) {
-                window.GameHub.showComplete("Question Master!", "You perfectly formulated every question!");
-              } else {
-                renderLevel();
-              }
-            }, 1000);
+            setTimeout(() => nextRound(), 1000);
           }
         } else {
           // إجابة خاطئة: تغذية راجعة هادئة (Bounce Back)
@@ -281,4 +290,6 @@ window.initGame = function (stageId) {
   }
 
   renderLevel();
+  window.nextRound = nextRound;
+  window.previousRound = previousRound;
 };

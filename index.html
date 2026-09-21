@@ -27,7 +27,17 @@
                 <p id="active-category" style="color: var(--primary-blue); font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">Main Lobby</p>
                 <h3 id="active-title">Welcome, Explorer!</h3>
             </div>
-            <div id="game-toolbar"></div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div id="game-nav-controls" class="game-nav-controls">
+                    <button id="prev-round-btn" class="game-btn secondary nav-round-btn" onclick="goPreviousRound()">
+                        <span>⬅️</span> Previous
+                    </button>
+                    <button id="next-round-btn" class="game-btn nav-round-btn" onclick="goNextRound()">
+                        Next <span>➡️</span>
+                    </button>
+                </div>
+                <div id="game-toolbar"></div>
+            </div>
         </header>
 
         <section id="game-container">
@@ -355,6 +365,7 @@
             document.getElementById('active-title').innerText = gameInfo.title;
             document.getElementById('game-result-overlay').style.display = 'none';
             document.getElementById('game-toolbar').innerHTML = '';
+            document.getElementById('game-nav-controls').classList.add('visible');
             
             loadGameScript(gameInfo.path);
             if (window.innerWidth <= 900) toggleSidebar();
@@ -367,6 +378,12 @@
             stage.innerHTML = ''; 
             window.initGame = null;
 
+            // Reset any round-navigation methods from the previous game so we
+            // never accidentally call a stale game's functions.
+            window.nextRound = null;
+            window.previousRound = null;
+            updateRoundNavButtons();
+
             // Remove existing scripts to avoid collisions
             document.querySelectorAll('.game-script').forEach(s => s.remove());
 
@@ -376,12 +393,40 @@
             script.onload = () => {
                 loader.style.display = 'none';
                 if (window.initGame) window.initGame('game-stage');
+                updateRoundNavButtons();
             };
             script.onerror = () => {
                 loader.style.display = 'none';
                 stage.innerHTML = `<div style="text-align:center"><h3>Activity Missing</h3><p>File not found: ${path}</p></div>`;
+                updateRoundNavButtons();
             };
             document.body.appendChild(script);
+        }
+
+        // --- ROUND NAVIGATION (Previous / Next buttons in the header) ---
+        // Individual game scripts may expose window.nextRound / window.previousRound
+        // (the same way they expose window.initGame). These helpers call whichever
+        // is currently available and keep the header buttons in sync.
+        function updateRoundNavButtons() {
+            const prevBtn = document.getElementById('prev-round-btn');
+            const nextBtn = document.getElementById('next-round-btn');
+            if (!prevBtn || !nextBtn) return;
+            prevBtn.disabled = typeof window.previousRound !== 'function';
+            nextBtn.disabled = typeof window.nextRound !== 'function';
+        }
+
+        function goPreviousRound() {
+            if (typeof window.previousRound === 'function') {
+                AudioEngine.play('click');
+                window.previousRound();
+            }
+        }
+
+        function goNextRound() {
+            if (typeof window.nextRound === 'function') {
+                AudioEngine.play('click');
+                window.nextRound();
+            }
         }
 
         // --- NAVIGATION HELPERS ---
@@ -411,8 +456,11 @@
             document.getElementById('active-title').innerText = 'Welcome, Explorer!';
             document.getElementById('game-result-overlay').style.display = 'none';
             document.getElementById('game-toolbar').innerHTML = '';
+            document.getElementById('game-nav-controls').classList.remove('visible');
             document.querySelectorAll('.game-script').forEach(s => s.remove());
             window.initGame = null;
+            window.nextRound = null;
+            window.previousRound = null;
 
             renderLobby();
         }

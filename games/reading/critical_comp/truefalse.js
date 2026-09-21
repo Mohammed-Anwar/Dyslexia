@@ -52,12 +52,30 @@
     ];
 
     window.initGame = function(containerId) {
-        const stage = document.getElementById(containerId);
-        if (!stage) return;
+        currentStage = document.getElementById(containerId);
+        if (!currentStage) return;
         levelIndex = 0;
         score = 0;
-        renderLevel(stage);
+        renderLevel(currentStage);
     };
+    // --- ADD THESE TWO FUNCTIONS ---
+    function nextRound() {
+        levelIndex++;
+        if (levelIndex >= gameData.length) {
+            if (window.GameHub?.showComplete) {
+                window.GameHub.showComplete("Fair Judge!", `Final Score: ${score}. Great reading skills!`);
+            }
+        } else {
+            renderLevel(currentStage);
+        }
+    }
+
+    function previousRound() {
+        if (levelIndex > 0) {
+            levelIndex--;
+            renderLevel(currentStage);
+        }
+    }
 
     function renderLevel(stage) {
         const data = gameData[levelIndex];
@@ -212,16 +230,7 @@
                     window.GameHub.triggerVFX(e.clientX, e.clientY);
                 }
 
-                setTimeout(() => {
-                    if (levelIndex < gameData.length - 1) {
-                        levelIndex++;
-                        renderLevel(stage);
-                    } else {
-                        if (window.GameHub?.showComplete) {
-                            window.GameHub.showComplete("Fair Judge!", `Final Score: ${score}. Great reading skills!`);
-                        }
-                    }
-                }, 3000); // زيادة الوقت قليلاً ليقرأ الطفل الشرح
+                setTimeout(nextRound, 3000);
             } else {
                 feedback.style.display = "block";
                 feedback.style.color = "#C53030";
@@ -243,4 +252,6 @@
         trueBtn.onclick = (e) => processJudgment(true, e);
         falseBtn.onclick = (e) => processJudgment(false, e);
     }
+window.nextRound = nextRound;
+window.previousRound = previousRound;
 })();

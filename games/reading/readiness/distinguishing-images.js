@@ -1,15 +1,14 @@
 /**
- * Game 1: Advanced Distinguishing Skills
- * Filename: games/read_d1_g1.js
- * 15 Levels: 1-5 (Color Contrast), 6-10 (Shape Logic), 11-15 (Shadow Match)
- */
-
+Game 1: Advanced Distinguishing Skills
+Filename: games/read_d1_g1.js
+15 Levels: 1-5 (Color Contrast), 6-10 (Shape Logic), 11-15 (Shadow Match)
+*/
 (function() {
     let score = 0;
     let levelIndex = 0;
     const totalRounds = 15;
+    let currentStage = null;
 
-    // Level sets with color metadata to prevent similarity in Stage 1
     const itemPool = [
         { char: '🍎', color: 'red' }, { char: '🍌', color: 'yellow' },
         { char: '🍇', color: 'purple' }, { char: '🍓', color: 'red' },
@@ -18,7 +17,6 @@
         { char: '🐳', color: 'blue' }, { char: '🐧', color: 'black' },
         { char: '🍄', color: 'red' }, { char: '☀️', color: 'yellow' }
     ];
-
     const geometricPool = [
         { char: '🔴', color: 'red' }, { char: '🟦', color: 'blue' },
         { char: '🔺', color: 'red' }, { char: '🟡', color: 'yellow' },
@@ -27,130 +25,112 @@
     ];
 
     window.initGame = function(containerId) {
-        const stage = document.getElementById(containerId);
-        if (!stage) return;
-        
-        stage.innerHTML = ''; 
+        currentStage = document.getElementById(containerId);
+        if (!currentStage) return;
+        currentStage.innerHTML = ''; 
         levelIndex = 0;
         score = 0;
-
+        
         const gameWrapper = document.createElement('div');
-        gameWrapper.style.cssText = `
-            display: flex; flex-direction: column; align-items: center;
-            width: 100%; max-width: 100%; animation: fadeIn 0.5s ease; user-select: none;
-            padding: 10px; box-sizing: border-box; justify-content: flex-start;
-        `;
-
+        gameWrapper.style.cssText = `display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 100%; animation: fadeIn 0.5s ease; user-select: none; padding: 10px; box-sizing: border-box; justify-content: flex-start;`;
+        
+        const header = document.createElement('div');
+        header.style.cssText = "display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 350px; margin-bottom: 10px;";
+        
+        const prevBtn = document.createElement('button');
+        prevBtn.id = "prev-btn";
+        prevBtn.innerText = "⬅️ Previous";
+        prevBtn.style.cssText = "background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #718096; visibility: hidden;";
+        prevBtn.onclick = previousRound;
+        
+        const stats = document.createElement('div');
+        stats.id = "game-stats";
+        stats.style.cssText = `font-weight: bold; color: #718096; font-size: 1rem; background: #EDF2F7; padding: 6px 14px; border-radius: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);`;
+        
+        header.appendChild(prevBtn);
+        header.appendChild(stats);
+        
         const instruction = document.createElement('h2');
         instruction.id = "game-instruction";
         instruction.style.cssText = "margin-bottom: 10px; color: #2D3748; text-align: center; font-size: 1.4rem; width: 100%;";
-
+        
         const grid = document.createElement('div');
         grid.id = "game-grid";
         grid.style.cssText = `display: grid; gap: 10px; margin-bottom: 20px; min-height: 300px; align-items: center; justify-content: center; width: 100%;`;
-
-        const stats = document.createElement('div');
-        stats.id = "game-stats";
-        stats.style.cssText = `
-            font-weight: bold; color: #718096; font-size: 1rem; 
-            background: #EDF2F7; padding: 10px 25px; border-radius: 50px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-top: 10px;
-        `;
-
+        
+        gameWrapper.appendChild(header);
         gameWrapper.appendChild(instruction);
         gameWrapper.appendChild(grid);
-        gameWrapper.appendChild(stats);
-        stage.appendChild(gameWrapper);
-
-        nextRound(grid, stats, instruction);
+        currentStage.appendChild(gameWrapper);
+        
+        renderRound();
     };
 
-    function nextRound(grid, stats, instruction) {
-        if (levelIndex >= totalRounds) {
-            if (window.GameHub?.showComplete) {
-                window.GameHub.showComplete("Master Explorer!", `You completed all 15 levels with a score of ${score}!`);
-            }
-            return;
-        }
+    function renderRound() {
+        const grid = document.getElementById('game-grid');
+        const stats = document.getElementById('game-stats');
+        const instruction = document.getElementById('game-instruction');
+        const prevBtn = document.getElementById('prev-btn');
 
-        levelIndex++;
         grid.innerHTML = '';
-        stats.innerText = `Level: ${levelIndex} / ${totalRounds} | Score: ${score}`;
+        stats.innerText = `Level: ${levelIndex + 1} / ${totalRounds} | Score: ${score}`;
         
-        if (levelIndex <= 5) {
+        if (prevBtn) {
+            prevBtn.style.visibility = levelIndex > 0 ? 'visible' : 'hidden';
+        }
+        
+        if (levelIndex < 5) {
             setupContrastStage(grid, instruction);
-        } else if (levelIndex <= 10) {
+        } else if (levelIndex < 10) {
             setupShapeStage(grid, instruction);
         } else {
             setupShadowStage(grid, instruction);
         }
     }
 
-    // --- STAGE 1: Different Colors/Items (9 grid) ---
     function setupContrastStage(grid, instruction) {
         instruction.innerText = "Find the item that looks different!";
         grid.style.gridTemplateColumns = "repeat(3, 100px)";
-        
         let main = itemPool[Math.floor(Math.random() * itemPool.length)];
         let odd = itemPool[Math.floor(Math.random() * itemPool.length)];
-        
-        // Ensure color and icon are different
         while (odd.color === main.color || odd.char === main.char) {
             odd = itemPool[Math.floor(Math.random() * itemPool.length)];
         }
-
         createGrid(grid, 9, main.char, odd.char);
     }
 
-    // --- STAGE 2: Same Color, Different Shape (9 grid) ---
     function setupShapeStage(grid, instruction) {
         instruction.innerText = "Find the different SHAPE!";
         grid.style.gridTemplateColumns = "repeat(3, 100px)";
-
-        // Filter items that share colors but have different shapes
         const colors = ['red', 'yellow', 'blue'];
         const chosenColor = colors[Math.floor(Math.random() * colors.length)];
         const sameColorPool = geometricPool.filter(i => i.color === chosenColor);
-        
         const main = sameColorPool[0].char;
         const odd = sameColorPool[1].char;
-
         createGrid(grid, 9, main, odd);
     }
 
-    // --- STAGE 3: Shadow Match (3 choices) ---
     function setupShadowStage(grid, instruction) {
         instruction.innerText = "Which one matches the shadow?";
         grid.style.gridTemplateColumns = "repeat(3, 100px)";
-
         const choices = [...itemPool].sort(() => 0.5 - Math.random()).slice(0, 3);
         const correctIdx = Math.floor(Math.random() * 3);
         const target = choices[correctIdx].char;
-
-        // Shadow display area (spanning top row)
+        
         const shadowBox = document.createElement('div');
-        shadowBox.style.cssText = `
-            grid-column: 1 / span 3; background: #F7FAFC; border: 2px dashed #CBD5E0; 
-            border-radius: 20px; height: 110px; display: flex; align-items: center; 
-            justify-content: center; font-size: 70px; margin-bottom: 5px;
-            position: relative; overflow: hidden;
-        `;
+        shadowBox.style.cssText = `grid-column: 1 / span 3; background: #F7FAFC; border: 2px dashed #CBD5E0; border-radius: 20px; height: 110px; display: flex; align-items: center; justify-content: center; font-size: 70px; margin-bottom: 5px; position: relative; overflow: hidden;`;
         
         const silhouette = document.createElement('span');
         silhouette.innerText = target;
         silhouette.style.cssText = `filter: brightness(0); opacity: 0.9;`;
-        
         shadowBox.appendChild(silhouette);
         grid.appendChild(shadowBox);
-
+        
         choices.forEach((item, idx) => {
             const card = createCard(item.char);
             card.onclick = (e) => {
-                if (idx === correctIdx) {
-                    onCorrect(e, card, grid);
-                } else {
-                    onWrong(card);
-                }
+                if (idx === correctIdx) onCorrect(e, card, grid);
+                else onWrong(card);
             };
             grid.appendChild(card);
         });
@@ -172,14 +152,7 @@
     function createCard(symbol) {
         const card = document.createElement('button');
         card.innerText = symbol;
-        card.style.cssText = `
-            font-size: 40px; width: 90px; height: 90px;
-            border: 3px solid #E2E8F0; border-radius: 20px;
-            background: white; cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); outline: none;
-            margin: auto;
-        `;
+        card.style.cssText = `font-size: 40px; width: 90px; height: 90px; border: 3px solid #E2E8F0; border-radius: 20px; background: white; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); outline: none; margin: auto;`;
         card.onmouseenter = () => card.style.transform = "scale(1.05)";
         card.onmouseleave = () => card.style.transform = "scale(1)";
         return card;
@@ -194,7 +167,7 @@
         card.style.background = "#C6F6D5";
         card.style.borderColor = "#48BB78";
         grid.querySelectorAll('button').forEach(b => b.style.pointerEvents = 'none');
-        setTimeout(() => nextRound(document.getElementById('game-grid'), document.getElementById('game-stats'), document.getElementById('game-instruction')), 800);
+        setTimeout(() => nextRound(), 800);
     }
 
     function onWrong(card) {
@@ -209,6 +182,24 @@
         }, 400);
     }
 
+    function nextRound() {
+        if (levelIndex < totalRounds - 1) {
+            levelIndex++;
+            renderRound();
+        } else {
+            if (window.GameHub?.showComplete) {
+                window.GameHub.showComplete("Master Explorer!", `You completed all 15 levels with a score of ${score}!`);
+            }
+        }
+    }
+
+    function previousRound() {
+        if (levelIndex > 0) {
+            levelIndex--;
+            renderRound();
+        }
+    }
+
     if (!document.getElementById('game-vfx-styles')) {
         const style = document.createElement('style');
         style.id = 'game-vfx-styles';
@@ -218,4 +209,6 @@
         `;
         document.head.appendChild(style);
     }
+    window.nextRound = nextRound;
+    window.previousRound = previousRound;
 })();

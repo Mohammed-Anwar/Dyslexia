@@ -62,12 +62,31 @@
     ];
 
     window.initGame = function(containerId) {
-        const stage = document.getElementById(containerId);
-        if (!stage) return;
+        currentStage = document.getElementById(containerId);
+        if (!currentStage) return;
         levelIndex = 0;
         score = 0;
-        renderLevel(stage);
+        renderLevel(currentStage);
     };
+
+    // --- ADD THESE TWO FUNCTIONS ---
+    function nextRound() {
+        levelIndex++;
+        if (levelIndex >= gameData.length) {
+            if (window.GameHub?.showComplete) {
+                window.GameHub.showComplete("Portal Master!", `Final Score: ${score}. You know the difference between what's real and what's magic!`);
+            }
+        } else {
+            renderLevel(currentStage);
+        }
+    }
+
+    function previousRound() {
+        if (levelIndex > 0) {
+            levelIndex--;
+            renderLevel(currentStage);
+        }
+    }
 
     function renderLevel(stage) {
         const data = gameData[levelIndex];
@@ -230,16 +249,7 @@
                     window.GameHub.triggerVFX(e.clientX, e.clientY);
                 }
 
-                setTimeout(() => {
-                    if (levelIndex < gameData.length - 1) {
-                        levelIndex++;
-                        renderLevel(stage);
-                    } else {
-                        if (window.GameHub?.showComplete) {
-                            window.GameHub.showComplete("Portal Master!", `Final Score: ${score}. You know the difference between what's real and what's magic!`);
-                        }
-                    }
-                }, 2000);
+                setTimeout(nextRound, 2000);
             } else {
                 mainCard.classList.add('wrong-shake');
                 feedback.style.color = "#C53030";
@@ -256,4 +266,6 @@
         doorBtn.onclick = (e) => handleChoice(true, e);
         portalBtn.onclick = (e) => handleChoice(false, e);
     }
+window.nextRound = nextRound;
+window.previousRound = previousRound;
 })();

@@ -26,6 +26,26 @@ window.initGame = function (stageId) {
     gameWords = shuffled.slice(0, MAX_LEVELS);
   }
 
+  function nextRound() {
+    if (levelIndex >= MAX_LEVELS - 1) {
+      if (window.GameHub) {
+        window.GameHub.showComplete("Password Accepted!", "You successfully unlocked all words!");
+      } else {
+        alert("Password Accepted! You successfully unlocked all words!");
+      }
+    } else {
+      levelIndex++;
+      renderLevel();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel();
+    }
+  }
+
   // Text-to-Speech function
   window.playWordAudio = function(word) {
     if (window.GameHub && typeof window.GameHub.speak === 'function') {
@@ -191,18 +211,7 @@ window.initGame = function (stageId) {
     
     window.playWordAudio(currentWord);
 
-    setTimeout(() => {
-      levelIndex++;
-      if (levelIndex >= MAX_LEVELS) {
-        if(window.GameHub) {
-          window.GameHub.showComplete("Password Accepted!", "You successfully unlocked all words!");
-        } else {
-          alert("Password Accepted! You successfully unlocked all words!");
-        }
-      } else {
-        renderLevel();
-      }
-    }, 1500);
+    setTimeout(() => nextRound(), 1500);
   }
 
   window.addEventListener("mousemove", handleMove);
@@ -211,4 +220,6 @@ window.initGame = function (stageId) {
   window.addEventListener("touchend", handleEnd);
 
   renderLevel();
+  window.nextRound = nextRound;
+  window.previousRound = previousRound;
 };

@@ -28,6 +28,22 @@ window.initGame = function (stageId) {
 
   let levelIndex = 0;
 
+  function nextRound() {
+    if (levelIndex >= gameData.length - 1) {
+      window.GameHub.showComplete("Mirror Master!", "You conquered every look-alike and mirrored letter challenge.");
+    } else {
+      levelIndex++;
+      renderLevel();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel();
+    }
+  }
+
   function renderLevel() {
     const round = gameData[levelIndex];
     stage.innerHTML = "";
@@ -75,14 +91,7 @@ window.initGame = function (stageId) {
             btn.style.background = "var(--primary-green)";
             btn.style.color = "white";
             btn.style.borderColor = "var(--primary-green)";
-            setTimeout(() => {
-              levelIndex++;
-              if (levelIndex >= gameData.length) {
-                window.GameHub.showComplete("Sharp Eyes!", "You spotted every look-alike letter.");
-              } else {
-                renderLevel();
-              }
-            }, 600);
+            setTimeout(() => nextRound(), 600);
           } else {
             window.GameHub.playSound("wrong");
             btn.style.transform = "translateX(-5px)";
@@ -130,14 +139,7 @@ window.initGame = function (stageId) {
               shadow.style.border = "4px solid var(--primary-green)";
               shadow.style.background = "rgba(72,187,120,0.1)";
               el.style.visibility = "hidden";
-              setTimeout(() => {
-                levelIndex++;
-                if (levelIndex >= gameData.length) {
-                  window.GameHub.showComplete("Perfect Match!", "You connected every letter to its shadow.");
-                } else {
-                  renderLevel();
-                }
-              }, 700);
+              setTimeout(() => nextRound(), 700);
             } else {
               window.GameHub.playSound("wrong");
               el.style.transform = "translate3d(0,0,0)";
@@ -180,14 +182,7 @@ window.initGame = function (stageId) {
             window.GameHub.triggerVFX(e.clientX, e.clientY);
             btn.style.background = "var(--primary-green)";
             btn.style.color = "white";
-            setTimeout(() => {
-              levelIndex++;
-              if (levelIndex >= gameData.length) {
-                window.GameHub.showComplete("Mirror Master!", "You conquered all the tricky reflections.");
-              } else {
-                renderLevel();
-              }
-            }, 600);
+            setTimeout(() => nextRound(), 600);
           } else {
             window.GameHub.playSound("wrong");
             btn.style.borderColor = "#E53E3E";
@@ -208,4 +203,6 @@ window.initGame = function (stageId) {
 
   // بدء اللعبة
   renderLevel();
+  window.nextRound = nextRound;
+  window.previousRound = previousRound;
 };

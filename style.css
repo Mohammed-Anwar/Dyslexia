@@ -309,6 +309,35 @@ body {
 
 .game-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 currentColor; }
 
+/* --- Previous / Next round controls in the header --- */
+.game-nav-controls {
+    display: none;
+    align-items: center;
+    gap: 10px;
+}
+
+.game-nav-controls.visible {
+    display: flex;
+}
+
+.nav-round-btn {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+    box-shadow: none;
+}
+
+.nav-round-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background: #CBD5E0;
+    color: white;
+    box-shadow: none;
+}
+
+.nav-round-btn:disabled:active {
+    transform: none;
+}
+
 #mobile-menu-btn {
     display: none;
     position: fixed;

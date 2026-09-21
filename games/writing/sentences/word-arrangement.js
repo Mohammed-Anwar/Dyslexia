@@ -269,22 +269,33 @@ window.initGame = function (stageId) {
     }, 400);
   }
 
+  function nextRound() {
+    if (levelIndex >= gameData.length - 1) {
+      if (window.GameHub && window.GameHub.showComplete) {
+        window.GameHub.showComplete("Sentence Builder!", "You arranged every sentence in the right order. Amazing job!");
+      }
+    } else {
+      levelIndex++;
+      renderLevel();
+    }
+  }
+
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel();
+    }
+  }
+
   function checkWinCondition() {
     const lockedCards = document.querySelectorAll('.wa-card.locked');
     if (lockedCards.length === gameData[levelIndex].words.length) {
-      levelIndex++;
-      setTimeout(() => {
-        if (levelIndex >= gameData.length) {
-          if (window.GameHub && window.GameHub.showComplete) {
-            window.GameHub.showComplete("Sentence Builder!", "You arranged every sentence in the right order. Amazing job!");
-          }
-        } else {
-          renderLevel();
-        }
-      }, 800);
+      setTimeout(() => nextRound(), 800);
     }
   }
 
   // Start the game
   renderLevel();
+  window.nextRound = nextRound;
+  window.previousRound = previousRound;
 };

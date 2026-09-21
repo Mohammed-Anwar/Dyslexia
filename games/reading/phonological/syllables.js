@@ -24,6 +24,24 @@
 
     const totalLevels = gameData.length;
     const mouthShapes = ['a', 'e', 'o'];
+    
+    function nextRound() {
+        levelIndex++;
+        if (levelIndex >= gameData.length) {
+            if (window.GameHub && window.GameHub.showComplete) {
+                window.GameHub.showComplete("Robot Master! 🤖", "You are amazing at counting syllables!");
+            }
+        } else {
+            renderLevel();
+        }
+    }
+
+    function previousRound() {
+        if (levelIndex > 0) {
+            levelIndex--;
+            renderLevel();
+        }
+    }
 
     window.initGame = function(containerId) {
         const stage = document.getElementById(containerId);
@@ -414,16 +432,7 @@
             drumBtns.forEach(btn => btn.disabled = true);
             document.getElementById('rg-listen-btn').disabled = true;
 
-            setTimeout(() => {
-                if (levelIndex < gameData.length - 1) {
-                    levelIndex++;
-                    renderLevel();
-                } else {
-                    if (window.GameHub && window.GameHub.showComplete) {
-                        window.GameHub.showComplete("Robot Master! 🤖", "You are amazing at counting syllables!");
-                    }
-                }
-            }, 1500);
+            setTimeout(nextRound, 1500);
 
         } else {
             // Wrong logic
@@ -443,4 +452,6 @@
         }
     }
 
+window.nextRound = nextRound;
+window.previousRound = previousRound;
 })();

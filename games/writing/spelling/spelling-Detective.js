@@ -224,6 +224,15 @@ window.initGame = function (stageId) {
     }
   }
 
+  function previousRound() {
+    if (levelIndex > 0) {
+      levelIndex--;
+      renderLevel();
+    }
+  }
+
   // بدء اللعبة
   renderLevel();
+  window.nextRound = nextRound;
+  window.previousRound = previousRound;
 };
