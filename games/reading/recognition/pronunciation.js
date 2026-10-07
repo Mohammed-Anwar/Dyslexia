@@ -69,6 +69,7 @@ let currentStage = null;
      soundPlayed = true;
      if (statusText) statusText.innerText = "Tap to listen again 🔊";
      const grid = document.getElementById('options-grid');
+     
      if (grid) grid.classList.remove('disabled');
  }
 
@@ -134,6 +135,9 @@ let currentStage = null;
      };
      
      const items = stage.querySelectorAll('.option-item');
+     items.forEach(item => {
+         item.classList.add('gemoji');
+     });
      items.forEach(item => {
          item.onclick = (e) => {
              if (!soundPlayed) return;

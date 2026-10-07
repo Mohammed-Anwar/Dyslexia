@@ -154,11 +154,11 @@ window.initGame = function (stageId) {
     "active-boy-playing": "🏃",
     "fast-dog-running": "🐕",
     "happy-girl-singing": "🎤",
-    "healthy-food-plate": "",
+    "healthy-food-plate": "🍽",
     "strong-camel-desert": "🐪",
     "active-farmer-food": "👨‍🌾",
     "tall-boy-red-ball": "⚽",
-    "hungry-pelican-small-fish": "",
+    "hungry-pelican-small-fish": "🐠",
     "strong-camel-long-legs": "🐫",
     "beautiful-flower-green-leaves": "🌸",
     "fennec-fox-big-ears": "🦊",
@@ -323,7 +323,7 @@ window.initGame = function (stageId) {
       </style>
       <div class="dw-wrap">
         <p style="color:var(--text-muted);font-weight:700;">Level ${levelIndex + 1} / ${gameData.length} — Phase ${r.phase}</p>
-        <div class="dw-image-container">${IMAGES[r.image] || "️"}</div>
+        <div class="dw-image-container gemoji">${IMAGES[r.image] || "️"}</div>
         <div class="dw-sentence-container" id="dw-sentence"></div>
         ${r.phase === 3 ? '<div class="dw-trash-zone" id="dw-trash">🗑️<br><small>Trash</small></div>' : ''}
         <div class="dw-label">${r.phase === 3 ? "Drag the wrong word to trash, then fix the sentence" : "Drag words into the blanks"}</div>

@@ -46,7 +46,7 @@ window.initGame = function (stageId) {
 
     // Emoji & Prompt
     wrap.innerHTML += `
-      <div style="font-size:4.5rem; margin: 10px 0; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">${round.emoji}</div>
+      <div class="gemoji" style="font-size:4.5rem; margin: 10px 0; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">${round.emoji}</div>
       <p style="font-size:1.1rem; font-weight:700; color:var(--text-dark); text-align:center; max-width:400px; line-height:1.4; margin-bottom:20px;">${round.prompt}</p>
     `;
 

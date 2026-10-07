@@ -81,7 +81,6 @@ let currentStage = null;
                  <span>Round: ${levelIndex + 1} / ${gameData.length}</span>
                  <span>Score: ${score}</span>
              </div>
-             <svg class="umbrella-svg" viewBox="0 0 24 24"><path d="M12,2C17.5,2 22,6.5 22,12C22,12.5 21.5,13 21,13C20.5,13 20,12.5 20,12C20,7.6 16.4,4 12,4C7.6,4 4,7.6 4,12C4,12.5 3.5,13 3,13C2.5,13 2,12.5 2,12C2,6.5 6.5,2 12,2M11,13V19C11,19.6 11.4,20 12,20C12.6,20 13,19.6 13,19V13H11M12,22C10.3,22 9,20.7 9,19C9,18.4 9.4,18 10,18C10.6,18 11,18.4 11,19C11,19.6 11.4,20 12,20C12.6,20 13,19.6 13,19C13,18.4 13.4,18 14,18C14.6,18 15,18.4 15,19C15,20.7 13.7,22 12,22Z" /></svg>
              <div class="instruction-box">${data.instruction}</div>
              ${detailsContent}
              <div class="options-container" id="options"></div>

@@ -77,6 +77,82 @@ window.initGame = function (stageId) {
       window.GameHub.speak(round.desc, 'en-US');
     }
   }
+    function makeItemDraggable(element, onDropCallback) {
+      let startX, startY;
+      let isDragging = false;
+
+      // Custom reset function tailored for this game's arena
+      element.resetPosition = function() {
+          element.style.position = 'absolute';
+          element.style.left = '16px';
+          element.style.top = '16px';
+          // Restore original z-index based on whether it's supposed to be behind or in front
+          element.style.zIndex = element.classList.contains('drag-back') ? '5' : '15';
+          element.style.transform = 'none';
+          element.style.pointerEvents = 'auto';
+          element.style.margin = '0';
+      };
+
+      function startDrag(e) {
+          e.preventDefault();
+          isDragging = true;
+          
+          const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+          const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+          
+          const rect = element.getBoundingClientRect();
+          startX = clientX - rect.left;
+          startY = clientY - rect.top;
+          
+          // FIX 1: Force element to top layer and let clicks pass through
+          element.style.position = 'fixed';
+          element.style.left = rect.left + 'px';
+          element.style.top = rect.top + 'px';
+          element.style.zIndex = '9999'; 
+          element.style.pointerEvents = 'none'; // Prevents "hovering under text"
+          element.style.margin = '0';
+          
+          document.addEventListener('mousemove', drag);
+          document.addEventListener('touchmove', drag, { passive: false });
+          document.addEventListener('mouseup', endDrag);
+          document.addEventListener('touchend', endDrag);
+      }
+
+      function drag(e) {
+          if (!isDragging) return;
+          e.preventDefault();
+          
+          const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+          const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+          
+          element.style.left = (clientX - startX) + 'px';
+          element.style.top = (clientY - startY) + 'px';
+      }
+
+      function endDrag(e) {
+          if (!isDragging) return;
+          isDragging = false;
+          
+          // FIX 2: Remove listeners immediately to prevent "sticking"
+          document.removeEventListener('mousemove', drag);
+          document.removeEventListener('touchmove', drag);
+          document.removeEventListener('mouseup', endDrag);
+          document.removeEventListener('touchend', endDrag);
+          
+          // Re-enable pointer events
+          element.style.pointerEvents = 'auto';
+          
+          const clientX = e.type.includes('mouse') ? e.clientX : e.changedTouches[0].clientX;
+          const clientY = e.type.includes('mouse') ? e.clientY : e.changedTouches[0].clientY;
+          
+          if (onDropCallback) {
+              onDropCallback(clientX, clientY);
+          }
+      }
+
+      element.addEventListener('mousedown', startDrag);
+      element.addEventListener('touchstart', startDrag, { passive: false });
+  }
 
   speakBtn.addEventListener("click", playVoiceOver);
 
@@ -164,9 +240,9 @@ window.initGame = function (stageId) {
     } else if (round.mode === 'between') {
       arena.className = "lp-arena";
       arenaHTML = `
-        <div class="anchor-item anchor-twin-left anchor-back">${round.anchor}</div>
-        <div class="anchor-item anchor-twin-right anchor-back">${round.anchor}</div>
-        <div class="drag-item drag-front" id="lp-star">${round.drag}</div>
+        <div class="anchor-item anchor-twin-left anchor-back gemoji">${round.anchor}</div>
+        <div class="anchor-item anchor-twin-right anchor-back gemoji">${round.anchor}</div>
+        <div class="drag-item drag-front gemoji" id="lp-star">${round.drag}</div>
       `;
     } else {
       arena.className = "lp-arena";
@@ -174,24 +250,24 @@ window.initGame = function (stageId) {
       let zAnchor = round.mode === 'behind' ? 'anchor-front' : 'anchor-back';
       let zDrag = round.mode === 'behind' ? 'drag-back' : 'drag-front';
       arenaHTML = `
-        <div class="anchor-item ${zAnchor}" id="anchor-main">${round.anchor}</div>
-        <div class="drag-item ${zDrag}" id="lp-star">${round.drag}</div>
+        <div class="anchor-item ${zAnchor} gemoji" id="anchor-main">${round.anchor}</div>
+        <div class="drag-item ${zDrag} gemoji" id="lp-star">${round.drag}</div>
       `;
     }
     
     arena.innerHTML = arenaHTML;
     
-    const star = document.getElementById("lp-star");
-    window.GameHub.utils.makeDraggable(star, (x, y) => {
+        const star = document.getElementById("lp-star");
+    
+    // Use our new bulletproof drag function
+    makeItemDraggable(star, (x, y) => {
       if (checkPlacement(round)) {
         window.GameHub.playSound("correct");
-        window.GameHub.triggerVFX(x, y);
+        if (window.GameHub.triggerVFX) window.GameHub.triggerVFX(x, y);
         nextRound();
       } else {
         window.GameHub.playSound("wrong");
-        // إعادة العنصر لنقطة البداية بلطف
-        star.style.transform = "translate3d(0,0,0)";
-        if(star.resetPosition) star.resetPosition();
+        if (star.resetPosition) star.resetPosition();
       }
     });
 

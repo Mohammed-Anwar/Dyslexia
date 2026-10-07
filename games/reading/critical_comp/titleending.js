@@ -244,8 +244,8 @@
                 <div class="options-grid" id="options">
                     ${shuffledOptions.map((opt, idx) => `
                         <div class="scene-card" onclick="makeChoice(${idx}, ${opt.isCorrect})">
-                            <div class="scene-icon">${opt.icon}</div>
-                            <div class="scene-label">${opt.label}</div>
+                            <div class="scene-icon gemoji">${opt.icon}</div>
+                            <div class="scene-label ">${opt.label}</div>
                         </div>
                     `).join('')}
                 </div>

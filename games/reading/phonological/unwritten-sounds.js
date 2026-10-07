@@ -208,7 +208,7 @@
                 </div>
 
                 <div class="target-card" id="target-card">
-                    <div class="target-image">${data.targetImage}</div>
+                    <div class="target-image gemoji">${data.targetImage}</div>
                     <div class="target-word">${data.targetWord}</div>
                 </div>
                 
@@ -234,7 +234,7 @@
             const card = document.createElement('div');
             card.className = 'option-card';
             card.innerHTML = `
-                <div class="option-image">${opt.image}</div>
+                <div class="option-image gemoji">${opt.image}</div>
                 <div class="option-text">${opt.word}</div>
             `;
             
@@ -255,7 +255,7 @@
                     Array.from(optionsContainer.children).forEach(c => c.style.pointerEvents = 'none');
                     targetCard.style.pointerEvents = 'none';
                     
-                    setTimeout(nextRound, 4000);
+                    setTimeout(nextRound, 2000);
                 } else {
                     card.classList.add('wrong');
                     feedback.innerText = "Try again! The sounds don't match.";

@@ -227,7 +227,7 @@ window.initGame = function (stageId) {
           <span>Round ${levelIndex + 1} / ${gameData.length}</span>
         </div>
         
-        <div class="scene-display">${r.scene}</div>
+        <div class="scene-display gemoji">${r.scene}</div>
         
         ${specificHTML}
       </div>

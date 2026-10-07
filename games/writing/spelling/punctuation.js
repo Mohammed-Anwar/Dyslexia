@@ -167,7 +167,7 @@ window.initGame = function (stageId) {
 
     const listenBtn = document.createElement("button");
     listenBtn.style.cssText = "margin-top:20px; padding:10px 20px; border-radius:50px; border:none; background:var(--primary-blue); color:white; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:8px; font-size:1rem; box-shadow: 0 3px 0 #2b6cb0; transition: transform 0.1s;";
-    listenBtn.innerHTML = `<span>🔊</span> Listen`;
+    listenBtn.innerHTML = `<span class="gemoji">🔊</span> Listen`;
     listenBtn.onclick = () => {
         window.GameHub.playSound("click");
         let textToSpeak = "";

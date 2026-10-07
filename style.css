@@ -444,3 +444,19 @@ body {
     font-size: 0.75rem;
     color: var(--text-muted);
 }
+
+.option-icon, .bucket-emoji, .clue-emoji, .emoji-avatar,
+.panel-icon, .box-icon, .target-display, .word-image,
+.mystery-icon, .draggable-item, .item-content, .detail-item,
+.as-icon, .dr-icon, #prompt-icon, #play-sound-btn, #target-icon, .gemoji {
+    color: transparent !important;
+
+    display: flex !important;
+    align-items: center !important;       /* Vertical centering */
+    justify-content: center !important;
+}
+
+/* 2. Fallback class in case the image fails to load (404) */
+.emoji-fallback-visible {
+    color: initial !important;
+}

@@ -15,7 +15,7 @@ Filename: games/read_d1_g1.js
         { char: '🍊', color: 'orange' }, { char: '🍍', color: 'yellow' },
         { char: '🥦', color: 'green' }, { char: '🍉', color: 'green' },
         { char: '🐳', color: 'blue' }, { char: '🐧', color: 'black' },
-        { char: '🍄', color: 'red' }, { char: '☀️', color: 'yellow' }
+        { char: '🐞', color: 'red' }, { char: '☀️', color: 'yellow' }
     ];
     const geometricPool = [
         { char: '🔴', color: 'red' }, { char: '🟦', color: 'blue' },
@@ -39,6 +39,7 @@ Filename: games/read_d1_g1.js
         
         const prevBtn = document.createElement('button');
         prevBtn.id = "prev-btn";
+        
         prevBtn.innerText = "⬅️ Previous";
         prevBtn.style.cssText = "background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #718096; visibility: hidden;";
         prevBtn.onclick = previousRound;
@@ -152,6 +153,7 @@ Filename: games/read_d1_g1.js
     function createCard(symbol) {
         const card = document.createElement('button');
         card.innerText = symbol;
+        card.classList = 'option-icon';
         card.style.cssText = `font-size: 40px; width: 90px; height: 90px; border: 3px solid #E2E8F0; border-radius: 20px; background: white; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); outline: none; margin: auto;`;
         card.onmouseenter = () => card.style.transform = "scale(1.05)";
         card.onmouseleave = () => card.style.transform = "scale(1)";

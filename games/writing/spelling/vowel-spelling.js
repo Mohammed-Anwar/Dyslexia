@@ -153,12 +153,12 @@ window.initGame = function (stageId) {
       <div class="vs-wrap">
         <p style="color:var(--text-muted);font-weight:600;">Round ${levelIndex + 1} / ${gameData.length}</p>
         
-        <div class="vs-emoji">${r.emoji}</div>
+        <div class="vs-emoji gemoji">${r.emoji}</div>
         
         <p class="vs-prompt">${r.prompt}</p>
         
         <button class="vs-btn" id="vs-listen">
-          <span>🔊</span> Listen
+          <span class="gemoji">🔊</span> Listen
         </button>
         
         <div class="vs-word" id="vs-word-display">

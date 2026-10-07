@@ -133,14 +133,14 @@ window.initGame = function (stageId) {
         </div>
         <div class="comic-scene">
           <div class="character-box">
-            <div class="emoji-avatar">${r.emoji}</div>
+            <div class="emoji-avatar gemoji">${r.emoji}</div>
             <div class="speech-bubble">
               <span>${r.situation}</span>
-              <button class="voice-btn" title="Listen">🔊</button>
+              <button class="voice-btn gemoji" title="Listen">🔊</button>
             </div>
           </div>
           <div class="player-response">
-            <div class="emoji-avatar" style="background:var(--primary-blue); border-color:white; color: white; display:flex; align-items:center; justify-content:center;">👤</div>
+            <div class="emoji-avatar gemoji" style="background:var(--primary-blue); border-color:white; color: white; display:flex; align-items:center; justify-content:center;">👤</div>
             <div class="player-bubble" id="player-bubble">
               ${interactionHTML}
             </div>

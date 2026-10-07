@@ -48,7 +48,7 @@ window.initGame = function (stageId) {
     if (round.phase === 1) {
       wrap.innerHTML += `
         <p style="font-size:1.1rem; font-weight:700; color:var(--text-dark); text-align:center; margin-bottom:10px;">Which word matches this picture?</p>
-        <div style="font-size:6rem; margin: 10px 0; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); cursor:default;">${round.emoji}</div>
+        <div class="gemoji" style="font-size:6rem; margin: 10px 0; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); cursor:default;">${round.emoji}</div>
         <div id="options-container" style="display:flex; gap:20px; justify-content:center; margin-top:20px;"></div>
       `;
 

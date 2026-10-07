@@ -10,25 +10,25 @@ Filename: games/read_d1_g3.js
     let currentStage = null;
 
     const toolPairs = [
-        { prompt: '🔒', match: '🗝️', others: ['🔨', '📱', '🚗'], label: "ابحث عن الأداة المناسبة لفتح هذا!" },
-        { prompt: '🖌️', match: '🎨', others: ['📓', '🛒', '🧵'], label: "ماذا نحتاج أيضاً لنرسم؟" },
-        { prompt: '✉️', match: '📮', others: ['🗑️', '📦', '🗄️'], label: "أين نضع هذه الرسالة؟" },
-        { prompt: '🔌', match: '💡', others: ['🕯️', '🥽', '🚰'], label: "ماذا يكمل هذا؟" },
-        { prompt: '🩺', match: '👂', others: ['👁️', '🦷', '🦶'], label: "بماذا نستخدم هذه الأداة؟" }
+        { prompt: '🔒', match: '🗝️', others: ['🔨', '📱', '🚗'], label: "Find the right tool to open this!" },
+        { prompt: '🖌️', match: '🎨', others: ['📓', '🛒', '🧵'], label: "What else do we need to paint?" },
+        { prompt: '✉️', match: '📮', others: ['🗑️', '📦', '🗄️'], label: "Where do we put this letter?" },
+        { prompt: '🔌', match: '💡', others: ['🕯️', '🥽', '🚰'], label: "What completes this?" },
+        { prompt: '🩺', match: '👂', others: ['👁️', '🦷', '🦶'], label: "What do we use this tool for?" }
     ];
     const contextPairs = [
-        { prompt: '🌧️', match: '☂️', others: ['☀️', '🕶️', '🧢'], label: "سحابة ماطرة! ماذا نحتاج؟" },
-        { prompt: '🐟', match: '🌊', others: ['🎪', '🕸️', '🌲'], label: "أين تعيش هذه السمكة؟" },
-        { prompt: '🐦', match: '🌲', others: ['🌊', '🕸️', '🚗'], label: "أين يسكن هذا الطائر؟" },
-        { prompt: '🐄', match: '🥛', others: ['🍯', '🥚', '🍞'], label: "ماذا يعطينا هذا الحيوان؟" },
-        { prompt: '🐝', match: '🍯', others: ['🥛', '🥩', '🍟'], label: "ماذا تصنع لنا هذه النحلة؟" }
+        { prompt: '🌧️', match: '☂️', others: ['☀️', '🕶️', '🧢'], label: "Rainy cloud! What do we need?" },
+        { prompt: '🐟', match: '🌊', others: ['🎪', '🕸️', '🌲'], label: "Where does this fish live?" },
+        { prompt: '🐦', match: '🌲', others: ['🌊', '🕸️', '🚗'], label: "Where does this bird live?" },
+        { prompt: '🐄', match: '🥛', others: ['🍯', '🥚', '🍞'], label: "What does this animal give us?" },
+        { prompt: '🐝', match: '🍯', others: ['🥛', '🥩', '🍟'], label: "What does this bee make for us?" }
     ];
     const advancedPairs = [
-        { prompt: '🏸', match: '🎾', others: ['⚽', '🏀', '⚾'], label: "اختر الكرة المناسبة لهذا المضرب!" },
-        { prompt: '🐇', match: '🥕', others: ['⚪', '🧀', '🦴'], label: "ماذا يأكل الأرنب؟" },
-        { prompt: '🐭', match: '🧀', others: ['🥨', '🥕', '🐟'], label: "ماذا يأكل الفأر؟" },
-        { prompt: '🐶', match: '🦴', others: ['🍡', '🥕', '🧀'], label: "ما هو طعام الكلب المفضل؟" },
-        { prompt: '🐒', match: '🍌', others: ['🌙', '🦴', '🥩'], label: "ماذا يأكل القرد؟" }
+        { prompt: '🏸', match: '🎾', others: ['⚽', '🏀', '⚾'], label: "Choose the right ball for this racket!" },
+        { prompt: '🐇', match: '🥕', others: ['⚪', '🧀', '🦴'], label: "What does the rabbit eat?" },
+        { prompt: '🐭', match: '🧀', others: ['🥨', '🥕', '🐟'], label: "What does the mouse eat?" },
+        { prompt: '🐶', match: '🦴', others: ['🍡', '🥕', '🧀'], label: "What is the dog's favorite food?" },
+        { prompt: '🐒', match: '🍌', others: ['🌙', '🦴', '🥩'], label: "What does the monkey eat?" }
     ];
 
     window.initGame = function(containerId) {
@@ -39,15 +39,16 @@ Filename: games/read_d1_g3.js
         score = 0;
         
         const gameWrapper = document.createElement('div');
-        gameWrapper.style.cssText = `display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 100%; animation: fadeIn 0.5s ease; user-select: none; padding: 10px; box-sizing: border-box; justify-content: flex-start; direction: rtl; font-family: 'Tajawal', sans-serif, Arial;`;
+        // Removed 'direction: rtl' and changed font to match your main English UI
+        gameWrapper.style.cssText = `display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 100%; animation: fadeIn 0.5s ease; user-select: none; padding: 10px; box-sizing: border-box; justify-content: flex-start; font-family: 'Segoe UI', sans-serif, Arial;`;
         
         const header = document.createElement('div');
         header.style.cssText = "display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 350px; margin-bottom: 10px;";
         
         const prevBtn = document.createElement('button');
         prevBtn.id = "prev-btn";
-        prevBtn.innerText = "⬅️ السابق";
-        prevBtn.style.cssText = "background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #718096; font-family: 'Tajawal', sans-serif; visibility: hidden;";
+        prevBtn.innerText = "⬅️ Previous";
+        prevBtn.style.cssText = "background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #718096; font-family: 'Segoe UI', sans-serif; visibility: hidden;";
         prevBtn.onclick = previousRound;
         
         const stats = document.createElement('div');
@@ -91,7 +92,7 @@ Filename: games/read_d1_g3.js
         const prevBtn = document.getElementById('prev-btn');
 
         grid.innerHTML = '';
-        stats.innerText = `المستوى: ${levelIndex + 1} / ${totalRounds} | النتيجة: ${score}`;
+        stats.innerText = `Level: ${levelIndex + 1} / ${totalRounds} | Score: ${score}`;
         
         if (prevBtn) {
             prevBtn.style.visibility = levelIndex > 0 ? 'visible' : 'hidden';
@@ -133,6 +134,7 @@ Filename: games/read_d1_g3.js
     function createCard(symbol) {
         const card = document.createElement('button');
         card.innerText = symbol;
+        card.classList = 'gemoji'
         card.style.cssText = `font-size: 45px; width: 110px; height: 110px; border: 3px solid #E2E8F0; border-radius: 24px; background: white; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); outline: none; margin: auto;`;
         card.onmouseenter = () => card.style.transform = "scale(1.05)";
         card.onmouseleave = () => card.style.transform = "scale(1)";
@@ -170,7 +172,7 @@ Filename: games/read_d1_g3.js
             renderRound();
         } else {
             if (window.GameHub?.showComplete) {
-                window.GameHub.showComplete("بطل الربط المنطقي!", `لقد أنهيت جميع المراحل بذكاء! النتيجة: ${score} / ${totalRounds}`);
+                window.GameHub.showComplete("Logic Master!", `You completed all the levels! Score: ${score} / ${totalRounds}`);
             }
         }
     }

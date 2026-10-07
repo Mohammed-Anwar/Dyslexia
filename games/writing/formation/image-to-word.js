@@ -126,7 +126,7 @@ window.initGame = function (stageId) {
           </div>
         </div>
         
-        <div class="iw-emoji">${r.emoji}</div>
+        <div class="iw-emoji gemoji">${r.emoji}</div>
         <div class="iw-slots" id="iw-slots"></div>
         <div class="iw-pool" id="iw-pool"></div>
       </div>

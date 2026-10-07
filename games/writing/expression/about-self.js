@@ -55,7 +55,7 @@ window.initGame = function (stageId) {
       const shuffledPrefix = shuffle(r.targetPrefix);
       specificHTML = `
         <p class="as-instruction">${r.instruction} 
-          <button class="as-speak-btn" onclick="event.stopPropagation(); window.currentGameSpeak()">🔊</button>
+          <button class="as-speak-btn gemoji" onclick="event.stopPropagation(); window.currentGameSpeak()">🔊</button>
         </p>
         <div class="as-build-zone" id="as-build-zone">
           <span class="as-placeholder">Tap words below to build the start of your sentence...</span>

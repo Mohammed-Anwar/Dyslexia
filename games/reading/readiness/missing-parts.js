@@ -81,7 +81,7 @@ Features: 15 levels of progression with random rotation masking.
         
         shuffledChoices.forEach(shape => {
             const el = document.createElement('div');
-            el.className = 'draggable-shape';
+            el.className = 'draggable-shape gemoji';
             el.innerHTML = shape.icon;
             el.dataset.name = shape.name;
             choicesContainer.appendChild(el);

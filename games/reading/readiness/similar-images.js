@@ -9,7 +9,7 @@
     let levelIndex = 0;
     const totalRounds = 10;
 
-    // مجموعات الصور للمرحلة الأولى
+    // Image sets for the first stage
     const itemSets = [
         ['🦁', '🐯', '🐱', '🐶', '🦊'],
         ['🚗', '🚕', '🚙', '🚌', '🏎️'],
@@ -18,7 +18,7 @@
         ['🌙', '🍌', '🧀', '🍋', '✨']
     ];
 
-    // مجموعات الأشكال للمرحلة الثانية
+    // Shape sets for the second stage
     const geometricPool = [
         { char: '🔴', color: 'red' }, { char: '🟦', color: 'blue' },
         { char: '🔺', color: 'red' }, { char: '🟡', color: 'yellow' },
@@ -26,7 +26,7 @@
         { char: '💎', color: 'blue' }, { char: '🧡', color: 'orange' }
     ];
 
-    // المرحلة الثالثة: عناصر لها اتجاهات واضحة (يمين/يسار) لاستخدامها في العكس المكاني
+    // Third stage: Elements with clear directions (right/left) to be used for spatial reversal
     const shadowPool = ['📞', '🚗', '🐟', '🐕', '👟', '🐦', '🎺', '🔫', '🐎', '🦈'];
 
     window.initGame = function(containerId) {
@@ -42,7 +42,7 @@
             display: flex; flex-direction: column; align-items: center;
             width: 100%; max-width: 100%; animation: fadeIn 0.5s ease; user-select: none;
             padding: 10px; box-sizing: border-box; justify-content: flex-start;
-            direction: rtl; font-family: 'Tajawal', sans-serif, Arial;
+            direction: ltr; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         `;
 
         // Header with Previous Button and Round Indicator
@@ -51,8 +51,8 @@
         
         const prevBtn = document.createElement('button');
         prevBtn.id = "prev-btn";
-        prevBtn.innerText = "⬅️ السابق";
-        prevBtn.style.cssText = "background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #718096; font-family: 'Tajawal', sans-serif; visibility: hidden; transition: opacity 0.2s;";
+        prevBtn.innerText = "⬅️ Previous";
+        prevBtn.style.cssText = "background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #718096; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; visibility: hidden; transition: opacity 0.2s;";
         prevBtn.onclick = () => previousRound();
         
         const roundIndicator = document.createElement('div');
@@ -76,7 +76,7 @@
         `;
         
         const targetLabel = document.createElement('p');
-        targetLabel.innerText = "الهدف";
+        targetLabel.innerText = "Target";
         targetLabel.style.cssText = "font-size: 0.9rem; font-weight: bold; color: #A0AEC0; margin: 0 0 5px 0; letter-spacing: 1px;";
         
         const targetIcon = document.createElement('div');
@@ -95,7 +95,7 @@
         stats.style.cssText = `
             font-weight: bold; color: #718096; font-size: 1rem; 
             background: #EDF2F7; padding: 10px 25px; border-radius: 50px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-top: 10px; direction: rtl;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-top: 10px; direction: ltr;
         `;
 
         gameWrapper.appendChild(header);
@@ -119,7 +119,7 @@
         if (!grid || !stats || !instruction || !targetIcon) return;
 
         grid.innerHTML = '';
-        roundIndicator.innerText = `المستوى: ${levelIndex} / ${totalRounds} | النتيجة: ${score}`;
+        roundIndicator.innerText = `Level: ${levelIndex} / ${totalRounds} | Score: ${score}`;
         
         // Hide "Previous" button on the first round
         if (prevBtn) {
@@ -129,7 +129,7 @@
         targetIcon.style.filter = "none"; // Reset filter
         targetIcon.style.transform = "scale(1)"; // Reset transform
 
-        // توزيع المراحل الجديد
+        // New stage distribution
         if (levelIndex <= 3) {
             setupThemeMatch(grid, instruction, targetIcon);
         } else if (levelIndex <= 6) {
@@ -142,7 +142,7 @@
     function nextRound() {
         if (levelIndex >= totalRounds) {
             if (window.GameHub?.showComplete) {
-                window.GameHub.showComplete("بطل الملاحظة!", `لقد أكملت جميع التحديات بنجاح! النتيجة: ${score}`);
+                window.GameHub.showComplete("Observation Champion!", `You have successfully completed all challenges! Score: ${score}`);
             }
             return;
         }
@@ -159,7 +159,7 @@
     }
 
     function setupThemeMatch(grid, instruction, targetIcon) {
-        instruction.innerText = "ابحث عن الصورة المطابقة للهدف!";
+        instruction.innerText = "Find the image that matches the target!";
         grid.style.gridTemplateColumns = "repeat(3, 100px)";
 
         const currentSet = itemSets[Math.floor(Math.random() * itemSets.length)];
@@ -176,7 +176,7 @@
     }
 
     function setupShapeMatch(grid, instruction, targetIcon) {
-        instruction.innerText = "طابق الشكل (وتجاهل اللون)!";
+        instruction.innerText = "Match the shape (and ignore the color)!";
         grid.style.gridTemplateColumns = "repeat(3, 100px)";
 
         const colors = ['red', 'yellow', 'blue'];
@@ -197,7 +197,7 @@
     }
 
     function setupShadowLogicMatch(grid, instruction, targetIcon) {
-        instruction.innerText = "طابق الظل بالصورة الحقيقية (انتبه للاتجاه الصحيح)!";
+        instruction.innerText = "Match the shadow to the real image (pay attention to the correct direction)!";
         grid.style.gridTemplateColumns = "repeat(3, 100px)";
 
         const pool = [...shadowPool].sort(() => 0.5 - Math.random());
@@ -206,23 +206,23 @@
         const randomItem2 = pool[2];
 
         targetIcon.innerText = targetItem;
-        targetIcon.style.filter = "brightness(0)"; // تحويل الهدف إلى ظل أسود
+        targetIcon.style.filter = "brightness(0)"; // Turn the target into a black shadow
         
-        // تجهيز الخيارات: الهدف الصحيح، والهدف معكوساً كمشتت قوي، وعناصر أخرى لملء الشبكة
+        // Prepare options: the correct target, the reversed target as a strong distractor, and other elements to fill the grid
         const options = [
-            { symbol: targetItem, transform: "scaleX(1)", isCorrect: true }, // الإجابة الصحيحة
-            { symbol: targetItem, transform: "scaleX(-1)", isCorrect: false }, // مشتت: نفس الشكل معكوس أفقياً
-            { symbol: targetItem, transform: "scaleY(-1)", isCorrect: false }, // مشتت: نفس الشكل مقلوب رأسياً
-            { symbol: randomItem1, transform: "scaleX(1)", isCorrect: false }, // عنصر مختلف
-            { symbol: randomItem1, transform: "scaleX(-1)", isCorrect: false }, // عنصر مختلف معكوس
-            { symbol: randomItem2, transform: "scaleX(1)", isCorrect: false }  // عنصر مختلف
+            { symbol: targetItem, transform: "scaleX(1)", isCorrect: true }, // Correct answer
+            { symbol: targetItem, transform: "scaleX(-1)", isCorrect: false }, // Distractor: same shape flipped horizontally
+            { symbol: targetItem, transform: "scaleY(-1)", isCorrect: false }, // Distractor: same shape flipped vertically
+            { symbol: randomItem1, transform: "scaleX(1)", isCorrect: false }, // Different element
+            { symbol: randomItem1, transform: "scaleX(-1)", isCorrect: false }, // Different element flipped
+            { symbol: randomItem2, transform: "scaleX(1)", isCorrect: false }  // Different element
         ];
 
         renderOptions(grid, options);
     }
 
     function renderOptions(grid, options) {
-        // خلط الخيارات العشوائي
+        // Shuffle options randomly
         options.sort(() => 0.5 - Math.random());
         
         options.forEach(opt => {
@@ -237,8 +237,9 @@
 
     function createCard(symbol, transformValue) {
         const card = document.createElement('button');
-        // يتم وضع العنصر بداخل span لتطبيق التحويل (الانعكاس) عليه دون أن تتأثر حدود الزر 
+        // The element is placed inside a span to apply the transformation (flip) to it without affecting the button's borders
         card.innerHTML = `<span style="display:inline-block; pointer-events:none; transform:${transformValue};">${symbol}</span>`;
+        card.classList = 'gemoji'
         card.style.cssText = `
             font-size: 40px; width: 90px; height: 90px;
             border: 3px solid #E2E8F0; border-radius: 20px;

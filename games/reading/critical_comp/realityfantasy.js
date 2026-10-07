@@ -209,18 +209,18 @@
                 </div>
 
                 <div class="card-to-sort" id="mainCard">
-                    <div class="card-icon">${data.icon}</div>
+                    <div class="card-icon gemoji">${data.icon}</div>
                     <div class="card-text">${data.scenario}</div>
                 </div>
 
                 <div class="portals-row">
                     <div class="portal-zone reality-door" id="doorBtn">
-                        <div class="door-graphic">🚪</div>
+                        <div class="door-graphic gemoji">🚪</div>
                         <div class="portal-label" style="color: #2F855A;">Real World</div>
                     </div>
                     
                     <div class="portal-zone fantasy-portal" id="portalBtn">
-                        <div class="portal-graphic">🌀</div>
+                        <div class="portal-graphic gemoji">🌀</div>
                         <div class="portal-label" style="color: #6B46C1;">Magic Portal</div>
                     </div>
                 </div>

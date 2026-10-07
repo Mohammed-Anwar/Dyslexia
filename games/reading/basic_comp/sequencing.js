@@ -45,6 +45,105 @@ let currentStage = null;
      }
      return text;
  }
+  
+ function makePanelDraggable(element, pData) {
+     let startX, startY;
+     let isDragging = false;
+     let originalParent = element.parentNode;
+     let originalNextSibling = element.nextSibling;
+
+     // Robust reset function to prevent "sticking"
+     element.resetPosition = function() {
+         element.style.position = 'relative';
+         element.style.left = '0';
+         element.style.top = '0';
+         element.style.zIndex = '10';
+         element.style.transform = 'none';
+         element.style.pointerEvents = 'auto'; // Re-enable clicks
+         // Return to exact original position in the DOM
+         originalParent.insertBefore(element, originalNextSibling);
+     };
+
+     function startDrag(e) {
+         if (element.classList.contains('correct')) return; // Don't drag if already placed
+         
+         e.preventDefault();
+         isDragging = true;
+         
+         const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+         const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+         
+         const rect = element.getBoundingClientRect();
+         startX = clientX - rect.left;
+         startY = clientY - rect.top;
+         
+         // FIX 1: Force element to top layer and let clicks pass through to detect slots
+         element.style.position = 'fixed';
+         element.style.left = rect.left + 'px';
+         element.style.top = rect.top + 'px';
+         element.style.zIndex = '9999'; 
+         element.style.pointerEvents = 'none'; // CRITICAL: prevents "hovering under text"
+         element.style.margin = '0';
+         
+         document.addEventListener('mousemove', drag);
+         document.addEventListener('touchmove', drag, { passive: false });
+         document.addEventListener('mouseup', endDrag);
+         document.addEventListener('touchend', endDrag);
+     }
+
+     function drag(e) {
+         if (!isDragging) return;
+         e.preventDefault();
+         
+         const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+         const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+         
+         element.style.left = (clientX - startX) + 'px';
+         element.style.top = (clientY - startY) + 'px';
+     }
+
+     function endDrag(e) {
+         if (!isDragging) return;
+         isDragging = false;
+         
+         // FIX 2: CRITICAL - Remove listeners immediately to prevent "sticking"
+         document.removeEventListener('mousemove', drag);
+         document.removeEventListener('touchmove', drag);
+         document.removeEventListener('mouseup', endDrag);
+         document.removeEventListener('touchend', endDrag);
+         
+         // Re-enable pointer events so it can be dragged again if wrong
+         element.style.pointerEvents = 'auto';
+         
+         const clientX = e.type.includes('mouse') ? e.clientX : e.changedTouches[0].clientX;
+         const clientY = e.type.includes('mouse') ? e.clientY : e.changedTouches[0].clientY;
+         
+         let matched = false;
+         [0, 1, 2, 3].forEach(i => {
+             const slot = document.getElementById(`slot-${i}`);
+             if (!slot) return;
+             const rect = slot.getBoundingClientRect();
+             
+             if (clientX >= rect.left && clientX <= rect.right && 
+                 clientY >= rect.top && clientY <= rect.bottom) {
+                 
+                 if (pData.order === i) {
+                     snapToSlot(element, slot, clientX, clientY);
+                 } else {
+                     handleWrongOrder(element);
+                 }
+                 matched = true;
+             }
+         });
+         
+         if (!matched) {
+             element.resetPosition();
+         }
+     }
+
+     element.addEventListener('mousedown', startDrag);
+     element.addEventListener('touchstart', startDrag, { passive: false });
+ }
 
  function renderLevel(stage) {
      const data = gameData[levelIndex];
@@ -97,25 +196,7 @@ let currentStage = null;
          contentHTML += `<div class="panel-text">${formatText(pData.text)}</div>`;
          panel.innerHTML = contentHTML;
          pool.appendChild(panel);
-         if (window.GameHub?.utils?.makeDraggable) {
-             window.GameHub.utils.makeDraggable(panel, (x, y, el) => {
-                 let matched = false;
-                 [0, 1, 2, 3].forEach(i => {
-                     const slot = document.getElementById(`slot-${i}`);
-                     const rect = slot.getBoundingClientRect();
-                     if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom) {
-                         if (pData.order === i) {
-                             snapToSlot(el, slot, x, y);
-                             matched = true;
-                         } else {
-                             handleWrongOrder(el);
-                             matched = true;
-                         }
-                     }
-                 });
-                 if (!matched && el.resetPosition) el.resetPosition();
-             });
-         }
+        makePanelDraggable(panel, pData);
      });
  }
 

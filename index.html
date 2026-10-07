@@ -9,11 +9,11 @@
 <body>
     <canvas id="vfx-canvas"></canvas>
 
-    <button id="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+    <button id="mobile-menu-btn" onclick="toggleSidebar()" class="gemoji">☰</button>
 
     <aside id="sidebar">
         <div class="sidebar-header">
-            <h2 id="hub-home-link" onclick="goHome()"><span>🌟</span> Literacy Hub</h2>
+            <h2 id="hub-home-link" onclick="goHome()"><span class="gemoji">🌟</span> Literacy Hub</h2>
             <p>Learning Journey</p>
         </div>
         <div class="sidebar-scroll" id="sidebar-content"></div>
@@ -30,10 +30,10 @@
             <div style="display: flex; align-items: center; gap: 16px;">
                 <div id="game-nav-controls" class="game-nav-controls">
                     <button id="prev-round-btn" class="game-btn secondary nav-round-btn" onclick="goPreviousRound()">
-                        <span>⬅️</span> Previous
+                        <span class="gemoji">⬅️</span> Previous
                     </button>
                     <button id="next-round-btn" class="game-btn nav-round-btn" onclick="goNextRound()">
-                        Next <span>➡️</span>
+                        Next <span class="gemoji">➡️</span>
                     </button>
                 </div>
                 <div id="game-toolbar"></div>
@@ -48,19 +48,19 @@
 
             <!-- Enhanced Success Overlay -->
             <div id="game-result-overlay" class="game-overlay">
-                <div style="font-size: 80px; margin-bottom: 10px;">🏆</div>
+                <div class="gemoji" style="font-size: 80px; margin-bottom: 10px;">🏆</div>
                 <h1 id="result-title" style="font-size: 2.5rem; color: var(--text-dark);">Great Job!</h1>
                 <p id="result-message" style="font-size: 1.1rem; color: var(--text-muted); max-width: 400px;">You've completed the activity successfully.</p>
                 
                 <div class="btn-group">
                     <button class="game-btn secondary" onclick="retryGame()">
-                        <span>🔄</span> Retry
+                        <span class="gemoji">🔄</span> Retry
                     </button>
                     <button class="game-btn success" id="next-game-btn" onclick="loadNextGame()">
-                        Next Game <span>➡️</span>
+                        Next Game <span class="gemoji">➡️</span>
                     </button>
                     <button class="game-btn" onclick="goHome()">
-                        <span>🏠</span> Home
+                        <span class="gemoji">🏠</span> Home
                     </button>
                 </div>
             </div>
@@ -70,6 +70,7 @@
             </div>
         </section>
     </main>
+    <script src="GlobalScripts/drag-utils.js"></script>
 
     <script>
         const gameData = [
@@ -303,7 +304,7 @@
             stage.innerHTML = `
                 <div id="lobby-view">
                     <div class="lobby-intro">
-                        <div class="lobby-emoji">🎮</div>
+                        <div class="lobby-emoji gemoji">🎮</div>
                         <h2>Choose Your Adventure</h2>
                         <p>Tap any activity below to jump right in, or use the sidebar.</p>
                     </div>
@@ -314,7 +315,7 @@
                 const section = document.createElement('div');
                 section.className = 'lobby-category';
                 section.innerHTML = `<h3 class="lobby-category-title">
-                    <span>${catIcons[cat.folder] || '🎯'}</span> ${cat.category}
+                    <span class="gemoji">${catIcons[cat.folder] || '🎯'}</span> ${cat.category}
                 </h3>`;
 
                 const grid = document.createElement('div');
@@ -323,9 +324,9 @@
                 cat.dimensions.forEach(dim => {
                     const card = document.createElement('button');
                     card.type = 'button';
-                    card.className = 'lobby-card';
+                    card.className = 'lobby-card gemoji';
                     card.innerHTML = `
-                        <div class="lobby-card-icon">${dimIcons[dim.name] || '🎯'}</div>
+                        <div class="lobby-card-icon gemoji">${dimIcons[dim.name] || '🎯'}</div>
                         <div class="lobby-card-name">${dim.name}</div>
                         <div class="lobby-card-count">${dim.games.length} activities</div>
                     `;
@@ -523,5 +524,6 @@
             }
         };
     </script>
+    <script src="GlobalScripts/AssetsMapper.js"></script>
 </body>
 </html>

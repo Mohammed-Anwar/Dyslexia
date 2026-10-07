@@ -61,7 +61,7 @@ window.initGame = function (stageId) {
       let paraHTML = "";
       for(let i = 0; i < r.blanks.length; i++) {
         paraHTML += r.parts[i];
-        paraHTML += `<span class="dr-blank-wrap"><span class="dr-hint">${r.blanks[i].h}</span><input type="text" class="dr-blank" data-index="${i}" maxlength="10" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></span>`;
+        paraHTML += `<span class="dr-blank-wrap"><span class="dr-hint gemoji">${r.blanks[i].h}</span><input type="text" class="dr-blank" data-index="${i}" maxlength="10" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></span>`;
       }
       paraHTML += r.parts[r.parts.length - 1];
       specificHTML = `
@@ -102,7 +102,11 @@ window.initGame = function (stageId) {
         .dr-card.used { visibility: hidden; pointer-events: none; opacity: 0; width: 0; padding: 0; margin: 0; border: 0; box-shadow: none; }
         .dr-text-display { width: 100%; max-width: 600px; background: white; border: 2px solid #E2E8F0; border-radius: 16px; padding: 24px; font-size: 1.2rem; font-weight: 600; color: var(--text-dark); line-height: 2.8; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .dr-blank-wrap { display: inline-flex; flex-direction: column; align-items: center; margin: 0 6px; vertical-align: bottom; }
-        .dr-hint { font-size: 1.4rem; margin-bottom: 2px; }
+        .dr-hint { font-size: 1.4rem; margin-bottom: 2px;}
+        .dr-hint img {
+        width: 3em !important;
+                 height: 3em !important;
+                 object-fit: contain !important;}
         .dr-blank { width: 90px; border: none; border-bottom: 3px dashed var(--primary-blue); text-align: center; font-size: 1.1rem; font-weight: 700; color: var(--primary-blue); outline: none; background: transparent; user-select: text; -webkit-user-select: text; }
         .dr-blank:focus { border-bottom-style: solid; }
         .dr-filled { color: var(--primary-green); font-weight: 800; border-bottom: 3px solid var(--primary-green); padding: 0 4px; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -119,7 +123,7 @@ window.initGame = function (stageId) {
         <div class="dr-header">
           <button id="prev-btn" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:var(--text-muted); visibility: ${levelIndex > 0 ? 'visible' : 'hidden'};">⬅️ Previous</button>
           <div class="dr-title-box">
-            <span class="dr-icon">🦸</span>
+            <span class="dr-icon gemoji">🦸</span>
             <span class="dr-title">The Hero's Daily Quests</span>
           </div>
           <span class="dr-round">${stageName} | ${levelIndex + 1} / ${gameData.length}</span>

@@ -474,7 +474,7 @@ function loadSortLevel(stage, level) {
                     </div>
                 </div>
                 <div class="drag-zone">
-                    <div id="sound-bubble" class="sound-bubble" draggable="true" title="Tap to hear again">${round.icon}</div>
+                    <div id="sound-bubble" class="sound-bubble gemoji" draggable="true" title="Tap to hear again">${round.icon}</div>
                 </div>
                 <div class="hint">Drag the bubble into the matching box! Tap a box to hear its sound.</div>
               </div>

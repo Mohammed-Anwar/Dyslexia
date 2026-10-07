@@ -48,7 +48,7 @@ window.initGame = function (stageId) {
       wrap.innerHTML += `
         <div style="font-size:1.2rem; font-weight:700; color:var(--text-dark); text-align:center; margin-bottom:20px;">Listen and drag the matching letter!</div>
         
-        <button id="sound-btn" style="width:80px; height:80px; border-radius:50%; background:var(--primary-blue); color:white; border:none; font-size:2rem; cursor:pointer; box-shadow:0 4px 0 #2b6cb0; margin-bottom:20px; display:flex; align-items:center; justify-content:center; transition: transform 0.1s;">
+        <button class="gemoji" id="sound-btn" style="width:80px; height:80px; border-radius:50%; background:var(--primary-blue); color:white; border:none; font-size:2rem; cursor:pointer; box-shadow:0 4px 0 #2b6cb0; margin-bottom:20px; display:flex; align-items:center; justify-content:center; transition: transform 0.1s;">
           🔊
         </button>
 

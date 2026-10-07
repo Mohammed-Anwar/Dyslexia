@@ -9,6 +9,7 @@ let levelIndex = 0;
 let score = 0;
 let itemsPlaced = 0;
 let currentStage = null;
+let draggedElement = null;
 
 const gameData = [
  { type: "visual", trunks: [ { id: "ocean", label: "Ocean", icon: "🌊", color: "#BEE3F8" }, { id: "desert", label: "Desert", icon: "🏜️", color: "#FEEBC8" } ], items: [ { id: "l1", content: "🦈", belongsTo: "ocean" }, { id: "l2", content: "🌵", belongsTo: "desert" }, { id: "l3", content: "🐋", belongsTo: "ocean" }, { id: "l4", content: "🐪", belongsTo: "desert" }, { id: "l5", content: "🪸", belongsTo: "ocean" }, { id: "l6", content: "⏳", belongsTo: "desert" } ], instruction: "Sort the pictures to the right environment." },
@@ -39,6 +40,7 @@ window.initGame = function(containerId) {
  function renderLevel(stage) {
      const data = gameData[levelIndex];
      itemsPlaced = 0;
+     draggedElement = null;
      
      stage.innerHTML = `
          <style>
@@ -50,10 +52,22 @@ window.initGame = function(containerId) {
              .trunk-icon { font-size: 4rem; margin-bottom: 15px; }
              .trunk-label { font-weight: 800; font-size: 1.3rem; color: #2D3748; text-align: center; }
              .items-area { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 25px; background: #F7FAFC; border: 2px solid #EDF2F7; border-radius: 20px; min-height: 120px; width: 100%; max-width: 700px; }
-             .item-icon { width: 80px; height: 80px; background: #F0FFF4; border: 2px solid #C6F6D5; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; cursor: grab; box-shadow: 0 4px 6px rgba(0,0,0,0.05); touch-action: none; }
-             .item-icon .item-content { transform: rotate(45deg); font-size: 2.5rem; }
-             .item-text { padding: 15px 25px; background: white; border: 2px solid #E2E8F0; border-radius: 20px 20px 20px 5px; font-size: 1.1rem; font-weight: bold; color: #2D3748; cursor: grab; box-shadow: 0 4px 6px rgba(0,0,0,0.05); touch-action: none; text-align: center; }
+             .item-icon { width: 80px; height: 80px; background: #F0FFF4; border: 2px solid #C6F6D5; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; cursor: grab; box-shadow: 0 4px 6px rgba(0,0,0,0.05); touch-action: none; position: relative; }
+             .item-icon .item-content { transform: rotate(45deg); font-size: 2.5rem; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+             .item-text { padding: 15px 25px; background: white; border: 2px solid #E2E8F0; border-radius: 20px 20px 20px 5px; font-size: 1.1rem; font-weight: bold; color: #2D3748; cursor: grab; box-shadow: 0 4px 6px rgba(0,0,0,0.05); touch-action: none; text-align: center; position: relative; }
              .draggable-item:active { cursor: grabbing; }
+             .draggable-item.placed { display: none !important; }
+             .draggable-item.wrong { animation: shakeAndReturn 0.5s ease; }
+             @keyframes shakeAndReturn {
+                 0%, 100% { transform: translate(0, 0) rotate(-45deg); }
+                 25% { transform: translate(-10px, 5px) rotate(-45deg); }
+                 75% { transform: translate(10px, -5px) rotate(-45deg); }
+             }
+            .item-icon img {
+                 width: 3em !important;
+                 height: 3em !important;
+                 object-fit: contain !important;
+             }
          </style>
          <div class="tree-game-container">
              <div class="header">
@@ -63,7 +77,7 @@ window.initGame = function(containerId) {
              </div>
              <div class="instruction">${data.instruction}</div>
              <div class="trunks-area" id="trunks-area">
-                 ${data.trunks.map(t => `<div class="trunk" id="trunk-${t.id}" data-id="${t.id}" style="background-color: ${t.color}"><div class="trunk-icon">${t.icon}</div><div class="trunk-label">${t.label}</div></div>`).join('')}
+                 ${data.trunks.map(t => `<div class="trunk gemoji" id="trunk-${t.id}" data-id="${t.id}" style="background-color: ${t.color}"><div class="trunk-icon gemoji">${t.icon}</div><div class="trunk-label">${t.label}</div></div>`).join('')}
              </div>
              <div class="items-area" id="items-area"></div>
          </div>
@@ -74,67 +88,161 @@ window.initGame = function(containerId) {
 
      const itemsArea = document.getElementById('items-area');
      const shuffledItems = [...data.items].sort(() => Math.random() - 0.5);
-     shuffledItems.forEach(itemData => {
+     
+     shuffledItems.forEach((itemData, index) => {
          const itemEl = document.createElement('div');
          itemEl.className = `draggable-item ${data.type === 'visual' ? 'item-icon' : 'item-text'}`;
          itemEl.id = itemData.id;
+         
+         // Store original position
+         const originalParent = itemsArea;
+         const originalNextSibling = itemsArea.children[index];
+         
          if (data.type === 'visual') {
-             itemEl.innerHTML = `<div class="item-content">${itemData.content}</div>`;
+             itemEl.innerHTML = `<div class="item-content gemoji">${itemData.content}</div>`;
          } else {
              itemEl.innerText = itemData.content;
          }
+         
          itemsArea.appendChild(itemEl);
-         if (window.GameHub?.utils?.makeDraggable) {
-             window.GameHub.utils.makeDraggable(itemEl, (x, y, el) => {
-                 let dropped = false;
-                 data.trunks.forEach(t => {
-                     const trunkEl = document.getElementById(`trunk-${t.id}`);
-                     const rect = trunkEl.getBoundingClientRect();
-                     if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom) {
-                         if (itemData.belongsTo === t.id) {
-                             handleMatch(el, trunkEl, x, y);
-                             dropped = true;
-                         } else {
-                             handleMismatch(el, data.type);
-                             dropped = true;
-                         }
-                     }
-                 });
-                 if (!dropped && el.resetPosition) el.resetPosition();
-             });
-         }
+         
+         // Implement custom drag logic
+         makeCustomDraggable(itemEl, itemData, data, originalParent);
      });
  }
 
+ function makeCustomDraggable(element, itemData, levelData, originalParent) {
+     let startX, startY, initialX = 0, initialY = 0;
+     let isDragging = false;
+     
+     // Store reset function on the element
+     element.resetPosition = function() {
+         element.style.position = 'relative';
+         element.style.left = '0';
+         element.style.top = '0';
+         element.style.zIndex = '1';
+         element.classList.remove('wrong');
+         // Trigger reflow
+         void element.offsetWidth;
+     };
+     
+     element.addEventListener('mousedown', startDrag);
+     element.addEventListener('touchstart', startDrag, {passive: false});
+     
+     function startDrag(e) {
+         if (element.classList.contains('placed')) return;
+         
+         e.preventDefault();
+         isDragging = true;
+         draggedElement = element;
+         
+         const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+         const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+         
+         const rect = element.getBoundingClientRect();
+         startX = clientX - rect.left;
+         startY = clientY - rect.top;
+         
+         element.style.position = 'fixed';
+         element.style.left = rect.left + 'px';
+         element.style.top = rect.top + 'px';
+         element.style.zIndex = '1000';
+         element.style.margin = '0';
+         
+         document.addEventListener('mousemove', drag);
+         document.addEventListener('touchmove', drag, {passive: false});
+         document.addEventListener('mouseup', endDrag);
+         document.addEventListener('touchend', endDrag);
+     }
+     
+     function drag(e) {
+         if (!isDragging) return;
+         e.preventDefault();
+         
+         const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+         const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+         
+         element.style.left = (clientX - startX) + 'px';
+         element.style.top = (clientY - startY) + 'px';
+     }
+     
+     function endDrag(e) {
+         if (!isDragging) return;
+         isDragging = false;
+         draggedElement = null;
+         
+         const clientX = e.type.includes('mouse') ? e.clientX : e.changedTouches[0].clientX;
+         const clientY = e.type.includes('mouse') ? e.clientY : e.changedTouches[0].clientY;
+         
+         let dropped = false;
+         levelData.trunks.forEach(t => {
+             const trunkEl = document.getElementById(`trunk-${t.id}`);
+             const rect = trunkEl.getBoundingClientRect();
+             
+             if (clientX >= rect.left && clientX <= rect.right && 
+                 clientY >= rect.top && clientY <= rect.bottom) {
+                 
+                 if (itemData.belongsTo === t.id) {
+                     handleMatch(element, trunkEl, clientX, clientY);
+                 } else {
+                     handleMismatch(element);
+                 }
+                 dropped = true;
+             }
+         });
+         
+         if (!dropped) {
+             element.resetPosition();
+             originalParent.appendChild(element);
+         }
+         
+         document.removeEventListener('mousemove', drag);
+         document.removeEventListener('touchmove', drag);
+         document.removeEventListener('mouseup', endDrag);
+         document.removeEventListener('touchend', endDrag);
+     }
+ }
+
  function handleMatch(itemEl, trunkEl, x, y) {
+     // Mark as placed and hide it
+     itemEl.classList.add('placed');
      itemEl.style.display = 'none';
+     
      score += 10;
      itemsPlaced++;
+     
      if (window.GameHub) {
          window.GameHub.playSound('correct');
          window.GameHub.triggerVFX(x, y);
      }
+     
+     // Visual feedback on trunk
      trunkEl.style.transform = "scale(1.05)";
-     setTimeout(() => trunkEl.style.transform = "scale(1)", 200);
+     trunkEl.style.borderColor = "#48BB78";
+     setTimeout(() => {
+         trunkEl.style.transform = "scale(1)";
+         trunkEl.style.borderColor = "#CBD5E0";
+     }, 200);
      
      if (itemsPlaced === gameData[levelIndex].items.length) {
          setTimeout(nextRound, 1000);
      }
  }
 
- function handleMismatch(itemEl, type) {
+ function handleMismatch(itemEl) {
      if (window.GameHub) window.GameHub.playSound('wrong');
+     
+     // Add wrong animation class
+     itemEl.classList.add('wrong');
      itemEl.style.borderColor = "#F56565";
      itemEl.style.background = "#FFF5F5";
+     
+     // Reset after animation
      setTimeout(() => {
-         if (itemEl.resetPosition) itemEl.resetPosition();
-         if (type === 'visual') {
-             itemEl.style.borderColor = "#C6F6D5";
-             itemEl.style.background = "#F0FFF4";
-         } else {
-             itemEl.style.borderColor = "#E2E8F0";
-             itemEl.style.background = "white";
-         }
+         itemEl.resetPosition();
+         itemEl.style.borderColor = "#C6F6D5";
+         itemEl.style.background = "#F0FFF4";
+         itemEl.classList.remove('wrong');
      }, 500);
  }
 
@@ -157,6 +265,7 @@ window.initGame = function(containerId) {
          renderLevel(currentStage);
      }
  }
+ 
  window.nextRound = nextRound;
  window.previousRound = previousRound;
 })();

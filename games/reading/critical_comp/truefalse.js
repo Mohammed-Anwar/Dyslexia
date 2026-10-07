@@ -195,11 +195,11 @@
                     
                     <div class="verdict-row" id="controls">
                         <div class="judgment-btn" id="trueBtn">
-                            <div class="gavel-icon">🔨</div>
+                            <div class="gavel-icon gemoji">🔨</div>
                             <div class="btn-label" style="color: #2F855A;">TRUE</div>
                         </div>
                         <div class="judgment-btn" id="falseBtn">
-                            <div class="x-icon">❌</div>
+                            <div class="x-icon gemoji">❌</div>
                             <div class="btn-label" style="color: #C53030;">FALSE</div>
                         </div>
                     </div>
