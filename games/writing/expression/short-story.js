@@ -69,7 +69,6 @@ window.initGame = function (stageId) {
     if (!container) return;
     container.innerHTML = '';
     if (currentOrder.length === 0) {
-      container.innerHTML = '<div class="empty-pages">Drag sentences here to build the story...</div>';
       return;
     }
     const sortedSentences = [...currentOrder].sort((a, b) => a.position - b.position);
@@ -133,7 +132,6 @@ window.initGame = function (stageId) {
       contentHTML = `
         <div class="story-book">
           <div class="book-pages" id="story-pages">
-            <div class="empty-pages">Drag sentences here to build the story...</div>
           </div>
         </div>
         <div class="sentence-bank" id="sentence-bank">

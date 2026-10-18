@@ -65,17 +65,6 @@ const gameData = [
                  font-weight: bold;
                  color: #4A5568;
              }
-             .instruction-box {
-                 background: #FFF5F7;
-                 padding: 15px 25px;
-                 border-radius: 20px;
-                 border: 2px solid #FEB2B2;
-                 text-align: center;
-                 font-size: 1.2rem;
-                 color: #9B2C2C;
-                 max-width: 500px;
-                 font-weight: bold;
-             }
              .target-slots {
                  display: flex;
                  gap: 15px;
@@ -158,7 +147,6 @@ const gameData = [
                  <button id="prev-btn" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:#4A5568; visibility: ${levelIndex > 0 ? 'visible' : 'hidden'};">⬅️ Previous</button>
                  <div class="level-indicator">Level ${levelIndex + 1} / ${totalLevels}</div>
              </div>
-             <div class="instruction-box">${data.instruction}</div>
              <div class="target-slots" id="slots-container">
                  <!-- Slots generated here -->
              </div>

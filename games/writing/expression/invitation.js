@@ -41,7 +41,6 @@ window.initGame = function (stageId) {
     const words = lineStates[lineIndex];
     zone.innerHTML = '';
     if (Object.keys(words).length === 0) {
-      zone.innerHTML = '<span class="placeholder-text">Tap or drag words here...</span>';
       return;
     }
     const sortedWords = Object.entries(words).sort((a, b) => a[1].position - b[1].position);
@@ -71,7 +70,6 @@ window.initGame = function (stageId) {
           <div class="single-line" data-line="${lineIndex}">
             <div class="line-label">Line ${lineIndex + 1}</div>
             <div class="drop-zone" id="zone-${lineIndex}">
-              <span class="placeholder-text">Tap or drag words here...</span>
             </div>
             <div class="options-bank" id="bank-${lineIndex}">
               ${shuffledWords.map((word, i) => `<div class="word-chip" draggable="true" data-value="${word}" data-line="${lineIndex}" data-index="${i}" id="w-${lineIndex}-${i}">${word}</div>`).join('')}

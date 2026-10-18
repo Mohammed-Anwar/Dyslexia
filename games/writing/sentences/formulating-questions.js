@@ -217,12 +217,10 @@ window.initGame = function (stageId) {
       <div class="fq-wrap">
         <div class="fq-header">
           <span class="fq-icon gemoji">${r.icon}</span>
-          <span class="fq-title">${stageName} &nbsp;|&nbsp; Round ${levelIndex + 1} / ${gameData.length}</span>
+          <span class="fq-title" title='${stageName}'> Round ${levelIndex + 1} / ${gameData.length}</span>
         </div>
         
-        <p style="color:var(--text-muted); font-weight:600; margin-top: -10px;">Build the QUESTION for this answer:</p>
-        
-        <div class="fq-answer-box">
+        <div title='Build the QUESTION for this answer:' class="fq-answer-box">
           <span class="fq-answer-text">${r.answer}</span>
           <button class="fq-speak-btn gemoji" title="Listen to the answer">🔊</button>
         </div>

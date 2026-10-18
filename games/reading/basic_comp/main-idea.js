@@ -78,10 +78,10 @@ let currentStage = null;
          <div class="umbrella-container">
              <div class="header-stats">
                  <button id="prev-btn" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:#4A5568; visibility: ${levelIndex > 0 ? 'visible' : 'hidden'};">⬅️ Previous</button>
-                 <span>Round: ${levelIndex + 1} / ${gameData.length}</span>
+                 <span title="${data.instruction}">Round: ${levelIndex + 1} / ${gameData.length}</span>
                  <span>Score: ${score}</span>
              </div>
-             <div class="instruction-box">${data.instruction}</div>
+             
              ${detailsContent}
              <div class="options-container" id="options"></div>
          </div>

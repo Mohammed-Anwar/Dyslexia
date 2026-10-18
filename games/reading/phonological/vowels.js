@@ -298,7 +298,6 @@ function loadAccordionLevel(stage, data) {
                 </div>
                 <div id="wand-btn" class="wand-btn" title="Wave the magic wand!">🖌</div>
             </div>
-            <div class="hint">Tap the word or wave the magic wand to stretch the sound!</div>
             <button id="next-level" class="btn-submit">Correct! Next Word →</button>
           </div>
         </div>
@@ -476,7 +475,6 @@ function loadSortLevel(stage, level) {
                 <div class="drag-zone">
                     <div id="sound-bubble" class="sound-bubble gemoji" draggable="true" title="Tap to hear again">${round.icon}</div>
                 </div>
-                <div class="hint">Drag the bubble into the matching box! Tap a box to hear its sound.</div>
               </div>
             </div>
         `;

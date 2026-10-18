@@ -174,8 +174,7 @@ let currentStage = null;
                  <span class="level-badge">${data.phaseName} (Round ${levelIndex + 1}/${gameData.length})</span>
                  <span style="font-weight: 800; color: #2B6CB0;">Score: ${score}</span>
              </div>
-             <h2 class="story-title">${data.storyTitle}</h2>
-             <p class="instruction-text">${data.instruction}</p>
+             <h2 title='${data.instruction}' class="story-title">${data.storyTitle}</h2>
              <div class="drop-zones">
                  ${[0, 1, 2, 3].map(i => `<div class="slot" id="slot-${i}" data-order="${i}"><span class="slot-number">${i + 1}</span></div>`).join('')}
              </div>
@@ -193,7 +192,7 @@ let currentStage = null;
          panel.className = 'panel';
          panel.id = pData.id;
          let contentHTML = pData.icon ? `<div class="panel-icon">${pData.icon}</div>` : '';
-         contentHTML += `<div class="panel-text">${formatText(pData.text)}</div>`;
+         contentHTML += `<div title='${formatText(pData.text)}' class="panel-text"></div>`;
          panel.innerHTML = contentHTML;
          pool.appendChild(panel);
         makePanelDraggable(panel, pData);

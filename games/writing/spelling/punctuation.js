@@ -56,20 +56,18 @@ window.initGame = function (stageId) {
 
     const header = document.createElement("div");
     header.style.cssText = "width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding: 0 10px;";
-    header.innerHTML = `
-      <span style="font-weight:700; color:var(--primary-blue); font-size: 1.1rem;">Round ${levelIndex + 1}/20</span>
-      <span style="font-weight:600; color:var(--text-muted); font-size: 0.85rem; background: var(--card-bg); padding: 4px 12px; border-radius: 20px;">Phase ${round.phase}</span>
-    `;
-    wrap.appendChild(header);
+    
 
     let promptText = "";
     if (round.phase === 1) promptText = "Drag the correct end mark to complete the sentence!";
     else if (round.phase === 2) promptText = "Drag the correct capital letter to fix the sentence!";
     else if (round.phase === 3) promptText = "Drag the commas to separate the items in the list!";
     else if (round.phase === 4) promptText = "Fix the sentence: Add the capital letter and the end mark!";
-
-    wrap.innerHTML += `<p style="font-size:1.1rem; font-weight:700; color:var(--text-dark); text-align:center; max-width:500px; line-height:1.4; margin-bottom:25px;">${promptText}</p>`;
-
+    header.innerHTML = `
+      <span style="font-weight:700; color:var(--primary-blue); font-size: 1.1rem;" title='${promptText}/20'>Round ${levelIndex + 1}/20</span>
+      <span style="font-weight:600; color:var(--text-muted); font-size: 0.85rem; background: var(--card-bg); padding: 4px 12px; border-radius: 20px;">Phase ${round.phase}</span>
+    `;
+    wrap.appendChild(header);
     const sentenceBox = document.createElement("div");
     sentenceBox.style.cssText = "display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:4px; font-size:2rem; font-weight:700; color:var(--text-dark); background:var(--card-bg); padding:20px 30px; border-radius:16px; border:2px solid #E2E8F0; min-height:100px; max-width:650px; margin-bottom:30px;";
     

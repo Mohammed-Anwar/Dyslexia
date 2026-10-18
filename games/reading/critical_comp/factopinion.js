@@ -206,9 +206,6 @@
                     <span>Card: ${levelIndex + 1} / ${gameData.length}</span>
                     <span>Score: ${score}</span>
                 </div>
-
-                <div class="instruction-text">"Use the Camera for things we can prove, use the Heart for feelings."</div>
-
                 <div class="statement-box" id="statement">
                     "${data.statement}"
                 </div>

@@ -49,7 +49,7 @@ window.initGame = function (stageId) {
     if (r.stage === 1) {
       const shuffledSentences = shuffle(r.sentences);
       specificHTML = `
-        <p class="dr-instruction">Drag the sentences to the correct order to build your paragraph.</p>
+        
         <div class="dr-paragraph" id="dr-paragraph">
           ${[0,1,2,3].map(i => `<div class="dr-slot" data-index="${i}">${i+1}</div>`).join('')}
         </div>
@@ -65,13 +65,12 @@ window.initGame = function (stageId) {
       }
       paraHTML += r.parts[r.parts.length - 1];
       specificHTML = `
-        <p class="dr-instruction">Look at the hints and type the missing verbs.</p>
         <div class="dr-text-display" id="dr-text-display">${paraHTML}</div>
       `;
     } else if (r.stage === 3) {
       const bankWords = ["First,", "Then,", "Finally,", ...r.verbs];
       specificHTML = `
-        <p class="dr-instruction">Look at the pictures and write the full paragraph using the word bank.</p>
+        
         <div class="dr-images">${r.images.map(img => `<span>${img}</span>`).join('<span style="color:#CBD5E0;">➡️</span>')}</div>
         <textarea class="dr-textarea" id="dr-textarea" placeholder="Start with 'First,'..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
         <div class="dr-word-bank">
@@ -126,7 +125,7 @@ window.initGame = function (stageId) {
             <span class="dr-icon gemoji">🦸</span>
             <span class="dr-title">The Hero's Daily Quests</span>
           </div>
-          <span class="dr-round">${stageName} | ${levelIndex + 1} / ${gameData.length}</span>
+          <span class="dr-round" title='${stageName}'> ${levelIndex + 1} / ${gameData.length}</span>
         </div>
         <div style="width:100%; max-width:600px; display:flex; flex-direction:column; align-items:center; gap:15px;">
           ${specificHTML}

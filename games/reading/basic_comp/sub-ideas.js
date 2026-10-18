@@ -54,7 +54,7 @@ window.initGame = function(containerId) {
              .items-area { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 25px; background: #F7FAFC; border: 2px solid #EDF2F7; border-radius: 20px; min-height: 120px; width: 100%; max-width: 700px; }
              .item-icon { width: 80px; height: 80px; background: #F0FFF4; border: 2px solid #C6F6D5; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; cursor: grab; box-shadow: 0 4px 6px rgba(0,0,0,0.05); touch-action: none; position: relative; }
              .item-icon .item-content { transform: rotate(45deg); font-size: 2.5rem; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
-             .item-text { padding: 15px 25px; background: white; border: 2px solid #E2E8F0; border-radius: 20px 20px 20px 5px; font-size: 1.1rem; font-weight: bold; color: #2D3748; cursor: grab; box-shadow: 0 4px 6px rgba(0,0,0,0.05); touch-action: none; text-align: center; position: relative; }
+             .item-text { padding: 15px 25px; background: white; border: 2px solid #E2E8F0; border-radius: 20px 20px 20px 5px; font-size: 1.1rem; font-weight: bold; color: #2D3748 !important; cursor: grab; box-shadow: 0 4px 6px rgba(0,0,0,0.05); touch-action: none; text-align: center; position: relative; }
              .draggable-item:active { cursor: grabbing; }
              .draggable-item.placed { display: none !important; }
              .draggable-item.wrong { animation: shakeAndReturn 0.5s ease; }
@@ -63,21 +63,16 @@ window.initGame = function(containerId) {
                  25% { transform: translate(-10px, 5px) rotate(-45deg); }
                  75% { transform: translate(10px, -5px) rotate(-45deg); }
              }
-            .item-icon img {
-                 width: 3em !important;
-                 height: 3em !important;
-                 object-fit: contain !important;
-             }
+            
          </style>
          <div class="tree-game-container">
              <div class="header">
                  <button id="prev-btn" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:#4A5568; visibility: ${levelIndex > 0 ? 'visible' : 'hidden'};">⬅️ Previous</button>
-                 <span>Round: ${levelIndex + 1} / ${gameData.length}</span>
+                 <span title="${data.instruction}">Round: ${levelIndex + 1} / ${gameData.length}</span>
                  <span>Score: ${score}</span>
              </div>
-             <div class="instruction">${data.instruction}</div>
              <div class="trunks-area" id="trunks-area">
-                 ${data.trunks.map(t => `<div class="trunk gemoji" id="trunk-${t.id}" data-id="${t.id}" style="background-color: ${t.color}"><div class="trunk-icon gemoji">${t.icon}</div><div class="trunk-label">${t.label}</div></div>`).join('')}
+                 ${data.trunks.map(t => `<div class="trunk gemoji" id="trunk-${t.id}" data-id="${t.id}" style="background-color: ${t.color}"><div class="trunk-icon gemoji">${t.icon}</div></div>`).join('')}
              </div>
              <div class="items-area" id="items-area"></div>
          </div>

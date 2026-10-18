@@ -147,10 +147,6 @@ let currentStage = null;
      correctlyPlaced = 0;
      let badgeColor = data.phase === 1 ? "#48BB78" : (data.phase === 2 ? "#4299E1" : "#ED8936");
      const legendHTML = data.hasColors ? `
-         <div class="legend">
-             <div class="legend-item"><div class="dot noun"></div> Noun</div>
-             <div class="legend-item"><div class="dot verb"></div> Verb</div>
-         </div>
      ` : '<div class="legend-item" style="color:#718096; font-style:italic;">No color hints this time!</div>';
      
      stage.innerHTML = `
@@ -182,11 +178,11 @@ let currentStage = null;
          <div class="sentence-container">
              <div class="game-header">
                  <button id="prev-btn" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:#4A5568; visibility: ${levelIndex > 0 ? 'visible' : 'hidden'};">⬅️ Previous</button>
-                 <span class="level-badge">${data.phaseName} (Round ${levelIndex + 1}/${gameData.length})</span>
+                 <span title='${data.instruction}' class="level-badge">${data.phaseName} (Round ${levelIndex + 1}/${gameData.length})</span>
                  ${legendHTML}
                  <div style="font-weight: 800; color: #2B6CB0;">Score: ${score}</div>
              </div>
-             <div class="instruction-text">${data.instruction}</div>
+             
              <div class="magnetic-rail">
                  ${Array(data.targetLength).fill(0).map((_, i) => `
                      <div class="word-slot" id="slot-${i}" data-order="${i}" data-slot-num="${i + 1}"></div>

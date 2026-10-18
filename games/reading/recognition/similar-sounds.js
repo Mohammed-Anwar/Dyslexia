@@ -72,13 +72,11 @@ let currentStage = null;
 
  function playSound(text) {
      const status = document.getElementById('sort-status');
-     if (status) status.innerText = "Listening... 🔊";
      if (window.GameHub && typeof window.GameHub.speak === 'function') {
          window.GameHub.speak(text, 'en-US');
      }
      const buckets = document.getElementById('buckets-container');
      if (buckets) buckets.classList.remove('disabled');
-     if (status) status.innerText = "Which one did you hear?";
  }
 
  function shuffle(arr) {
@@ -142,13 +140,10 @@ let currentStage = null;
              </div>
              <div style="text-align:center">
                  <h2 style="margin:0">Sound Sort</h2>
-                 <p style="color: #718096; margin:4px 0;">
-                     ${isWordMode ? "Listen to the word, then pick the matching picture." : "Listen to the sound, then pick the bucket."}
-                 </p>
-                 <span class="mode-badge">${isWordMode ? "🗣️ Whole Word" : "🔤 Sound Only"}</span>
+                 
              </div>
              <div class="sound-trigger" id="play-sound-btn">🔊</div>
-             <div id="sort-status">Tap the speaker to listen</div>
+             
              <div class="buckets-container disabled" id="buckets-container">
                  ${bucketOptions.map(opt => `
                      <div class="bucket" data-target="${opt.isTarget}">

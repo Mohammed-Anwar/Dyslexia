@@ -145,7 +145,7 @@ window.initGame = function (stageId) {
         }
       </style>
       <div class="wa-wrap">
-        <p class="wa-instructions">Level ${levelIndex + 1} / ${gameData.length} — Drag words into the boxes in the right order</p>
+        <p title='Drag words into the boxes in the right order'class="wa-instructions">Level ${levelIndex + 1} / ${gameData.length}</p>
         <div class="wa-line" id="wa-line"></div>
         <div class="wa-pool" id="wa-pool"></div>
       </div>

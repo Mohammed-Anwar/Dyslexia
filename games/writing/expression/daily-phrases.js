@@ -40,7 +40,6 @@ window.initGame = function (stageId) {
     if (!zone) return;
     zone.innerHTML = '';
     if (currentUnscrambleWords.length === 0) {
-      zone.innerHTML = '<span class="placeholder-text">Tap words to build the sentence...</span>';
       return;
     }
     currentUnscrambleWords.forEach((item, zoneIndex) => {
@@ -68,7 +67,6 @@ window.initGame = function (stageId) {
       const shuffledOptions = [...r.options].sort(() => Math.random() - 0.5);
       interactionHTML = `
         <div class="drop-zone" id="answer-zone">
-          <span class="placeholder-text">Tap or drag the correct response here!</span>
         </div>
         <div class="options-bank">
           ${shuffledOptions.map(opt => `<div class="word-chip" draggable="true" data-value="${opt}">${opt}</div>`).join('')}
@@ -79,7 +77,6 @@ window.initGame = function (stageId) {
       const shuffledWords = [...r.words].sort(() => Math.random() - 0.5);
       interactionHTML = `
         <div class="drop-zone unscramble-zone" id="answer-zone">
-          <span class="placeholder-text">Tap words to build the sentence...</span>
         </div>
         <div class="options-bank" id="word-bank">
           ${shuffledWords.map((word, i) => `<div class="word-chip" draggable="true" data-value="${word}" id="word-${i}">${word}</div>`).join('')}

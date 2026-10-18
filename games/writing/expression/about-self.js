@@ -45,7 +45,6 @@ window.initGame = function (stageId) {
     const r = gameData[levelIndex];
     if (levelIndex === 0 && !hasPlayedIntro) {
       setTimeout(() => {
-        speakText("أهلاً بك أيها المستكشف! هيا نصدر بطاقتك.", "ar-SA");
         hasPlayedIntro = true;
       }, 500);
     }
@@ -57,8 +56,8 @@ window.initGame = function (stageId) {
         <p class="as-instruction">${r.instruction} 
           <button class="as-speak-btn gemoji" onclick="event.stopPropagation(); window.currentGameSpeak()">🔊</button>
         </p>
-        <div class="as-build-zone" id="as-build-zone">
-          <span class="as-placeholder">Tap words below to build the start of your sentence...</span>
+        <div title='Tap words below to build the start of your sentence...' class="as-build-zone" id="as-build-zone">
+          
         </div>
         <div class="as-pool" id="as-pool">
           ${shuffledPrefix.map((w, i) => `<div class="as-chip" data-word="${w}" data-id="p${i}">${w}</div>`).join('')}

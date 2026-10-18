@@ -198,7 +198,7 @@ window.initGame = function (stageId) {
       <div class="pg-wrap">
         <div class="pg-header">
           <span class="pg-icon">${r.icon}</span>
-          <span class="pg-title">Round ${levelIndex + 1} / ${gameData.length} — Build the paragraph</span>
+          <span class="pg-title" title='Build the paragraph'>Round ${levelIndex + 1} / ${gameData.length}</span>
         </div>
         
         <div class="pg-paragraph" id="pg-paragraph">

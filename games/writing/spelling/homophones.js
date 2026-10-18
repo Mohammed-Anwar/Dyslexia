@@ -47,8 +47,7 @@ window.initGame = function (stageId) {
     // ================= PHASE 1: Visual Matching =================
     if (round.phase === 1) {
       wrap.innerHTML += `
-        <p style="font-size:1.1rem; font-weight:700; color:var(--text-dark); text-align:center; margin-bottom:10px;">Which word matches this picture?</p>
-        <div class="gemoji" style="font-size:6rem; margin: 10px 0; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); cursor:default;">${round.emoji}</div>
+        <div class="gemoji" title='Which word matches this picture?' style="font-size:6rem; margin: 10px 0; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); cursor:default;">${round.emoji}</div>
         <div id="options-container" style="display:flex; gap:20px; justify-content:center; margin-top:20px;"></div>
       `;
 
@@ -95,7 +94,6 @@ window.initGame = function (stageId) {
     // ================= PHASE 2: Direct Sentence Context =================
     } else if (round.phase === 2) {
       wrap.innerHTML += `
-        <p style="font-size:1.1rem; font-weight:700; color:var(--text-dark); text-align:center; margin-bottom:20px;">Drag the correct word into the blank!</p>
         <div style="font-size:1.8rem; font-weight:700; color:var(--text-dark); text-align:center; background:var(--card-bg); padding:20px; border-radius:16px; border:2px solid #E2E8F0; max-width:500px; line-height:1.6; margin-bottom:30px;">
           ${round.sentence.split("___")[0]}
           <span id="drop-zone" style="display:inline-flex; min-width:90px; height:50px; border-bottom:4px solid var(--primary-blue); vertical-align:middle; align-items:center; justify-content:center; color:var(--primary-blue); font-weight:800; background:rgba(74,144,226,0.05); border-radius:8px 8px 0 0; margin: 0 5px; transition: all 0.3s;"></span>

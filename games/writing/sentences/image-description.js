@@ -140,14 +140,13 @@ window.initGame = function (stageId) {
     if (r.stage === 1) {
       const shuffledWords = shuffle(r.words);
       specificHTML = `
-        <p style="font-weight:700; color:var(--text-dark); font-size: 1.1rem;">Click words to build the sentence:</p>
-        <div class="drop-zone" id="drop-zone"></div>
+        <div title='Click words to build the sentence:'class="drop-zone" id="drop-zone"></div>
         <div class="word-bank" id="word-bank">
           ${shuffledWords.map((word, i) => `<div class="word-chip" data-word="${word}" data-id="w${i}">${word}</div>`).join('')}
         </div>
         <div style="display:flex; gap:10px;">
-          <button class="game-btn secondary" id="clear-btn">Clear</button>
-          <button class="game-btn success" id="check-btn">Check Answer</button>
+          <button title='Clear' class="game-btn secondary" id="clear-btn">❌</button>
+          <button title='Check Answer' class="game-btn success" id="check-btn">Check Answer</button>
         </div>
       `;
     } 
@@ -223,8 +222,8 @@ window.initGame = function (stageId) {
 
       <div class="cd-wrap">
         <div style="display:flex; justify-content:space-between; width:100%; max-width:500px; color:var(--text-muted); font-weight:700; font-size:0.9rem;">
-          <span>${stageName}</span>
-          <span>Round ${levelIndex + 1} / ${gameData.length}</span>
+          
+          <span title='${stageName}'>Round ${levelIndex + 1} / ${gameData.length}</span>
         </div>
         
         <div class="scene-display gemoji">${r.scene}</div>

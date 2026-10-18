@@ -65,7 +65,6 @@ const gameData = [
              </div>
              <div class="question-box">
                  <div class="question-text">${data.question}</div>
-                 <div class="hint-text">${data.instruction}</div>
              </div>
              <div class="text-display" id="text-display"></div>
          </div>

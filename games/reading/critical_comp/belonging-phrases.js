@@ -183,8 +183,6 @@
                 </div>
 
                 <div class="topic-header">Topic: ${data.topic}</div>
-                
-                <p style="text-align: center; color: #718096; margin: 0;">Tap the "Intruder" sentence that doesn't fit the topic.</p>
 
                 <div class="passage-box" id="passage">
                     ${shuffledSentences.map((s, idx) => `

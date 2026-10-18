@@ -117,8 +117,6 @@ let currentStage = null;
              <div id="letter-card" class="letter-card">
                  <div>${data.letter}</div>
              </div>
-             <div id="status-text">Tap the blue card 🔊</div>
-             <div class="instruction" style="font-size: 1rem; color: #718096;">Now, which one matches the sound?</div>
              <div id="options-grid" class="options-grid disabled">
                  ${shuffledOptions.map((opt, i) => `
                      <div class="option-item" data-correct="${opt.correct}">${opt.icon}</div>

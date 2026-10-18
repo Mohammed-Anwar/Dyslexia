@@ -105,11 +105,11 @@
             "Phonological Awareness": "🔊",
             "Basic Comprehension": "📖",
             "Critical Comprehension": "🧠",
-            "Pre-writing Readiness": "✏️",
+            "Pre-writing Readiness": "🖊️",
             "Letter & Word Formation": "🖊️",
-            "Spelling & Mechanics": "🔡",
+            "Spelling & Mechanics": "🔤",
             "Sentence Construction": "📝",
-            "Written Expression": "📄"
+            "Written Expression": "📓"
         };
         const catIcons = { reading: "📚", writing: "✍️" };
 
@@ -306,7 +306,6 @@
                     <div class="lobby-intro">
                         <div class="lobby-emoji gemoji">🎮</div>
                         <h2>Choose Your Adventure</h2>
-                        <p>Tap any activity below to jump right in, or use the sidebar.</p>
                     </div>
                 </div>`;
             const lobby = document.getElementById('lobby-view');
@@ -328,7 +327,6 @@
                     card.innerHTML = `
                         <div class="lobby-card-icon gemoji">${dimIcons[dim.name] || '🎯'}</div>
                         <div class="lobby-card-name">${dim.name}</div>
-                        <div class="lobby-card-count">${dim.games.length} activities</div>
                     `;
                     card.onclick = () => {
                         AudioEngine.play('click');
@@ -525,5 +523,6 @@
         };
     </script>
     <script src="GlobalScripts/AssetsMapper.js"></script>
+    <script src="GlobalScripts/AutoScaler.js"></script>
 </body>
 </html>
