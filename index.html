@@ -473,14 +473,19 @@
             playSound: (type) => AudioEngine.play(type),
             triggerVFX: (x, y) => VFX.confetti(x, y),
             speak: (text, lang = 'en-US') => {
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel(); // Stop any ongoing speech to prevent overlap
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = lang;
-                    utterance.rate = 0.9;  // Slightly slower for children
-                    utterance.pitch = 1.1; // Slightly friendlier/higher pitch
-                    window.speechSynthesis.speak(utterance);
-                }
+                // Recorded voice-over first (GlobalScripts/AudioMapper.js); TTS only if no recording exists
+                const tts = () => {
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel(); // Stop any ongoing speech to prevent overlap
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        utterance.lang = lang;
+                        utterance.rate = 0.9;  // Slightly slower for children
+                        utterance.pitch = 1.1; // Slightly friendlier/higher pitch
+                        window.speechSynthesis.speak(utterance);
+                    }
+                };
+                if (window.AudioMapper) window.AudioMapper.speak(text, lang, tts);
+                else tts();
             },
             showComplete: (title, msg) => {
                 AudioEngine.play('popup');
@@ -522,6 +527,8 @@
             }
         };
     </script>
+    <script src="Static/audio/audio-manifest.js"></script>
+    <script src="GlobalScripts/AudioMapper.js"></script>
     <script src="GlobalScripts/AssetsMapper.js"></script>
     <script src="GlobalScripts/AutoScaler.js"></script>
 </body>
