@@ -21,10 +21,10 @@ let currentStage = null;
      { type: 'boxes', word: "fish", distractor: "cat" },
      { type: 'boxes', word: "ball", distractor: "sun" },
      { type: 'boxes', word: "jump", distractor: "dog" },
-     { type: 'boxes', word: "tall", distractor: "bill" },
+     { type: 'boxes', word: "tall", distractor: "cool" },
      { type: 'boxes', word: "cold", distractor: "hold" },
-     { type: 'boxes', word: "band", distractor: "hand" },
-     { type: 'boxes', word: "bad", distractor: "red" },
+     { type: 'boxes', word: "band", distractor: "bull" },
+     { type: 'boxes', word: "bad", distractor: "bee" },
      { type: 'boxes', word: "pen", distractor: "ped" }
  ];
 

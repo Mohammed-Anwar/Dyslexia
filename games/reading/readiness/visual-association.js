@@ -24,7 +24,7 @@ Filename: games/read_d1_g3.js
         { prompt: '🐝', match: '🍯', others: ['🥛', '🥩', '🍟'], label: "What does this bee make for us?" }
     ];
     const advancedPairs = [
-        { prompt: '🏸', match: '🎾', others: ['⚽', '🏀', '⚾'], label: "Choose the right ball for this racket!" },
+        { prompt: '🏸', match: '[SHUTTLECOCK]', others: ['⚽', '🏀', '⚾'], label: "Choose the right ball for this racket!" },
         { prompt: '🐇', match: '🥕', others: ['⚪', '🧀', '🦴'], label: "What does the rabbit eat?" },
         { prompt: '🐭', match: '🧀', others: ['🥨', '🥕', '🐟'], label: "What does the mouse eat?" },
         { prompt: '🐶', match: '🦴', others: ['🍡', '🥕', '🧀'], label: "What is the dog's favorite food?" },
@@ -133,7 +133,11 @@ Filename: games/read_d1_g3.js
 
     function createCard(symbol) {
         const card = document.createElement('button');
-        card.innerText = symbol;
+        if (symbol === '[SHUTTLECOCK]') {
+            card.innerHTML = `<img src="Static/Icons/shuttlecock.png" alt="shuttlecock" style="width: 50px; height: 50px; object-fit: contain; display: inline-block; vertical-align: middle;">`;
+        } else {
+            card.innerText = symbol;
+        }
         card.classList = 'gemoji'
         card.style.cssText = `font-size: 45px; width: 110px; height: 110px; border: 3px solid #E2E8F0; border-radius: 24px; background: white; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); outline: none; margin: auto;`;
         card.onmouseenter = () => card.style.transform = "scale(1.05)";
