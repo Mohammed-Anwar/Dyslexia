@@ -36,10 +36,10 @@ window.AudioManifest = {
   "Advanced M-A-TH. Find the 'TH' sound at the end!.mp3"
  ],
  "ah": [
-  "Ah.mp3"
+  "Ah.ogg"
  ],
  "ah as in apple": [
-  "ah as in apple.mp3"
+  "ah as in apple.ogg"
  ],
  "ah choo": [
   "Ah choo.mp3"
@@ -690,7 +690,7 @@ window.AudioManifest = {
   "EAT.mp3"
  ],
  "ee": [
-  "ee.ogg"
+  "Ee.ogg"
  ],
  "egg": [
   "EGG.mp3"
@@ -1410,7 +1410,7 @@ window.AudioManifest = {
   "ka.ogg"
  ],
  "kay": [
-  "Kay.mp3"
+  "Kay.ogg"
  ],
  "key": [
   "KEY.mp3"
@@ -1851,7 +1851,7 @@ window.AudioManifest = {
   "Offering help to someone.mp3"
  ],
  "oh": [
-  "Oh.mp3"
+  "Oh.ogg"
  ],
  "one": [
   "One.mp3"
